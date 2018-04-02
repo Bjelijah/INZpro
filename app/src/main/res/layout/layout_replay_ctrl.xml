@@ -30,7 +30,7 @@
                 android:id="@+id/replay_ctrl_beg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00:00"
+                android:text="@{vm.MReplayBeg}"
                 android:textColor="@color/white_highlight"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentLeft="true"/>
@@ -39,7 +39,7 @@
                 android:id="@+id/replay_ctrl_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00:00"
+                android:text="@{vm.MReplayEnd}"
                 android:textColor="@color/white_highlight"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentEnd="true"
@@ -71,7 +71,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="H.265E"
+                    android:text="@{vm.MReplayName}"
                     android:textColor="@color/white_highlight"
                     android:layout_marginLeft="5dp"
                     />
@@ -79,7 +79,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="524Kbps"
+                    android:text="@{vm.MReplaySpeed}"
                     android:textColor="@color/white_highlight"
                     android:layout_marginLeft="5dp"
                     />
@@ -104,7 +104,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_fastrewind"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:onClick="@{vm.onClickReplayFastRewind}"/>
 
 
                 <ImageView
@@ -112,6 +113,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_skippre"
                     android:clickable="true"
+                    android:onClick="@{vm.onClickReplaySkipLast}"
                     />
 
                 <ImageView
@@ -119,19 +121,22 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_pause"
                     android:clickable="true"
+                    android:onClick="@{vm.onClickReplayPauseAndPlay}"
                     />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_skipnex"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:onClick="@{vm.onClickReplaySkipNext}"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_fastforward"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:onClick="@{vm.onClickReplayFastForward}"/>
             </LinearLayout>
 
 
@@ -142,7 +147,8 @@
 
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/replay_ctrl_play"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:onClick="@{vm.onClickReplayStop}"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -157,13 +163,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_catch"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:onClick="@{vm.onClickReplayCatch}"/>
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_zoom"
                     android:clickable="true"
-                    android:layout_marginLeft="15dp"/>
+                    android:layout_marginLeft="15dp"
+                    android:onClick="@{vm.onClickReplayZoom}"/>
 
 
             </LinearLayout>

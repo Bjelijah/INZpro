@@ -2,7 +2,6 @@ package com.inz.model.main
 
 import android.content.Context
 import android.databinding.ObservableField
-import android.util.Log
 import com.inz.inzpro.BaseViewModel
 import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
@@ -18,11 +17,25 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val onClickCtrlCatch      = Action {  DebugLog.LogI("onclick ctrl catch") }
 
 
-
-    val mReplayBeg  = ObservableField<String>("00:00:01")
-    val mReplayEnd  = ObservableField<String>("00:00:02")
+    /**
+     * replay ctrl
+     */
+    val mReplayBeg   = ObservableField<String>("00:00:00")
+    val mReplayEnd   = ObservableField<String>("00:00:00")
+    val mReplayName  = ObservableField<String>("H.265E")
+    val mReplaySpeed = ObservableField<String>("524Kbps")
     val onClickReplaySound   = Action { DebugLog.LogI("onclick replay sound")
-        mReplayBeg.set("00:11:11")
+
     }
+
+    val onClickReplayStop         = Action {  }
+    val onClickReplayFastRewind   = Action {  }
+    val onClickReplaySkipLast     = Action {  }
+    val onClickReplayPauseAndPlay = Action {  }
+    val onClickReplaySkipNext     = Action {  }
+    val onClickReplayFastForward  = Action {  }
+    val onClickReplayCatch        = Action {  }
+    val onClickReplayZoom         = Action {  }
+
 
 }
