@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/black">
+    <item>
+        <selector>
+            <item android:drawable="@drawable/ic_skip_previous_white_36dp"/>
+        </selector>
+    </item>
+</ripple>
