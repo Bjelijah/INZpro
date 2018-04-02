@@ -20,6 +20,9 @@
             android:id="@+id/replay_ctrl_sb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onProgressChanged="@{vm.onProgressChanged}"
+            android:progress="@{vm.MProcess}"
+            android:max="@{vm.MProcessMax}"
             />
 
 

@@ -2,6 +2,8 @@ package com.inz.model.main
 
 import android.content.Context
 import android.databinding.ObservableField
+import android.databinding.adapters.SeekBarBindingAdapter
+import android.util.Log
 import com.inz.inzpro.BaseViewModel
 import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
@@ -24,7 +26,10 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val mReplayEnd   = ObservableField<String>("00:00:00")
     val mReplayName  = ObservableField<String>("H.265E")
     val mReplaySpeed = ObservableField<String>("524Kbps")
+    val mProcess     = ObservableField<Int>(0)
+    val mProcessMax  = ObservableField<Int>(100)
     val onClickReplaySound   = Action { DebugLog.LogI("onclick replay sound")
+
 
     }
 
@@ -36,6 +41,14 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val onClickReplayFastForward  = Action {  }
     val onClickReplayCatch        = Action {  }
     val onClickReplayZoom         = Action {  }
+
+    val onProgressChanged         = SeekBarBindingAdapter.OnProgressChanged{
+        seekBar, progress, fromUser ->
+
+        Log.i("123",progress.toString()+"  isUser="+fromUser+  "mprogress="+mProcess.get())
+        mProcess.set(progress)
+    }
+
 
 
 }
