@@ -3,6 +3,7 @@ package com.inz.inzpro
 import android.databinding.BindingConversion
 import android.databinding.ViewDataBinding
 import android.view.View
+import com.inz.bean.ClickAction
 import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
 
@@ -17,8 +18,9 @@ object BinderHelper {
 
     @BindingConversion
     @JvmStatic
-    fun toOnClickListen(listener:Action?) = View.OnClickListener {
+    fun toOnClickListen(listener:ClickAction?) = View.OnClickListener {
         if (listener==null)DebugLog.LogE("listener==null")
+        listener?.v = it
         listener?.run()
     }
 
