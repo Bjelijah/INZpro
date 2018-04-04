@@ -52,6 +52,7 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
         var popWindow = PopupWindow(mContext)
         popWindow.contentView = view
         popWindow.showAsDropDown(v)
+
         DebugLog.LogI("isshow "+popWindow.isShowing)
     }
 
