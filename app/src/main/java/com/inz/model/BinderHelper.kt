@@ -18,9 +18,9 @@ object BinderHelper {
 
     @BindingConversion
     @JvmStatic
-    fun toOnClickListen(listener:ClickAction?) = View.OnClickListener {
+    fun toOnClickListen(listener:Action?) = View.OnClickListener {
         if (listener==null)DebugLog.LogE("listener==null")
-        listener?.v = it
+//        listener?.v = it
         listener?.run()
     }
 

@@ -4,7 +4,9 @@ import android.content.Context
 import android.databinding.ObservableField
 import android.databinding.adapters.SeekBarBindingAdapter
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.PopupWindow
 import com.inz.activity.view.SoundVolView
 import com.inz.bean.ClickAction
 import com.inz.inzpro.BaseViewModel
@@ -42,10 +44,15 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
 //    }
 
     val onClickReplaySound = View.OnClickListener { v ->
-        var popWindow = SoundVolView.generate(mContext, {
-            mLayoutId = R.layout.layout_sound_vol
-            build() })
+        DebugLog.LogE("onClickReplaySound")
+//        var popWindow = SoundVolView.generate(mContext, {
+//            mLayoutId = R.layout.layout_sound_vol
+//            build() })
+        val view = LayoutInflater.from(mContext).inflate(R.layout.layout_sound_vol,null,false)
+        var popWindow = PopupWindow(mContext)
+        popWindow.contentView = view
         popWindow.showAsDropDown(v)
+        DebugLog.LogI("isshow "+popWindow.isShowing)
     }
 
 
