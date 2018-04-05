@@ -21,7 +21,7 @@
             android:background="@drawable/file_border"
             >
 
-            <!--fragment-->
+            <!--fragment  zuo-->
 
         </LinearLayout>
 
@@ -33,10 +33,15 @@
             >
 
 
+            <fragment
+                android:id="@+id/fragment_replay_ctrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.inz.activity.fragment.ReplayCtrlFragment"
+                />
 
-
-            <include layout="@layout/layout_replay_ctrl"
-                app:vm="@{vm}"/>
+            <!--<include layout="@layout/layout_replay_ctrl"-->
+                <!--app:vm="@{vm}"/>-->
 
 
         </LinearLayout>

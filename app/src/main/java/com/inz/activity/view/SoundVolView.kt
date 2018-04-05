@@ -2,12 +2,15 @@ package com.inz.activity.view
 
 import android.content.Context
 import android.support.annotation.LayoutRes
-import android.view.LayoutInflater
 import android.widget.PopupWindow
+import com.inz.inzpro.BaseViewModel
 
-class SoundVolView (private val mContext: Context){
+class SoundVolView (val mContext: Context):BaseView(){
+
+
     @LayoutRes
     var mLayoutId = 0
+    lateinit var mViewModel:BaseViewModel
     companion object {
         fun generate(context: Context,body:SoundVolView.()->PopupWindow):PopupWindow{
             return with(SoundVolView(context)){body()}
@@ -16,7 +19,19 @@ class SoundVolView (private val mContext: Context){
 
 
     fun build():PopupWindow{
-        val v = LayoutInflater.from(mContext).inflate(mLayoutId,null,false)
-        return PopupWindow(v)
+        val v = bindView(mContext)
+        val pw = PopupWindow(mContext)
+        pw.contentView = v
+        pw.isOutsideTouchable = true
+        pw.setOnDismissListener { unBindView() }
+
+        return pw
     }
+
+
+
+    override fun getLayout(): Int = mLayoutId
+
+    override fun getViewmodel(): BaseViewModel = mViewModel!!
+
 }

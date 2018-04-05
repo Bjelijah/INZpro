@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- layout_sound_vol -->
+    <dimen name="sound_vol_seekbar_height">150dp</dimen>
+
+    <!-- layout_replay_ctrl -->
+    <dimen name="replay_ctrl_padding">10dp</dimen>
+    <dimen name="replay_ctrl_text_margin">5dp</dimen>
+    <dimen name="replay_ctrl_fun_margin">15dp</dimen>
+</resources>
