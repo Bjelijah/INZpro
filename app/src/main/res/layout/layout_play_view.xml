@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.inz.model.main.PlayViewModel"/>
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:widthHeightRatio="@{1.7777}"
+        android:background="@color/main_bk_dark"
+        >
+
+        <com.inz.activity.view.PlayGLTextureView
+            android:id = "@+id/play_gl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            />
+
+
+        <!--android:visibility="@{vm.mProcessVisibility}"-->
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{vm.MProcessVisibility}"
+            />
+
+        <!--android:alpha="@{vm.MReplayCtrlAlpha}"-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{vm.MReplayCtrlVisibility}"
+            android:layout_gravity="bottom"
+            android:alpha="0.3"
+            >
+            <fragment
+                android:id="@+id/fragment_replay_ctrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.inz.activity.fragment.ReplayCtrlFragment"
+                />
+        </LinearLayout>
+
+
+
+    </FrameLayout>
+
+</layout>

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/main_bk_light">
-
+            <!--android:visibility="@{vm.MCtrlVisibility}"-->
             <include
                 android:id="@+id/layout_ctrl"
                 android:layout_width="match_parent"
@@ -25,6 +25,7 @@
                 android:layout_alignParentBottom="true"
                 layout="@layout/layout_ctrl"
                 app:vm = "@{vm}"
+
                 />
 
             <include

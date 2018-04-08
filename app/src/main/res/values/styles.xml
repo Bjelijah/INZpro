@@ -16,6 +16,8 @@
     <style name="MyAppTheme" parent="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/main_bk</item>
         <item name="colorPrimaryDark">@color/main_bk_dark</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 

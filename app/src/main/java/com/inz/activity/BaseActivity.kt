@@ -8,6 +8,7 @@ import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
 import com.inz.inzpro.BinderHelper
 import com.inz.inzpro.BaseViewModel
+import com.inz.model.ModelMgr
 
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var mBinder:ViewDataBinding
@@ -16,6 +17,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ModelMgr.init(this)
         mBinder = DataBindingUtil.setContentView(this,getLayout())
         mViewModel = getViewmodel()
         BinderHelper.defaultBinder.bind(mBinder,mViewModel)

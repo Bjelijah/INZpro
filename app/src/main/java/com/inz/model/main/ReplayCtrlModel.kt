@@ -4,15 +4,21 @@ import android.content.Context
 import android.databinding.ObservableField
 import android.databinding.adapters.SeekBarBindingAdapter
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.PopupWindow
+import com.inz.action.CtrlAction
 import com.inz.activity.view.SoundVolView
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
+import com.inz.model.ModelMgr
 import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
 
 class ReplayCtrlModel(mContext: Context):BaseViewModel {
+    override fun setFullScreen(b: Boolean) {
+    }
+
     override fun onDestory() {
     }
 
@@ -40,12 +46,14 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
         }
         mSoundVol = SoundVolView.generate(mContext,{
             mLayoutId = R.layout.layout_sound_vol
-            mViewModel = SoundVolModel(mContext)
+            mViewModel = ModelMgr.getSoundVolModelInstance(mContext)
             build()
         })
         DebugLog.LogI("before isshow "+mSoundVol?.isShowing)
-        mSoundVol?.showAsDropDown(v)
+        var h = mContext.resources.getDimension(R.dimen.sound_vol_height) + v.height
+        mSoundVol?.showAsDropDown(v,0,-h.toInt())
 
+//        mSoundVol?.showAtLocation(v,Gravity.NO_GRAVITY,0,-h.toInt())
         DebugLog.LogI("isshow "+mSoundVol?.isShowing)
     }
 
@@ -58,7 +66,9 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
     val onClickReplaySkipNext     = Action {  }
     val onClickReplayFastForward  = Action {  }
     val onClickReplayCatch        = Action {  }
-    val onClickReplayZoom         = Action {  }
+    val onClickReplayZoom         = Action {
+        CtrlAction.setFullOrNot(mContext)
+    }
 
     val onProgressChanged         = SeekBarBindingAdapter.OnProgressChanged{
         seekBar, progress, fromUser ->
