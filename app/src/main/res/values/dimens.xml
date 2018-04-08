@@ -12,4 +12,11 @@
     <dimen name="replay_ctrl_text_margin">5dp</dimen>
     <dimen name="replay_ctrl_fun_margin">15dp</dimen>
     <dimen name="replay_ctrl_text_size">12sp</dimen>
+
+    <!-- play view -->
+    <dimen name="play_view_width_normal">0dp</dimen>
+    <dimen name="play_view_width_full">@dimen/match_parent</dimen>
+    <dimen name="play_view_height_normal">@dimen/wrap_content</dimen>
+    <dimen name="play_view_height_full">@dimen/match_parent</dimen>
+
 </resources>

@@ -1,12 +1,12 @@
 package com.inz.model.main
 
 import android.content.Context
-import android.databinding.BindingAdapter
 import android.databinding.ObservableField
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
 
@@ -15,9 +15,11 @@ class PlayViewModel(mContext:Context):BaseViewModel {
         if (b){
             Log.i("123","PlayViewModel set full")
             mReplayCtrlVisibility.set(View.VISIBLE)
+            mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
             //
         }else{
             mReplayCtrlVisibility.set(View.GONE)
+            mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
         }
     }
 
@@ -52,7 +54,7 @@ class PlayViewModel(mContext:Context):BaseViewModel {
     }
     val mProcessVisibility      = ObservableField<Int>(View.VISIBLE)
     val mReplayCtrlVisibility   = ObservableField<Int>(View.GONE)
-
+    val mPlayViewWidth          = ObservableField<Int>(ViewGroup.LayoutParams.MATCH_PARENT)
 
 
 

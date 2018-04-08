@@ -25,24 +25,33 @@
             <!--fragment  zuo-->
 
         </LinearLayout>
-
+        <!--@{vm.MPlayViewFull ? match_parent : wrap_content ,default=wrap_content}-->
+        <!--android:layout_width="0dp"-->
         <LinearLayout
             android:id="@+id/ll_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:orientation="vertical"
-            app:onTouchListener="@{true}"
+            app:layout_width="@{vm.MPlayViewWidth}"
+            app:layout_height="@{vm.MPlayViewHeight}"
+
+            android:background="@color/red"
+            android:padding="0dp"
             >
 
+            <!--app:my_layout_width="@{vm.MPlayViewFull?@dimen/play_view_width_full:@dimen/play_view_width_normal,default=wrap_content}"-->
+            <!--app:my_layout_height="@{vm.MPlayViewFull?@dimen/play_view_height_full:@dimen/play_view_height_normal,default=wrap_content}"-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:background="@color/green">
                 <fragment
                     android:id="@+id/fragment_play_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:name="com.inz.activity.fragment.PlayFragment"/>
+                    android:name="com.inz.activity.fragment.PlayFragment"
+                    android:background="@color/gold"/>
 
             </LinearLayout>
 

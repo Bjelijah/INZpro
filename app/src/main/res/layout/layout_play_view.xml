@@ -8,19 +8,20 @@
             name="vm"
             type="com.inz.model.main.PlayViewModel"/>
     </data>
-
+    <!--app:widthHeightByRatio="@{vm.MPlayViewWidth}"-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:widthHeightRatio="@{1.7777}"
         android:background="@color/main_bk_dark"
+
         >
 
         <com.inz.activity.view.PlayGLTextureView
             android:id = "@+id/play_gl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
+            app:onTouchListener="@{true}"
             />
 
 
