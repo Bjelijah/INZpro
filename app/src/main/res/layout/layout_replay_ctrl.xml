@@ -13,7 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/replay_ctrl_padding"
+        android:paddingLeft="@dimen/replay_ctrl_padding"
+        android:paddingRight="@dimen/replay_ctrl_padding"
+        android:paddingTop="@dimen/replay_ctrl_padding_height"
+        android:paddingBottom="@dimen/replay_ctrl_padding_height"
         android:background="@color/main_bk_dark">
 
         <android.support.v7.widget.AppCompatSeekBar
@@ -27,6 +30,7 @@
 
 
         <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -34,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{vm.MReplayBeg}"
+                android:textSize="@dimen/replay_ctrl_text_size"
                 android:textColor="@color/white_highlight"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentLeft="true"/>
@@ -43,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{vm.MReplayEnd}"
+                android:textSize="@dimen/replay_ctrl_text_size"
                 android:textColor="@color/white_highlight"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentEnd="true"

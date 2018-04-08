@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- layout_sound_vol -->
-    <dimen name="sound_vol_seekbar_height">150dp</dimen>
+    <dimen name="sound_vol_height">90dp</dimen>
+    <dimen name="sound_vol_seekbar_height">80dp</dimen>
+    <dimen name="sound_vol_text_size">10sp</dimen>
+
 
     <!-- layout_replay_ctrl -->
     <dimen name="replay_ctrl_padding">10dp</dimen>
+    <dimen name="replay_ctrl_padding_height">5dp</dimen>
     <dimen name="replay_ctrl_text_margin">5dp</dimen>
     <dimen name="replay_ctrl_fun_margin">15dp</dimen>
+    <dimen name="replay_ctrl_text_size">12sp</dimen>
 </resources>

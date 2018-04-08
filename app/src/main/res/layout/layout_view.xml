@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/file_border"
+            android:visibility="@{vm.MReplayListVisibility}"
             >
 
             <!--fragment  zuo-->
@@ -26,19 +27,48 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:orientation="vertical"
+            app:onTouchListener="@{true}"
             >
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <fragment
+                    android:id="@+id/fragment_play_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:name="com.inz.activity.fragment.PlayFragment"/>
 
-            <fragment
-                android:id="@+id/fragment_replay_ctrl"
+            </LinearLayout>
+
+
+
+            <!--<include-->
+                <!--android:id="@+id/layout_play"-->
+                <!--layout="@layout/layout_play_view"-->
+                <!--app:vm = "@{vm}"-->
+                <!--/>-->
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:name="com.inz.activity.fragment.ReplayCtrlFragment"
-                />
+                android:visibility="@{vm.MReplayCtrlVisibility}">
+                <fragment
+                    android:id="@+id/fragment_replay_ctrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:name="com.inz.activity.fragment.ReplayCtrlFragment"
+                    />
+
+
+            </LinearLayout>
+
 
             <!--<include layout="@layout/layout_replay_ctrl"-->
                 <!--app:vm="@{vm}"/>-->

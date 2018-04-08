@@ -18,7 +18,9 @@
         android:layout_width="match_parent"
 
         android:orientation="horizontal"
-        android:background="@drawable/ctrl_border">
+        android:background="@drawable/ctrl_border"
+        android:visibility="@{vm.MCtrlVisibility}"
+        >
 
         <android.widget.Space
             android:layout_width="0dp"

@@ -7,6 +7,9 @@ import android.util.Log
 import com.inz.inzpro.BaseViewModel
 
 class SoundVolModel (mContext:Context):BaseViewModel{
+    override fun setFullScreen(b: Boolean) {
+    }
+
     override fun onDestory() {
     }
 
