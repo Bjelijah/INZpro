@@ -9,10 +9,11 @@
             type="com.inz.model.main.PlayViewModel"/>
     </data>
     <!--app:widthHeightByRatio="@{vm.MPlayViewWidth}"-->
+    <!--app:widthHeightRatio="@{1.7777}"-->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:widthHeightRatio="@{1.7777}"
+        android:layout_height="match_parent"
+
         android:background="@color/main_bk_dark"
 
         >

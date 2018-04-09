@@ -18,12 +18,14 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
             mReplayCtrlVisibility.set(View.GONE)
             mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
             mPlayViewHeight.set(ViewGroup.LayoutParams.MATCH_PARENT)
+            mPlayViewFull.set(true)
         }else{
             mCtrlVisibility.set(View.VISIBLE)
             mReplayListVisibility.set(View.VISIBLE)
             mReplayCtrlVisibility.set(View.VISIBLE)
             mPlayViewWidth.set(0)
             mPlayViewHeight.set(ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPlayViewFull.set(false)
         }
     }
 
@@ -45,9 +47,7 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val onClickCtrlRecord     = Action {  DebugLog.LogI("onclick ctrl record") }
     val onClickCtrlCatch      = Action {  DebugLog.LogI("onclick ctrl catch") }
 
-    val onClickTest  = Action {
-        Log.i("123"," test click")
-    }
+
 
 
 

@@ -45,24 +45,6 @@ object BinderHelper {
         })
     }
 
-    @BindingAdapter("widthHeightByRatio")
-    @JvmStatic
-    fun setWidthHeightByRatio(v:View,width:Int){
-        var w = width
-        var h = 0
-
-        if(w>0) {
-             h = (9.0 / 16.0 * width).toInt()
-        }else{
-            var p_ = v.layoutParams
-            p_.width = w
-            v.layoutParams = p_
-            w = v.width
-            h = (9.0 / 16.0 * width).toInt()
-        }
-        var p = LinearLayout.LayoutParams(w, h)
-        v.layoutParams = p
-    }
 
 
 
@@ -72,7 +54,6 @@ object BinderHelper {
         v.setOnTouchListener({
             v,event->
             var res = false
-            Log.i("123","on touch  ddd")
             when(v.id){
                 R.id.play_gl->{
                     res = ModelMgr.getPlayViewModelInstance(ModelMgr.mContext!!).onGlTouch(v,event)
@@ -127,5 +108,22 @@ object BinderHelper {
         v.layoutParams = p
     }
 
-
+    @BindingAdapter("layout_height_full_or_static")
+    @JvmStatic
+    fun setLayoutHeightFull(v:View,isFull:Boolean){
+        var p = v.layoutParams
+        Log.i("123","width =${v.width}  ${p.width}    height=${v.height}   ${p.height}")
+        if(isFull) {
+            p.height = LinearLayout.LayoutParams.MATCH_PARENT
+        }else{
+            var width = v.width
+//            Log.e("123","layout_height_full_or_static  width=$width     ${p.width}")
+            if (width>0){
+                var height = (9.0/16.0 * width).toInt()
+//                Log.e("123","~~~~~~~~height=$height")
+                p = LinearLayout.LayoutParams(width, height)
+            }
+        }
+        v.layoutParams = p
+    }
 }

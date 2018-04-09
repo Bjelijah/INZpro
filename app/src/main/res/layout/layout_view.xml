@@ -44,12 +44,13 @@
             <!--app:my_layout_height="@{vm.MPlayViewFull?@dimen/play_view_height_full:@dimen/play_view_height_normal,default=wrap_content}"-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_height_full_or_static="@{vm.MPlayViewFull}"
                 android:background="@color/green">
                 <fragment
                     android:id="@+id/fragment_play_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:name="com.inz.activity.fragment.PlayFragment"
                     android:background="@color/gold"/>
 
