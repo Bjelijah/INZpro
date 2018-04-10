@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="vm"
+            type="com.inz.model.main.PlayListModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/play_list_padding_end"
+        android:paddingRight="@dimen/play_list_padding_end"
+        >
+        <!--android:background="@color/main_bk_dark"-->
+
+
+        <!--android:background="@color/main_bk_dark"-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:onClick="@{vm.MPlayListTitleBtnRecordFile}"
+            android:background="@drawable/play_list_title_btn"
+            android:padding="@dimen/play_list_padding"
+            >
+            <!--android:src="@drawable/ic_expand_more_whit"-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:play_list_title_src="@{vm.MShowRecordFile}"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/play_list_title_record"
+                android:textColor="@color/white_highlight"
+                android:textSize="@dimen/play_list_title_size"/>
+
+        </LinearLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="@{vm.MRecordListVisibility}"
+            />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:onClick="@{vm.mPlayListTitleBtnPictureFile}"
+            android:background="@drawable/play_list_title_btn"
+            android:padding="@dimen/play_list_padding"
+            >
+            <!--android:src="@drawable/ic_expand_more_whit"-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:play_list_title_src="@{vm.MShowPictureFile}"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/play_list_title_picture"
+                android:textColor="@color/white_highlight"
+                android:textSize="@dimen/play_list_title_size"/>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+
+</layout>

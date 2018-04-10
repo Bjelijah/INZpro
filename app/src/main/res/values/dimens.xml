@@ -19,4 +19,8 @@
     <dimen name="play_view_height_normal">@dimen/wrap_content</dimen>
     <dimen name="play_view_height_full">@dimen/match_parent</dimen>
 
+    <dimen name="play_list_padding_end">1dp</dimen>
+    <dimen name="play_list_padding">10dp</dimen>
+    <dimen name="play_list_title_size">20sp</dimen>
+
 </resources>

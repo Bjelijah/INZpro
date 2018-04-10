@@ -15,11 +15,11 @@ class PlayViewModel(mContext:Context):BaseViewModel {
         if (b){
             Log.i("123","PlayViewModel set full")
             mReplayCtrlVisibility.set(View.VISIBLE)
-            mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
+            mPlayViewFull.set(true)
             //
         }else{
             mReplayCtrlVisibility.set(View.GONE)
-            mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
+            mPlayViewFull.set(false)
         }
     }
 
@@ -54,8 +54,7 @@ class PlayViewModel(mContext:Context):BaseViewModel {
     }
     val mProcessVisibility      = ObservableField<Int>(View.VISIBLE)
     val mReplayCtrlVisibility   = ObservableField<Int>(View.GONE)
-    val mPlayViewWidth          = ObservableField<Int>(ViewGroup.LayoutParams.MATCH_PARENT)
-
+    val mPlayViewFull           = ObservableField<Boolean>(false)
 
 
 

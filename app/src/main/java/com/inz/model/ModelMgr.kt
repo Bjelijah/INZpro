@@ -1,10 +1,7 @@
 package com.inz.model
 
 import android.content.Context
-import com.inz.model.main.MainViewModel
-import com.inz.model.main.PlayViewModel
-import com.inz.model.main.ReplayCtrlModel
-import com.inz.model.main.SoundVolModel
+import com.inz.model.main.*
 
 object ModelMgr {
     var mContext:Context                    ?=null
@@ -12,7 +9,7 @@ object ModelMgr {
     var mPlayViewModel:PlayViewModel        ?=null
     var mReplayCtrlModel:ReplayCtrlModel    ?=null
     var mSoundVolModel:SoundVolModel        ?=null
-
+    var mPlayListModel:PlayListModel        ?=null
     fun init(c:Context){
         mContext = c
     }
@@ -39,6 +36,12 @@ object ModelMgr {
             mSoundVolModel = SoundVolModel(c)
         }
         return mSoundVolModel!!
+    }
+    fun getPlayListModelInstance(c:Context):PlayListModel{
+        if (mPlayListModel==null){
+            mPlayListModel = PlayListModel(c)
+        }
+        return mPlayListModel!!
     }
 
 }
