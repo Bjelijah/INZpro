@@ -8,7 +8,7 @@ import com.inz.model.ModelMgr
 
 class ReplayCtrlFragment :BaseFragment(){
 
-    override fun getLayout(): Int  = R.layout.layout_replay_ctrl
+    override fun getLayout(): Int  = R.layout.fragment_replay_ctrl
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun getViewmodel(): BaseViewModel = ModelMgr.getReplayCtrlModelInstance(context)

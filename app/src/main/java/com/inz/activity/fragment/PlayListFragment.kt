@@ -7,7 +7,7 @@ import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 
 class PlayListFragment :BaseFragment() {
-    override fun getLayout(): Int = R.layout.layout_play_list
+    override fun getLayout(): Int = R.layout.fragment_play_list
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun getViewmodel(): BaseViewModel = ModelMgr.getPlayListModelInstance(context)

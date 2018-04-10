@@ -4,7 +4,6 @@ import android.content.Context
 import android.databinding.ObservableField
 import android.databinding.adapters.SeekBarBindingAdapter
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.PopupWindow
 import com.inz.action.CtrlAction
@@ -45,7 +44,7 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
             return@OnClickListener
         }
         mSoundVol = SoundVolView.generate(mContext,{
-            mLayoutId = R.layout.layout_sound_vol
+            mLayoutId = R.layout.view_sound_vol
             mViewModel = ModelMgr.getSoundVolModelInstance(mContext)
             build()
         })
