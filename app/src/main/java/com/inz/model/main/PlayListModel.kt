@@ -8,11 +8,11 @@ import com.inz.inzpro.BaseViewModel
 import io.reactivex.functions.Action
 
 class PlayListModel(mContext: Context):BaseViewModel {
-    val SHOW_NONE           = 0x00
-    val SHOW_RECORD_FILE    = 0x01
-    val SHOW_PICTURE_FILE   = 0x02
+    private val SHOW_NONE           = 0x00
+    private val SHOW_RECORD_FILE    = 0x01
+    private val SHOW_PICTURE_FILE   = 0x02
 
-    var mShowCode       = SHOW_NONE
+    private var mShowCode       = SHOW_NONE
 
     override fun onDestory() {
     }
