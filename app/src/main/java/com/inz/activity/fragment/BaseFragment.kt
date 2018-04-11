@@ -20,6 +20,7 @@ abstract class BaseFragment:Fragment() {
         mBinder = DataBindingUtil.inflate(inflater!!,getLayout(),container,false)
         mViewModel = getViewmodel()
         BinderHelper.defaultBinder.bind(mBinder,mViewModel)
+        mViewModel.onCreate()
         return mBinder.root
     }
 

@@ -21,7 +21,7 @@ abstract class BaseActivity : AppCompatActivity() {
         mBinder = DataBindingUtil.setContentView(this,getLayout())
         mViewModel = getViewmodel()
         BinderHelper.defaultBinder.bind(mBinder,mViewModel)
-
+        mViewModel.onCreate()
     }
 
     override fun onDestroy() {

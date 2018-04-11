@@ -16,6 +16,8 @@ import io.reactivex.functions.Action
 
 class ReplayCtrlModel(mContext: Context):BaseViewModel {
 
+    override fun onCreate() {
+    }
 
     override fun onDestory() {
     }

@@ -8,7 +8,8 @@ import com.inz.inzpro.BaseViewModel
 
 class SoundVolModel (mContext:Context):BaseViewModel{
 
-
+    override fun onCreate() {
+    }
     override fun onDestory() {
     }
 

@@ -85,6 +85,7 @@ public class ApFactory {
 
         @Override
         public boolean connect() {
+            Log.i("123","login ip="+ip);
             return JniUtil.login(ip);
         }
 

@@ -13,6 +13,8 @@ class PlayListModel(mContext: Context):BaseViewModel {
     private val SHOW_PICTURE_FILE   = 0x02
 
     private var mShowCode       = SHOW_NONE
+    override fun onCreate() {
+    }
 
     override fun onDestory() {
     }
