@@ -23,4 +23,9 @@
     <dimen name="play_list_padding">10dp</dimen>
     <dimen name="play_list_title_size">20sp</dimen>
 
+    <!-- item video -->
+    <dimen name="item_video_padding">10dp</dimen>
+    <dimen name="item_video_top">1dp</dimen>
+    <dimen name="item_video_text_size">15sp</dimen>
+    <dimen name="item_video_text_mar">10dp</dimen>
 </resources>

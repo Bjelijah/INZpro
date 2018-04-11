@@ -15,8 +15,7 @@ import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
 
 class ReplayCtrlModel(mContext: Context):BaseViewModel {
-    override fun setFullScreen(b: Boolean) {
-    }
+
 
     override fun onDestory() {
     }

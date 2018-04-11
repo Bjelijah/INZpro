@@ -5,7 +5,7 @@ import com.inz.model.ModelMgr
 
 object CtrlAction {
     var isFull:Boolean = false
-
+    var isPlayBack:Boolean = false
 
     fun setFullOrNot(c:Context){
         if (isFull){
@@ -20,6 +20,16 @@ object CtrlAction {
         }
     }
 
+    fun setPlayReview(c:Context){
+        isPlayBack = false
+        ModelMgr.getMainViewModelInstance(c).setIsPlayReview(true)
+        ModelMgr.getPlayViewModelInstance(c).setIsPlayReview(true)
+    }
+    fun setPlayPlayback(c:Context){
+        isPlayBack = true
+        ModelMgr.getMainViewModelInstance(c).setIsPlayReview(false)
+        ModelMgr.getPlayViewModelInstance(c).setIsPlayReview(false)
+    }
 
 
 }

@@ -6,6 +6,5 @@ class VideoModel :BaseViewModel{
     override fun onDestory() {
     }
 
-    override fun setFullScreen(b: Boolean) {
-    }
+
 }

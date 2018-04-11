@@ -17,8 +17,7 @@ class PlayListModel(mContext: Context):BaseViewModel {
     override fun onDestory() {
     }
 
-    override fun setFullScreen(b: Boolean) {
-    }
+
 
     val mPlayListTitleBtnRecordFile = Action {
         Log.i("123","on record file click")

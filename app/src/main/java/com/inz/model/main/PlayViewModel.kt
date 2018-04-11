@@ -11,17 +11,29 @@ import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
 
 class PlayViewModel(mContext:Context):BaseViewModel {
-    override fun setFullScreen(b: Boolean) {
+     var mIsPlayback = false
+     var mIsFull = false
+     fun setFullScreen(b: Boolean) {
         if (b){
             Log.i("123","PlayViewModel set full")
-            mReplayCtrlVisibility.set(View.VISIBLE)
+            if (mIsPlayback)mReplayCtrlVisibility.set(View.VISIBLE)
+            else mReplayCtrlVisibility.set(View.GONE)
+            mIsFull = true
             mPlayViewFull.set(true)
             //
         }else{
             mReplayCtrlVisibility.set(View.GONE)
+            mIsFull = false
             mPlayViewFull.set(false)
         }
     }
+    fun setIsPlayReview(b:Boolean){
+        mIsPlayback = !b
+        if (b){
+            mReplayCtrlVisibility.set(View.GONE)
+        }
+    }
+
 
     override fun onDestory() {
     }
@@ -29,7 +41,14 @@ class PlayViewModel(mContext:Context):BaseViewModel {
     val mGestureDetector = GestureDetector(mContext,object :GestureDetector.SimpleOnGestureListener(){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             Log.i("123","onSingleTapUp")
+            if (mIsPlayback && mIsFull){
+                if(mReplayCtrlVisibility.get()==View.GONE){
+                    mReplayCtrlVisibility.set(View.VISIBLE)
+                }else{
+                    mReplayCtrlVisibility.set(View.GONE)
+                }
 
+            }
             return super.onSingleTapUp(e)
         }
 
