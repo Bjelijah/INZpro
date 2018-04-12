@@ -639,6 +639,46 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
   (JNIEnv *, jclass);
 
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    downloadInit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadInit
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    downloadDeinit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadDeinit
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    downloadSetCallbackObj
+ * Signature: (Ljava/lang/Object;I)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackObj
+  (JNIEnv *, jclass, jobject, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    downloadSetCallbackMethod
+ * Signature: (Ljava/lang/String;I)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackMethod
+  (JNIEnv *, jclass, jstring, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    downloadEnable
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
+  (JNIEnv *, jclass, jboolean);
+
 #ifdef __cplusplus
 }
 #endif

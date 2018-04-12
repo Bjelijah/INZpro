@@ -1,5 +1,6 @@
 package com.howellsdk.download;
 
+import com.howell.jni.JniUtil;
 import com.howellsdk.api.HWDownloadApi;
 import com.howellsdk.utils.FileUtil;
 
@@ -9,9 +10,8 @@ import java.io.RandomAccessFile;
 
 public class ApDownloadFactory {
 
-    String mPathDirName;
-    private ApDownloadFactory(String path){
-        mPathDirName = path;
+    private ApDownloadFactory(){
+
     }
 
     public HWDownloadApi create(){
@@ -19,39 +19,39 @@ public class ApDownloadFactory {
     }
 
     public static final class Builder{
-        String pathDirName;
 
-        public Builder setPathDirName(String pathDirName) {
-            this.pathDirName = pathDirName;
-            return this;
-        }
 
         public ApDownloadFactory build(){
-            return new ApDownloadFactory(pathDirName);
+            return new ApDownloadFactory();
         }
     }
 
     public final class DownloadPudect extends HwBaseDownload{
         RandomAccessFile mFile;
 
+
+
         @Override
-        public void init() {
+        public void open(String path) {
             try {
-                mFile = FileUtil.createVideoFile(mPathDirName);
+                mFile = FileUtil.createVideoFile(path);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
             //jni init
+            JniUtil.downloadInit();
+            JniUtil.downloadSetCallbackObj(this,0);
+            JniUtil.downloadSetCallbackMethod("saveData",0);
         }
 
         @Override
         public void start() {
-
+            JniUtil.downloadEnable(true);
         }
 
         @Override
         public void stop() {
-
+            JniUtil.downloadEnable(false);
         }
 
 
@@ -71,7 +71,7 @@ public class ApDownloadFactory {
                 e.printStackTrace();
             }
             //jni deinit
-
+            JniUtil.downloadDeinit();
         }
     }
 }

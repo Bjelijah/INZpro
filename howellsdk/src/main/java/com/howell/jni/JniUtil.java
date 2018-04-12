@@ -113,4 +113,11 @@ public class JniUtil {
 	public static native int ecamSendAudioData(byte [] bytes,int len);
 	public static native int ecamGetStreamLenSomeTime();
 
+	//download
+	public static native void downloadInit();
+	public static native void downloadDeinit();
+	public static native void downloadSetCallbackObj(Object obj,int flag);
+	public static native void downloadSetCallbackMethod(String methodName,int flag);
+	public static native void downloadEnable(boolean isEnable);
+
 }

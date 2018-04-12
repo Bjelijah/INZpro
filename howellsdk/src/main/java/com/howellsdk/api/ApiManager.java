@@ -1,15 +1,14 @@
 package com.howellsdk.api;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.howell.jni.JniUtil;
 import com.howellsdk.download.ApDownloadFactory;
 import com.howellsdk.net.http.utils.CustomInterceptor;
 import com.howellsdk.net.http.utils.MD5;
 import com.howellsdk.net.soap.SoapFactory;
-import com.howellsdk.net.soap.bean.NATServerRes;
 import com.howellsdk.net.websocket.WebSocketFactory;
 import com.howellsdk.player.ap.ApFactory;
 import com.howellsdk.player.ecam.EcamFactory;
@@ -23,7 +22,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -56,6 +54,12 @@ public class ApiManager {
     private HWWebSocketApi mHWWebSocketApi;
     private HWPlayApi mHWTurnApi,mHWEcamApi,mHWApcamApi;
     private HWDownloadApi mDownloadApi;
+
+    public  ApiManager setJNILogEnable(boolean enable) {
+        JniUtil.logEnable(enable);
+        return this;
+    }
+
     public ApiManager initHttpClient(Context context, boolean isSSL){
         if (mClient==null){
             try {
@@ -272,7 +276,6 @@ public class ApiManager {
        }
        mDownloadApi = new ApDownloadFactory
               .Builder()
-              .setPathDirName(path)
               .build().create();
        return mDownloadApi;
     }

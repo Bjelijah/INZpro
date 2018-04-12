@@ -115,7 +115,15 @@ typedef struct {
 
 static TRANS_T* g_transMgr = NULL;
 
+typedef struct{
+    JavaVM* jvm;
+    JNIEnv * env;
+    jobject callback_obj;
+    jmethodID on_data_method;
+    int enable;
+}DOWN_LOAD_T;
 
+static DOWN_LOAD_T * g_downloadMgr = NULL;
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_logEnable
         (JNIEnv *, jclass, jboolean enable){
@@ -554,141 +562,37 @@ static int register_nvr(const char* ip){
     return res->user_handle>=0?1:0;
 }
 
-void *HW265D_Malloc(UINT32 channel_id, UINT32 size)
-{
-    return (void *)malloc(size);
-}
 
-void HW265D_Free(UINT32 channel_id, void * ptr)
-{
-    free(ptr);
-}
 
-void HW265D_Log( UINT32 channel_id, IHWVIDEO_ALG_LOG_LEVEL eLevel, INT8 *p_msg, ...)
-{
-}
-#if 0
-void initHi265Decode(){
-    if(res == NULL)return;
-    IHW265D_INIT_PARAM stInitParam = {0};
-    IH265DEC_INARGS stInArgs;
-    IH265DEC_OUTARGS stOutArgs = {0};
-    IHWVIDEO_ALG_VERSION_STRU stVersion;
 
-    INT32 MultiThreadEnable = 0;	// default is single thread mode
-    INT32 DispOutput = 0;
 
-    stInitParam.uiChannelID = 0;
-    stInitParam.iMaxWidth   = 1920;
-    stInitParam.iMaxHeight  = 1088;
-    stInitParam.iMaxRefNum  = 4;
 
-    stInitParam.eThreadType = MultiThreadEnable? IH265D_MULTI_THREAD: IH265D_SINGLE_THREAD;
-    stInitParam.eOutputOrder= DispOutput? IH265D_DISPLAY_ORDER:IH265D_DECODE_ORDER;
 
-    stInitParam.MallocFxn  = HW265D_Malloc;
-    stInitParam.FreeFxn    = HW265D_Free;
-    stInitParam.LogFxn     = HW265D_Log;
 
-    INT32 iRet = 0;
-    iRet = IHW265D_Create(&res->play_265_handle, &stInitParam);
-    if (IHW265D_OK != iRet)
-    {
-        LOGE("265 create error");
+
+
+
+
+
+
+
+static void on_download_fun(const char* buf,int len){
+    if (g_downloadMgr==NULL)return;
+    if(g_downloadMgr->enable==0)return;
+    if(g_downloadMgr->callback_obj==NULL)return;
+    if (g_downloadMgr->jvm->AttachCurrentThread( &g_downloadMgr->env, NULL) != JNI_OK) {
+        LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);
+        return;
+    }
+    jbyteArray arr = g_downloadMgr->env->NewByteArray(len);
+    g_downloadMgr->env->SetByteArrayRegion(arr, 0, len, reinterpret_cast<const jbyte *>(buf));
+    g_downloadMgr->env->CallVoidMethod(g_downloadMgr->callback_obj,g_downloadMgr->on_data_method,arr);
+    g_downloadMgr->env->DeleteLocalRef(arr);
+    if (g_downloadMgr->jvm->DetachCurrentThread() != JNI_OK) {
+        LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
     }
 
 }
-
-void deInit265Decode(){
-    if(res==NULL)return;
-    IHW265D_Delete(res->play_265_handle);
-}
-
-
-
-INT32 H265DecLoadAU(UINT8* pStream, UINT32 iStreamLen, UINT32* pFrameLen)
-{
-    UINT32 i;
-    UINT32 state = 0xffffffff;
-    BOOL32 bFrameStartFound=0;
-    BOOL32 bSliceStartFound = 0;
-
-    *pFrameLen = 0;
-    if( NULL == pStream || iStreamLen <= 4)
-    {
-        return -1;
-    }
-
-    for( i = 0; i < iStreamLen; i++)
-    {
-        if( (state & 0xFFFFFF7E) >= 0x100 &&
-            (state & 0xFFFFFF7E) <= 0x13E )
-        {
-            if( 1 == bFrameStartFound || bSliceStartFound == 1 )
-            {
-                if( (pStream[i+1]>>7) == 1)
-                {
-                    *pFrameLen = i - 4;
-                    return 0;
-                }
-            }
-            else
-            {
-                bSliceStartFound = 1;
-                //bFrameStartFound = 1;
-            }
-        }
-
-        /*find a vps, sps, pps*/
-        if( (state&0xFFFFFF7E) == 0x140 ||
-            (state&0xFFFFFF7E) == 0x142 ||
-            (state&0xFFFFFF7E) == 0x144)
-        {
-            if (1 == bSliceStartFound)
-            {
-                bSliceStartFound = 1;
-            }
-            else if(1 == bFrameStartFound)
-            {
-                *pFrameLen = i - 4;
-                return 0;
-            }
-            else
-            {
-                bFrameStartFound = 1;
-            }
-        }
-
-        state = (state << 8) | pStream[i];
-    }
-
-    *pFrameLen = i;
-    return -1;
-}
-
-
-
-
-void hi265InputData(const char *buf,int len){
-
-    INT32 iNaluLen;
-    H265DecLoadAU((UINT8 *)buf, (UINT32)len, (UINT32*)&iNaluLen);
-}
-
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -703,6 +607,9 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
         LOGE("on live stream_fun is exit return");
         return;
     }
+
+    on_download_fun(buf,len);
+
     //fixme 阻塞
 //    pthread_mutex_lock(&res->lock_play);
 
@@ -756,6 +663,7 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
         }
         res->timestamp = timestamp;
     }
+    //download
 
 
     if(type == 0){//音频
@@ -2442,19 +2350,67 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
     return len;
 }
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadInit
+        (JNIEnv *, jclass){
+    if(g_downloadMgr==NULL){
+        g_downloadMgr = static_cast<DOWN_LOAD_T *>(malloc(sizeof(DOWN_LOAD_T)));
+        memset(g_downloadMgr,0, sizeof(DOWN_LOAD_T));
+    }
+}
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadDeinit
+        (JNIEnv *env, jclass){
+    if(g_downloadMgr!=NULL){
+        g_downloadMgr->enable = 0;
+        if (g_downloadMgr->callback_obj!=NULL){
+            env->DeleteGlobalRef(g_downloadMgr->callback_obj);
+            g_downloadMgr->callback_obj = NULL;
+        }
+        free(g_downloadMgr);
+        g_downloadMgr = NULL;
+    }
+}
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackObj
+        (JNIEnv *env, jclass, jobject obj, jint flag){
+    if (g_downloadMgr==NULL)return;
+    if(obj==NULL){
+        if (g_downloadMgr->callback_obj!=NULL){
+            env->DeleteGlobalRef(g_downloadMgr->callback_obj);
+            g_downloadMgr->callback_obj = NULL;
+            return;
+        }
+    }
+    switch (flag){
+        case 0:
+            g_downloadMgr->callback_obj = env->NewGlobalRef(obj);
+            break;
+        default:
+            break;
+    }
+}
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackMethod
+        (JNIEnv *env, jclass, jstring method, jint flag){
+    if (g_downloadMgr==NULL)return;
+    const char * _method = env->GetStringUTFChars(method,0);
+    switch (flag){
+        case 0: {
+            jclass clz = env->GetObjectClass(g_downloadMgr->callback_obj);
+            g_downloadMgr->on_data_method = env->GetMethodID(clz, _method, "[B");
+        }
+            break;
+        default:
+            break;
+    }
+    env->ReleaseStringUTFChars(method,_method);
+}
 
-
-
-
-
-
-
-
-
-
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
+        (JNIEnv *, jclass, jboolean isEnable){
+    if(g_downloadMgr==NULL)return;
+    g_downloadMgr->enable = isEnable?1:0;
+}
 
 
 
