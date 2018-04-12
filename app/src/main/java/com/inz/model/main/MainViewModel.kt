@@ -13,7 +13,6 @@ import io.reactivex.functions.Action
 
 class MainViewModel(private var mContext:Context) : BaseViewModel{
      var mIsPlayBack = false
-
      fun setFullScreen(b: Boolean) {
         if(b){
             Log.i("123","main view model set full")
@@ -49,7 +48,7 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     }
 
     override fun onCreate() {
-
+        //do jni
     }
 
     override fun onDestory() {

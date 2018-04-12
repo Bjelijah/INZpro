@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.howellsdk.download.ApDownloadFactory;
 import com.howellsdk.net.http.utils.CustomInterceptor;
 import com.howellsdk.net.http.utils.MD5;
 import com.howellsdk.net.soap.SoapFactory;
@@ -54,6 +55,7 @@ public class ApiManager {
     private HWSoapApi mHWSoapApi;
     private HWWebSocketApi mHWWebSocketApi;
     private HWPlayApi mHWTurnApi,mHWEcamApi,mHWApcamApi;
+    private HWDownloadApi mDownloadApi;
     public ApiManager initHttpClient(Context context, boolean isSSL){
         if (mClient==null){
             try {
@@ -264,13 +266,20 @@ public class ApiManager {
         return this;
     }
 
+    public HWDownloadApi getApDownLoadServer(String path){
+       if (mDownloadApi!=null){
+           mDownloadApi.close();
+       }
+       mDownloadApi = new ApDownloadFactory
+              .Builder()
+              .setPathDirName(path)
+              .build().create();
+       return mDownloadApi;
+    }
 
-
-
-
-
-
-
+    public HWDownloadApi getmDownloadApi() {
+        return mDownloadApi;
+    }
 
     public enum EventType{
         NONE("None"),

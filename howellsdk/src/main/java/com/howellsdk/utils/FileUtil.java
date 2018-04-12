@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 
 /**
  * Created by Administrator on 2017/3/17.<br/>
@@ -76,4 +77,17 @@ public class FileUtil {
         }
         return file.getAbsolutePath();
     }
+
+    public static RandomAccessFile createVideoFile(String pathDirFileName) throws FileNotFoundException {
+        return new RandomAccessFile(new File(pathDirFileName),"rw");
+    }
+
+    public static void write2VideoFile(RandomAccessFile file,byte [] data) throws IOException {
+        file.write(data);
+    }
+
+    public static void closeVideoFile(RandomAccessFile file) throws IOException {
+        file.close();
+    }
+
 }

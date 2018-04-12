@@ -1,6 +1,7 @@
 package com.inz.utils
 
 import java.io.File
+import java.io.RandomAccessFile
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator
@@ -44,6 +45,17 @@ object FileUtil {
         Collections.sort(arr,SortByString())
         return arr
     }
+
+    fun createVideoFile(pathFileName:String):RandomAccessFile = RandomAccessFile(File(pathFileName),"rw")
+
+    fun write2VideoFile(f:RandomAccessFile,data:ByteArray){
+        f.write(data)
+    }
+
+    fun closeVideoFile(f:RandomAccessFile){
+        f.close()
+    }
+
 
     class SortByString():Comparator<String>{
         override fun compare(o1: String?, o2: String?): Int {
