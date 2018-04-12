@@ -32,7 +32,7 @@ public class ApDownloadFactory {
 
 
         @Override
-        public void open(String path) {
+        public HWDownloadApi open(String path) {
             try {
                 mFile = FileUtil.createVideoFile(path);
             } catch (FileNotFoundException e) {
@@ -42,16 +42,19 @@ public class ApDownloadFactory {
             JniUtil.downloadInit();
             JniUtil.downloadSetCallbackObj(this,0);
             JniUtil.downloadSetCallbackMethod("saveData",0);
+            return this;
         }
 
         @Override
-        public void start() {
+        public HWDownloadApi start() {
             JniUtil.downloadEnable(true);
+            return this;
         }
 
         @Override
-        public void stop() {
+        public HWDownloadApi stop() {
             JniUtil.downloadEnable(false);
+            return this;
         }
 
 
@@ -64,7 +67,7 @@ public class ApDownloadFactory {
         }
 
         @Override
-        public void close() {
+        public HWDownloadApi close() {
             try {
                 FileUtil.closeVideoFile(mFile);
             } catch (IOException e) {
@@ -72,6 +75,7 @@ public class ApDownloadFactory {
             }
             //jni deinit
             JniUtil.downloadDeinit();
+            return this;
         }
     }
 }

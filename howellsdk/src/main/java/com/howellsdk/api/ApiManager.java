@@ -270,17 +270,16 @@ public class ApiManager {
         return this;
     }
 
-    public HWDownloadApi getApDownLoadServer(String path){
-       if (mDownloadApi!=null){
-           mDownloadApi.close();
+    public HWDownloadApi getApDownLoadServer(){
+       if (mDownloadApi==null){
+           mDownloadApi = new ApDownloadFactory
+                   .Builder()
+                   .build().create();
        }
-       mDownloadApi = new ApDownloadFactory
-              .Builder()
-              .build().create();
        return mDownloadApi;
     }
 
-    public HWDownloadApi getmDownloadApi() {
+    public HWDownloadApi getHWDownloadApi() {
         return mDownloadApi;
     }
 

@@ -1,8 +1,8 @@
 package com.howellsdk.api;
 
 public interface HWDownloadApi {
-    void open(String path);
-    void start();
-    void stop();
-    void close();
+    HWDownloadApi open(String path);
+    HWDownloadApi start();
+    HWDownloadApi stop();
+    HWDownloadApi close();
 }

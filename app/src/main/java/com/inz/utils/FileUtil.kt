@@ -1,10 +1,8 @@
 package com.inz.utils
 
 import java.io.File
-import java.io.RandomAccessFile
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 object FileUtil {
@@ -20,6 +18,16 @@ object FileUtil {
         return f
     }
 
+    fun getVideoDir():File{
+        var dir = FILE_VIDEO_DIR
+        var f = File(dir)
+        if (!f.exists()){
+            f.mkdirs()
+        }
+        return f
+    }
+
+    fun createNewVideoDirPathName():String = FILE_VIDEO_DIR + getFileName() + ".mp4"
 
     fun getCharacterAndNumber():String = SimpleDateFormat("yyyyMMddHHmmss").format(Date(System.currentTimeMillis()))
 
@@ -46,15 +54,7 @@ object FileUtil {
         return arr
     }
 
-    fun createVideoFile(pathFileName:String):RandomAccessFile = RandomAccessFile(File(pathFileName),"rw")
 
-    fun write2VideoFile(f:RandomAccessFile,data:ByteArray){
-        f.write(data)
-    }
-
-    fun closeVideoFile(f:RandomAccessFile){
-        f.close()
-    }
 
 
     class SortByString():Comparator<String>{

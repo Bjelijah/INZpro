@@ -1,6 +1,7 @@
 package com.inz.model
 
 import android.content.Context
+import com.inz.model.download.DownloadMgr
 import com.inz.model.main.*
 import com.inz.model.player.ApPlayer
 
@@ -12,6 +13,7 @@ object ModelMgr {
     var mSoundVolModel:SoundVolModel        ?=null
     var mPlayListModel:PlayListModel        ?=null
     var mApPlayer:ApPlayer                  ?=null
+    var mDownloadMgr:DownloadMgr            ?=null
     fun init(c:Context){
         mContext = c
     }
@@ -52,6 +54,11 @@ object ModelMgr {
         }
         return mApPlayer!!
     }
-
+    fun getDownloadMgrInstance():DownloadMgr{
+        if (mDownloadMgr==null){
+            mDownloadMgr = DownloadMgr()
+        }
+        return mDownloadMgr!!
+    }
 
 }
