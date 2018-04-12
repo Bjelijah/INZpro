@@ -118,6 +118,7 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
 
     private void init(final ViewHolder h, final PictureBean b, final int pos){
         //TODO get pic
+        Log.i("123","init   pos="+pos);
         ViewGroup.LayoutParams params = h.itemView.getLayoutParams();
         params.width = b.getWidth();
         params.height = b.getHeight();
@@ -127,7 +128,6 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
 
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
-
                 e.onNext(b.getPath());
             }
         })

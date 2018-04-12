@@ -30,6 +30,8 @@ object FileUtil {
         }
     }
 
+    fun isExists(path:String):Boolean = File(path).exists()
+
     fun getPictureDirFile():ArrayList<String>{
         var arr:ArrayList<String> = ArrayList()
         var dir = getPictureDir()
@@ -40,13 +42,7 @@ object FileUtil {
             }
         }
         Collections.sort(arr,SortByString())
-
-
-
-
         return arr
-
-
     }
 
     class SortByString():Comparator<String>{

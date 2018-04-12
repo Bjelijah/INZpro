@@ -2,12 +2,18 @@ package com.inz.model.main
 
 import android.content.Context
 import android.databinding.ObservableField
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
+import com.inz.adapter.MyPictureAdapter
+import com.inz.bean.PictureBean
 import com.inz.inzpro.BaseViewModel
+import com.inz.utils.FileUtil
+
 import io.reactivex.functions.Action
 
-class PlayListModel(mContext: Context):BaseViewModel {
+class PlayListModel(private var mContext: Context):BaseViewModel {
     private val SHOW_NONE           = 0x00
     private val SHOW_RECORD_FILE    = 0x01
     private val SHOW_PICTURE_FILE   = 0x02
@@ -79,5 +85,42 @@ class PlayListModel(mContext: Context):BaseViewModel {
     val mShowPictureFile             = ObservableField<Boolean>(false)
     val mRecordListVisibility        = ObservableField<Int>(View.GONE)
     val mPictureListVisibility       = ObservableField<Int>(View.GONE)
+
+    val mUpdatePictureList           = ObservableField<Boolean>(false)
+
+    fun initPictureList(v:RecyclerView,width:Int){
+        Log.i("123","model  initPictureList")
+        var picAdapter = MyPictureAdapter(mContext,object :MyPictureAdapter.OnItemClickListener{
+            override fun onItemClick(pos: Int) {
+                Log.i("123","onItemClickListener pos= $pos")
+            }
+
+            override fun onItemLongClick(pos: Int) {
+                Log.i("123","onItemLongClickListener pos= $pos")
+            }
+
+        })
+        picAdapter.setWidth(width)
+        v.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        v.adapter = picAdapter
+        updatePictureList(v)
+    }
+
+    fun updatePictureList(v:RecyclerView){
+
+        var lst = FileUtil.getPictureDirFile()
+        Log.i("123","updatePictruelist  ~~~~~ lst=$lst")
+        var arr :ArrayList<PictureBean> = ArrayList()
+        for (s in lst){
+            arr.add(PictureBean(s))
+        }
+        (v.adapter as MyPictureAdapter) .setData(arr)
+        mUpdatePictureList.set(false)
+    }
+
+    fun upDatePictureListState(){
+        Log.i("123","update picture list state")
+        mUpdatePictureList.set(true)
+    }
 
 }

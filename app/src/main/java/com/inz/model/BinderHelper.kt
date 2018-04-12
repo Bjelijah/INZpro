@@ -3,6 +3,7 @@ package com.inz.inzpro
 import android.databinding.BindingAdapter
 import android.databinding.BindingConversion
 import android.databinding.ViewDataBinding
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
@@ -127,8 +128,14 @@ object BinderHelper {
 
 
 
-
-
+    @BindingAdapter("update_picture_list")
+    @JvmStatic
+    fun onPictureListUpdate(v:View,b:Boolean){
+        Log.i("123","onPictureListUpdate  b=$b")
+        if(!b)return
+        Log.i("123","update  picture list v as Rec")
+        ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureList(v as RecyclerView)
+    }
 
 
 }

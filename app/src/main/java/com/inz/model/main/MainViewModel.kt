@@ -76,6 +76,7 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val onClickCtrlCatch      = Action {
         DebugLog.LogI("onclick ctrl catch")
         ModelMgr.getApPlayerInstance().catchPic()
+
     }
 
 

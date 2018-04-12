@@ -10,5 +10,6 @@
     <string name="play_list_title_picture">图片文件</string>
 
     <string name="catchPicTo">图片已保存到</string>
+    <string name="catchPicError">图片保存失败！！</string>
 
 </resources>

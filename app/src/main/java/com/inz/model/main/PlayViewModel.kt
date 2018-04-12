@@ -20,14 +20,14 @@ import com.inz.model.player.BasePlayer
 import com.inz.utils.MessageHelp
 import java.util.concurrent.TimeUnit
 
-class PlayViewModel(mContext:Context):BaseViewModel {
+class PlayViewModel(private var mContext:Context):BaseViewModel {
     var mIsPlayback = false
     var mIsFull = false
     val F_TIME = 1L//刷新率  s
     var mWaiteNum = 0
     var mPlayer:BasePlayer?=null
 
-    var mC = mContext
+
 
 
     override fun onCreate() {
@@ -42,8 +42,12 @@ class PlayViewModel(mContext:Context):BaseViewModel {
                     startTimeTask()
                 },{//stop
                     stopTimeTask()
-                },{//catchPic
-                    Toast.makeText(mC,MessageHelp.msgCatchPic(mC),Toast.LENGTH_LONG).show()
+                },{b->//catchPic
+                    if (b)  {
+                        ModelMgr.getPlayListModelInstance(mContext).upDatePictureListState()
+                        Toast.makeText(mContext,MessageHelp.msgCatchPic(mContext),Toast.LENGTH_LONG).show()
+                    }
+                    else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
                 })
                 .init()
     }

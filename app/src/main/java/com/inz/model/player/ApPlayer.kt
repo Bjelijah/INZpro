@@ -79,7 +79,17 @@ class ApPlayer :BasePlayer(){
         var nameDirPath = FileUtil.FILE_PICTURE_DIR + FileUtil.getFileName() + ".jpg"
         Observable.create(ObservableOnSubscribe<Boolean> { e->
             ApiManager.getInstance().aPcamService.catchPic(nameDirPath)
-            e.onNext(true)
+            var i = 10;
+            var ret = false
+            while (i>0){
+                Thread.sleep(100)
+                i--
+                if (FileUtil.isExists(nameDirPath)){
+                    ret = true
+                    break
+                }
+            }
+            e.onNext(ret)
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

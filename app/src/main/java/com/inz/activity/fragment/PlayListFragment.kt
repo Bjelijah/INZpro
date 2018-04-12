@@ -1,5 +1,8 @@
 package com.inz.activity.fragment
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +23,7 @@ import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
+import com.inz.model.main.PlayListModel
 import com.inz.utils.FileUtil
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -72,12 +76,13 @@ class PlayListFragment :BaseFragment() {
             }
 
         })
-        rp.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-        rp.adapter = picAdapter
+//        rp.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+//        rp.adapter = picAdapter
 
         v.viewTreeObserver.addOnGlobalLayoutListener(object :ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                funPictureInit(v, rp.adapter as MyPictureAdapter)
+//                funPictureInit(v, rp.adapter as MyPictureAdapter)
+                (getViewmodel() as PlayListModel).initPictureList(rp,v.width)
                 v.viewTreeObserver.removeGlobalOnLayoutListener(this)
             }
         })
@@ -99,5 +104,8 @@ class PlayListFragment :BaseFragment() {
         }
         adapter.setData(arr)
     }
+
+
+
 
 }
