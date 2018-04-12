@@ -4,13 +4,14 @@ import android.util.Log
 import com.howellsdk.api.ApiManager
 import com.howellsdk.api.HWPlayApi
 import com.inz.action.Config
+import com.inz.utils.FileUtil
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
 class ApPlayer :BasePlayer(){
-
 
     override fun init(): BasePlayer {
         Observable.create(ObservableOnSubscribe<Boolean> { e->
@@ -73,5 +74,18 @@ class ApPlayer :BasePlayer(){
                 },{e->e.printStackTrace()})
         return this
     }
-
+    override fun catchPic(): BasePlayer {
+        FileUtil.getPictureDir()
+        var nameDirPath = FileUtil.FILE_PICTURE_DIR + FileUtil.getFileName() + ".jpg"
+        Observable.create(ObservableOnSubscribe<Boolean> { e->
+            ApiManager.getInstance().aPcamService.catchPic(nameDirPath)
+            e.onNext(true)
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({b->
+                   sendCatchResult(b)
+                },{e->e.printStackTrace()})
+        return this
+    }
 }

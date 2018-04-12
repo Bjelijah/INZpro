@@ -2,17 +2,22 @@ package com.inz.model.main
 
 import android.content.Context
 import android.databinding.ObservableField
+import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import com.howellsdk.api.ApiManager
 import com.howellsdk.utils.RxUtil
 import com.howellsdk.utils.ThreadUtil
 import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
+import com.inz.model.ModelMgr
+
 import com.inz.model.player.ApPlayer
 import com.inz.model.player.BasePlayer
+import com.inz.utils.MessageHelp
 import java.util.concurrent.TimeUnit
 
 class PlayViewModel(mContext:Context):BaseViewModel {
@@ -21,11 +26,26 @@ class PlayViewModel(mContext:Context):BaseViewModel {
     val F_TIME = 1L//刷新率  s
     var mWaiteNum = 0
     var mPlayer:BasePlayer?=null
+
+    var mC = mContext
+
+
     override fun onCreate() {
+
         Log.e("123","onCreate!!!!")
-        mPlayer = ApPlayer().registPlayStateListener({},{},{startTimeTask()},{stopTimeTask()}).init()
-
-
+        mPlayer = ModelMgr.getApPlayerInstance()
+                .registPlayStateListener({
+                    //init
+                },{
+                    //deinit
+                },{ //play
+                    startTimeTask()
+                },{//stop
+                    stopTimeTask()
+                },{//catchPic
+                    Toast.makeText(mC,MessageHelp.msgCatchPic(mC),Toast.LENGTH_LONG).show()
+                })
+                .init()
     }
 
     override fun onDestory() {

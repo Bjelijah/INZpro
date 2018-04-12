@@ -65,7 +65,9 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
     val onClickReplayPauseAndPlay = Action {  }
     val onClickReplaySkipNext     = Action {  }
     val onClickReplayFastForward  = Action {  }
-    val onClickReplayCatch        = Action {  }
+    val onClickReplayCatch        = Action {
+        ModelMgr.getApPlayerInstance().catchPic()
+    }
     val onClickReplayZoom         = Action {
         CtrlAction.setFullOrNot(mContext)
     }

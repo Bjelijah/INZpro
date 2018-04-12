@@ -2,6 +2,7 @@ package com.inz.model
 
 import android.content.Context
 import com.inz.model.main.*
+import com.inz.model.player.ApPlayer
 
 object ModelMgr {
     var mContext:Context                    ?=null
@@ -10,6 +11,7 @@ object ModelMgr {
     var mReplayCtrlModel:ReplayCtrlModel    ?=null
     var mSoundVolModel:SoundVolModel        ?=null
     var mPlayListModel:PlayListModel        ?=null
+    var mApPlayer:ApPlayer                  ?=null
     fun init(c:Context){
         mContext = c
     }
@@ -43,5 +45,13 @@ object ModelMgr {
         }
         return mPlayListModel!!
     }
+
+    fun getApPlayerInstance():ApPlayer{
+        if (mApPlayer==null){
+            mApPlayer = ApPlayer()
+        }
+        return mApPlayer!!
+    }
+
 
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
+import com.inz.model.ModelMgr
 import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
 
@@ -72,7 +73,10 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
 
     }
     val onClickCtrlRecord     = Action {  DebugLog.LogI("onclick ctrl record") }
-    val onClickCtrlCatch      = Action {  DebugLog.LogI("onclick ctrl catch") }
+    val onClickCtrlCatch      = Action {
+        DebugLog.LogI("onclick ctrl catch")
+        ModelMgr.getApPlayerInstance().catchPic()
+    }
 
 
 

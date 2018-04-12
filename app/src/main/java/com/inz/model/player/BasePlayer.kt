@@ -6,6 +6,7 @@ abstract class BasePlayer {
         fun onDeinit(b:Boolean)
         fun onPlay(b:Boolean)
         fun onStop(b:Boolean)
+        fun onCatchPic(b:Boolean)
     }
     private val mListener:ArrayList<PlayStateListener> = ArrayList()
     fun registPlayStateListener(l:PlayStateListener):BasePlayer{
@@ -13,12 +14,13 @@ abstract class BasePlayer {
         return this
     }
 
-    fun registPlayStateListener(o1: (Boolean) -> Unit, o2:(Boolean)->Unit,o3:(Boolean)->Unit,o4:(Boolean)->Unit):BasePlayer{
+    fun registPlayStateListener(o1: (Boolean) -> Unit, o2:(Boolean)->Unit,o3:(Boolean)->Unit,o4:(Boolean)->Unit,o5:(Boolean)->Unit):BasePlayer{
             mListener.add(object :PlayStateListener{
-                override fun onInit(b: Boolean)   = o1(b)
-                override fun onDeinit(b: Boolean) = o2(b)
-                override fun onPlay(b: Boolean)   = o3(b)
-                override fun onStop(b: Boolean)   = o4(b)
+                override fun onInit(b: Boolean)     = o1(b)
+                override fun onDeinit(b: Boolean)   = o2(b)
+                override fun onPlay(b: Boolean)     = o3(b)
+                override fun onStop(b: Boolean)     = o4(b)
+                override fun onCatchPic(b: Boolean) = o5(b)
             })
         return this
     }
@@ -56,8 +58,16 @@ abstract class BasePlayer {
         }
     }
 
+    fun sendCatchResult(b:Boolean){
+        for (l in mListener){
+            l.onCatchPic(b)
+        }
+    }
+
+
     abstract fun init():BasePlayer
     abstract fun deinit():BasePlayer
     abstract fun play(isSub:Boolean):BasePlayer
     abstract fun stop():BasePlayer
+    abstract fun catchPic():BasePlayer
 }

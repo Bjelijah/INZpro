@@ -38,7 +38,7 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
 
     public void addData(VideoBean b){
         mList.add(b);
-        notifyItemChanged(mList.size());
+        notifyItemChanged(mList.size()-1);
     }
 
     public void removeData(VideoBean b){
@@ -50,6 +50,11 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
             e.printStackTrace();
         }
 
+    }
+
+    public void clearData(){
+        mList.clear();
+        notifyDataSetChanged();
     }
 
 

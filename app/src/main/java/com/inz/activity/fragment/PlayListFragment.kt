@@ -1,5 +1,6 @@
 package com.inz.activity.fragment
 
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import com.inz.adapter.MyPictureAdapter
 import com.inz.adapter.MyVideoAdapter
 import com.inz.adapter.VideoAdapter
@@ -18,6 +20,11 @@ import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
+import com.inz.utils.FileUtil
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.ObservableSource
+import java.util.function.Function
 
 class PlayListFragment :BaseFragment() {
     override fun getLayout(): Int = R.layout.fragment_play_list
@@ -41,6 +48,7 @@ class PlayListFragment :BaseFragment() {
 
             override fun onItemLongClickListener(pos: Int) {
                 Log.i("123","onItemLongClickListener pos= $pos")
+                //share or del
             }
 
         })
@@ -59,13 +67,37 @@ class PlayListFragment :BaseFragment() {
 
             override fun onItemLongClick(pos: Int) {
                 Log.i("123","onItemLongClickListener pos= $pos")
+                //share or del
+
             }
 
         })
-        rp.layoutManager = StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL)
+        rp.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         rp.adapter = picAdapter
 
+        v.viewTreeObserver.addOnGlobalLayoutListener(object :ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                funPictureInit(v, rp.adapter as MyPictureAdapter)
+                v.viewTreeObserver.removeGlobalOnLayoutListener(this)
+            }
+        })
         return v
+    }
+
+    private fun funPictureInit(v:View,adapter:MyPictureAdapter){
+        var width = v.width
+        Log.i("123","width=$width")
+        adapter.setWidth(v.width)
+        updatePictureData(adapter)
+    }
+
+    private fun updatePictureData(adapter: MyPictureAdapter){
+        var lst = FileUtil.getPictureDirFile()
+        var arr :ArrayList<PictureBean> = ArrayList()
+        for (s in lst){
+            arr.add(PictureBean(s))
+        }
+        adapter.setData(arr)
     }
 
 }
