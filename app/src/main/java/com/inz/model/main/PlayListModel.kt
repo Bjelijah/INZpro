@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
+import com.howellsdk.api.ApiManager
 import com.inz.action.Config
 import com.inz.adapter.MyPictureAdapter
 import com.inz.adapter.MyVideoAdapter
@@ -30,7 +31,12 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     private var mLocalPlayer:BasePlayer?=null
     override fun onCreate() {
         mLocalPlayer = ModelMgr.getLoaclPlayerInstance()
-                .registPlayStateListener({},{},{},{},{})
+                .registPlayStateListener({},{},{
+                    Log.i("123","")
+                    ModelMgr.getPlayViewModelInstance(mContext).startTimeTask(ApiManager.getInstance().localService)
+                },{
+                    ModelMgr.getPlayViewModelInstance(mContext).stopTimeTask()
+                },{})
                 .init(Config.CAM_Crypto,"whatever")
     }
 

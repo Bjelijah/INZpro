@@ -652,7 +652,7 @@ static void on_download_fun(const char* buf,int len){
 
 void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata){
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
-    res->stream_len += len;
+
     if(res == NULL){
         LOGE("on live stream_fun res==null error return");
         return;
@@ -709,7 +709,7 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
         }
     }
 
-
+    res->stream_len += len;
     if (res!=NULL){
         if (res->isFirstTime){
             res->isFirstTime = 0;

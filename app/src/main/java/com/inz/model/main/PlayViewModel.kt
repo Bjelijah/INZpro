@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import com.howellsdk.api.ApiManager
+import com.howellsdk.api.HWPlayApi
 import com.howellsdk.utils.RxUtil
 import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
@@ -40,7 +41,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 },{
                     //deinit
                 },{ //play
-                    startTimeTask()
+                    startTimeTask(ApiManager.getInstance().aPcamService)
                 },{//stop
                     stopTimeTask()
                 },{b->//catchPic
@@ -131,10 +132,10 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
 
 
-    private fun startTimeTask(){
+    fun startTimeTask(server: HWPlayApi){
         ThreadUtil.scheduledSingleThreadStart({
             var bWait = true
-            var streamLen = ApiManager.getInstance().aPcamService.streamLen
+            var streamLen = server.streamLen
             if(streamLen!=0){
                 bWait = false
                 mWaiteNum = 0
@@ -145,13 +146,13 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 }
             }
             var speed:Int = (streamLen*8/1024/F_TIME).toInt()
-            var timestamp = ApiManager.getInstance().aPcamService.timestamp
-            var firstTime = ApiManager.getInstance().aPcamService.firstTimestamp
+            var timestamp = server.timestamp
+            var firstTime = server.firstTimestamp
             onTime(speed,timestamp,firstTime,bWait)
         },0,F_TIME, TimeUnit.SECONDS)
     }
 
-    private fun stopTimeTask(){
+    fun stopTimeTask(){
         ThreadUtil.scheduledSingleThreadShutDown()
     }
 
