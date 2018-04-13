@@ -2,14 +2,22 @@ package com.inz.model.main
 
 import android.content.Context
 import android.databinding.ObservableField
+import android.graphics.Bitmap
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
+import com.inz.action.Config
 import com.inz.adapter.MyPictureAdapter
+import com.inz.adapter.MyVideoAdapter
 import com.inz.bean.PictureBean
+import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
+import com.inz.model.ModelMgr
+import com.inz.model.player.BasePlayer
 import com.inz.utils.FileUtil
+import com.inz.utils.Utils
 
 import io.reactivex.functions.Action
 
@@ -19,10 +27,15 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     private val SHOW_PICTURE_FILE   = 0x02
 
     private var mShowCode       = SHOW_NONE
+    private var mLocalPlayer:BasePlayer?=null
     override fun onCreate() {
+        mLocalPlayer = ModelMgr.getLoaclPlayerInstance()
+                .registPlayStateListener({},{},{},{},{})
+                .init(Config.CAM_Crypto,"whatever")
     }
 
     override fun onDestory() {
+        mLocalPlayer?.deinit()
     }
 
 
@@ -87,6 +100,8 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mPictureListVisibility       = ObservableField<Int>(View.GONE)
 
     val mUpdatePictureList           = ObservableField<Boolean>(false)
+    val mUpdateVideoList             = ObservableField<Boolean>(false)
+
 
     fun initPictureList(v:RecyclerView,width:Int){
         Log.i("123","model  initPictureList")
@@ -121,6 +136,46 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     fun upDatePictureListState(){
         Log.i("123","update picture list state")
         mUpdatePictureList.set(true)
+    }
+
+    fun initVideoList(v:RecyclerView){
+        var vidAdapter = MyVideoAdapter(mContext,object :MyVideoAdapter.OnItemClickListener{
+            override fun onItemClickListener(bean:VideoBean,pos: Int) {
+                Log.i("123","video on ItemClick   pos=$pos   name=${bean.name}  path=${bean.path}")
+                mLocalPlayer?.setUrl(bean.path)
+                mLocalPlayer?.play(false)
+            }
+
+            override fun onItemLongClickListener(bean:VideoBean,pos: Int) {
+
+            }
+
+        })
+
+        v.layoutManager = LinearLayoutManager(mContext)
+        v.adapter = vidAdapter
+        updateVideoList(v)
+
+    }
+
+
+    fun updateVideoList(v:RecyclerView){
+        var lst = FileUtil.getVideoDirFile()
+        var arr:ArrayList<VideoBean> = ArrayList()
+        for (s in lst){
+            var str = s.split("/")
+            var nameArr = str[str.lastIndex].split(".")
+            var nameStr = nameArr[0]
+            var name = Utils.getVideoName(nameStr)
+            arr.add(VideoBean(s,name))
+        }
+        (v.adapter as MyVideoAdapter).setData(arr)
+        mUpdateVideoList.set(false)
+    }
+
+    fun upDateVideoListState(){
+        Log.i("123","update picture list state")
+        mUpdateVideoList.set(true)
     }
 
 }

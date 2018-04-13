@@ -1,7 +1,10 @@
 package com.inz.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,19 +79,24 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
         return mList==null?0:mList.size();
     }
 
-    private void init(ViewHolder holder, VideoBean bean, final int pos){
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void init(ViewHolder holder, final VideoBean bean, final int pos){
         //get bitmap
         holder.iv.setImageDrawable(mContext.getDrawable(R.mipmap.ic_launcher));
         holder.tv.setText(bean.getName());
         if (mSelectPos==pos){
             //TODO 加边框
+            holder.ll.setBackgroundResource(R.drawable.item_video_border);
+        }else{
+            //todo 没边框
+            holder.ll.setBackgroundColor(mContext.getColor(R.color.main_bk_light));
         }
         holder.ll.setLongClickable(true);
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener==null)return;
-                mListener.onItemClickListener(pos);
+                mListener.onItemClickListener(bean,pos);
                 mSelectPos = pos;
                 notifyDataSetChanged();
             }
@@ -97,7 +105,7 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
             @Override
             public boolean onLongClick(View v) {
                 if (mListener==null)return false;
-                mListener.onItemLongClickListener(pos);
+                mListener.onItemLongClickListener(bean,pos);
                 return true;
             }
         });
@@ -105,8 +113,8 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
     }
 
     public interface OnItemClickListener{
-        void onItemClickListener(int pos);
-        void onItemLongClickListener(int pos);
+        void onItemClickListener(VideoBean b,int pos);
+        void onItemLongClickListener(VideoBean b,int pos);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

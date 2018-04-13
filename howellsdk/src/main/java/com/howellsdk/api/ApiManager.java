@@ -12,6 +12,7 @@ import com.howellsdk.net.soap.SoapFactory;
 import com.howellsdk.net.websocket.WebSocketFactory;
 import com.howellsdk.player.ap.ApFactory;
 import com.howellsdk.player.ecam.EcamFactory;
+import com.howellsdk.player.local.LocalFactory;
 import com.howellsdk.player.turn.TurnFactory;
 import com.howellsdk.utils.SSLConection;
 
@@ -52,7 +53,7 @@ public class ApiManager {
     private HWHttpApi mHWHttpApi;
     private HWSoapApi mHWSoapApi;
     private HWWebSocketApi mHWWebSocketApi;
-    private HWPlayApi mHWTurnApi,mHWEcamApi,mHWApcamApi;
+    private HWPlayApi mHWTurnApi,mHWEcamApi,mHWApcamApi,mLocalApi;
     private HWDownloadApi mDownloadApi;
 
     public  ApiManager setJNILogEnable(boolean enable) {
@@ -278,10 +279,24 @@ public class ApiManager {
        }
        return mDownloadApi;
     }
-
     public HWDownloadApi getHWDownloadApi() {
         return mDownloadApi;
     }
+
+    public HWPlayApi getLocalService(int crypto,String path){
+        if(mLocalApi==null){
+            mLocalApi = new LocalFactory.Builder()
+                    .setCrypto(crypto)
+                    .setPath(path)
+                    .build().create();
+        }
+        return mLocalApi;
+    }
+    public HWPlayApi getLocalService(){
+        return mLocalApi;
+    }
+
+
 
     public enum EventType{
         NONE("None"),

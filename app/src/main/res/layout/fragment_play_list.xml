@@ -50,7 +50,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:visibility="@{vm.MRecordListVisibility}"
-
+            app:update_video_list="@{vm.MUpdateVideoList}"
             />
 
 

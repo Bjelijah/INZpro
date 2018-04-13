@@ -21,6 +21,7 @@ public interface HWPlayApi {
     boolean connect();//连接
     boolean disconnect();//断连
 
+    void setUri(String uri);
 
     void play(boolean isSub);//播放
     void playback(boolean isSub,String begTime,String endTime);

@@ -13,7 +13,7 @@ import java.io.File
 
 class ApPlayer :BasePlayer(){
 
-    override fun init(): BasePlayer {
+    override fun init(crypto:Int,uri:String): BasePlayer {
         Observable.create(ObservableOnSubscribe<Boolean> { e->
            ApiManager.getInstance()
                     .getAPcamService(

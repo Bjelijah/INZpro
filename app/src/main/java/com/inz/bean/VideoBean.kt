@@ -1,5 +1,5 @@
 package com.inz.bean
 
-data class VideoBean (val id:String,val name:String){
+data class VideoBean (val path:String,val name:String){
 
 }

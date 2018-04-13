@@ -1,5 +1,7 @@
 package com.howellsdk.download;
 
+import android.util.Log;
+
 import com.howell.jni.JniUtil;
 import com.howellsdk.api.HWDownloadApi;
 import com.howellsdk.utils.FileUtil;
@@ -59,6 +61,7 @@ public class ApDownloadFactory {
 
 
         private void saveData(byte[] data) {
+//            Log.i("123","save data dataLen="+data.length);
             try {
                 FileUtil.write2VideoFile(mFile,data);
             } catch (IOException e) {
@@ -73,8 +76,8 @@ public class ApDownloadFactory {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //jni deinit
-            JniUtil.downloadDeinit();
+            //jni deinit we not deinit
+//            JniUtil.downloadDeinit();
             return this;
         }
     }

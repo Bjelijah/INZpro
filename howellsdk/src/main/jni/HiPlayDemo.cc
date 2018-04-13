@@ -120,6 +120,9 @@ typedef struct{
     JNIEnv * env;
     jobject callback_obj;
     jmethodID on_data_method;
+    int aCode;
+    int vCode;
+    int isWriteHead;
     int enable;
 }DOWN_LOAD_T;
 
@@ -570,7 +573,56 @@ static int register_nvr(const char* ip){
 
 
 
+static void download_head(){
+    if(g_downloadMgr==NULL)return;
+    if(g_downloadMgr->enable==0)return;
+    if(g_downloadMgr->callback_obj==NULL)return;
+    if(g_downloadMgr->isWriteHead!=0)return;
 
+    HW_MEDIAINFO media_head;
+    int len = sizeof(media_head);
+    memset(&media_head,0,sizeof(media_head));
+
+
+
+    media_head.media_fourcc = HW_MEDIA_TAG;
+    media_head.au_channel = 1;
+    media_head.au_sample = 8;
+    media_head.au_bits = 16;
+    switch (g_downloadMgr->aCode){
+        case 0:
+            media_head.adec_code = ADEC_AAC;
+            break;
+        case 1:
+            media_head.adec_code = ADEC_G711A;
+            break;
+        default:
+            media_head.adec_code = ADEC_AAC;
+    }
+    switch (g_downloadMgr->vCode){
+        case 0:
+            media_head.vdec_code = VDEC_H264;
+            break;
+        case 1:
+            media_head.vdec_code = VDEC_HIS_H265;
+            break;
+        case 2:
+            media_head.vdec_code = VDEC_H264_ENCRYPT;
+            break;
+        case 3:
+            media_head.vdec_code = VDEC_HISH265_ENCRYPT;
+            break;
+        default:
+            media_head.vdec_code = VDEC_H264;
+            break;
+    }
+    jbyteArray arr = g_downloadMgr->env->NewByteArray(sizeof(media_head));
+
+    g_downloadMgr->env->SetByteArrayRegion(arr, 0, len, reinterpret_cast<const jbyte *>(&media_head));
+    g_downloadMgr->env->CallVoidMethod(g_downloadMgr->callback_obj,g_downloadMgr->on_data_method,arr);
+    g_downloadMgr->env->DeleteLocalRef(arr);
+    g_downloadMgr->isWriteHead=1;
+}
 
 
 
@@ -584,6 +636,9 @@ static void on_download_fun(const char* buf,int len){
         LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);
         return;
     }
+    //write head if neccessary
+    download_head();
+
     jbyteArray arr = g_downloadMgr->env->NewByteArray(len);
     g_downloadMgr->env->SetByteArrayRegion(arr, 0, len, reinterpret_cast<const jbyte *>(buf));
     g_downloadMgr->env->CallVoidMethod(g_downloadMgr->callback_obj,g_downloadMgr->on_data_method,arr);
@@ -591,7 +646,6 @@ static void on_download_fun(const char* buf,int len){
     if (g_downloadMgr->jvm->DetachCurrentThread() != JNI_OK) {
         LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
     }
-
 }
 
 
@@ -961,6 +1015,23 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     LOGI("ready finish  play_handle=%d",ph);
     return res->play_handle>=0?true:false;
 }
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_localReadyPlay
+        (JNIEnv *env, jclass, jint crypto, jstring path){
+    if(res == NULL)return false;
+    const char * _path = env->GetStringUTFChars(path,0);
+    LOGE("path=%s\n",_path);
+    PLAY_HANDLE ph = hwplay_open_local_file(_path);
+    LOGI("open local file ph=%d",ph);
+    hwplay_open_sound(ph);
+    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
+    res->play_handle = ph;
+    env->ReleaseStringUTFChars(path,_path);
+    LOGI("local ready play    play_handle=%d\n",res->play_handle);
+    return res->play_handle>=0?true:false;
+}
+
+
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isNetReady
         (JNIEnv *, jclass){
@@ -2351,10 +2422,13 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadInit
-        (JNIEnv *, jclass){
+        (JNIEnv *env, jclass){
+
     if(g_downloadMgr==NULL){
         g_downloadMgr = static_cast<DOWN_LOAD_T *>(malloc(sizeof(DOWN_LOAD_T)));
         memset(g_downloadMgr,0, sizeof(DOWN_LOAD_T));
+        env->GetJavaVM(&g_downloadMgr->jvm);
+        g_downloadMgr->isWriteHead = 0;
     }
 }
 
@@ -2397,7 +2471,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackMethod
     switch (flag){
         case 0: {
             jclass clz = env->GetObjectClass(g_downloadMgr->callback_obj);
-            g_downloadMgr->on_data_method = env->GetMethodID(clz, _method, "[B");
+            g_downloadMgr->on_data_method = env->GetMethodID(clz, _method, "([B)V");
         }
             break;
         default:
@@ -2406,10 +2480,20 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackMethod
     env->ReleaseStringUTFChars(method,_method);
 }
 
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetAudioCodeVideoCode
+        (JNIEnv *, jclass, jint aCode, jint vCode){
+    if(g_downloadMgr==NULL)return;
+    g_downloadMgr->aCode = aCode;
+    g_downloadMgr->vCode = vCode;
+}
+
+
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
         (JNIEnv *, jclass, jboolean isEnable){
     if(g_downloadMgr==NULL)return;
     g_downloadMgr->enable = isEnable?1:0;
+    if (!isEnable)g_downloadMgr->isWriteHead = 0;
 }
 
 

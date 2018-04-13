@@ -137,5 +137,12 @@ object BinderHelper {
         ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureList(v as RecyclerView)
     }
 
+    @BindingAdapter("update_video_list")
+    @JvmStatic
+    fun onVideoListUpdate(v:View,b:Boolean){
+        if (!b)return
+        ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updateVideoList(v as RecyclerView)
+    }
+
 
 }

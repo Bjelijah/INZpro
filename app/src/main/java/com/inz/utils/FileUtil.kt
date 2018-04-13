@@ -7,7 +7,7 @@ import kotlin.collections.ArrayList
 
 object FileUtil {
     val FILE_PICTURE_DIR = "/sdcard/InzPro/Picture/"
-    val FILE_VIDEO_DIR   = "/sdcard/InzPro/Video"
+    val FILE_VIDEO_DIR   = "/sdcard/InzPro/Video/"
 
     fun getPictureDir():File{
         var dir = FILE_PICTURE_DIR
@@ -54,7 +54,18 @@ object FileUtil {
         return arr
     }
 
-
+    fun getVideoDirFile():ArrayList<String>{
+        var arr:ArrayList<String> = ArrayList()
+        var dir = getVideoDir()
+        var files = dir.listFiles()
+        for (f in files){
+            if (f.isFile){
+                arr.add(f.path)
+            }
+        }
+        Collections.sort(arr,SortByString())
+        return arr
+    }
 
 
     class SortByString():Comparator<String>{

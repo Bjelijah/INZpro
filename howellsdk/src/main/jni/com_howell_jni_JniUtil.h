@@ -257,6 +257,14 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    localReadyPlay
+ * Signature: (ILjava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_localReadyPlay
+  (JNIEnv *, jclass, jint, jstring);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    isNetReady
  * Signature: ()Z
  */
@@ -670,6 +678,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackObj
  */
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackMethod
   (JNIEnv *, jclass, jstring, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    downloadSetAudioCodeVideoCode
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetAudioCodeVideoCode
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     com_howell_jni_JniUtil

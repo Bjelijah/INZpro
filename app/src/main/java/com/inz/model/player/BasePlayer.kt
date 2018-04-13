@@ -65,7 +65,8 @@ abstract class BasePlayer {
     }
 
 
-    abstract fun init():BasePlayer
+    open fun setUrl(uri:String){}
+    abstract fun init(crypto:Int,uri:String):BasePlayer
     abstract fun deinit():BasePlayer
     abstract fun play(isSub:Boolean):BasePlayer
     abstract fun stop():BasePlayer

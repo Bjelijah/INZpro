@@ -50,10 +50,12 @@ public class JniUtil {
 	public static native boolean loginOut();
 	public static native void setCallBackObj(Object o);
 	public static native boolean readyPlayLive();//use netReadyPlay
+
 	public static native boolean readyPlayTurnLive(Object turnSubScribeAckBean, int isPlayback);
 	public static native boolean readyPlayPlayback();//fixme same to readyPlayLive
 	public static native void netSetPlayBackTime(ApTimeBean beg, ApTimeBean end);
-	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);//isCrypto 0h264 1h264c  2h265  3h265c
+	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);//isCrypto 0h264 1h265  2h264c  3h265c
+	public static native boolean localReadyPlay(int crypto,String path);//
 	public static native boolean isNetReady();
 	public static native boolean isNetLogin();
 	public static native void releasePlay();
@@ -118,6 +120,7 @@ public class JniUtil {
 	public static native void downloadDeinit();
 	public static native void downloadSetCallbackObj(Object obj,int flag);
 	public static native void downloadSetCallbackMethod(String methodName,int flag);
+	public static native void downloadSetAudioCodeVideoCode(int audioCode,int videoCode);
 	public static native void downloadEnable(boolean isEnable);
 
 }

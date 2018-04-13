@@ -34,6 +34,11 @@ public class HwBasePlay implements HWPlayApi {
     }
 
     @Override
+    public void setUri(String uri) {
+
+    }
+
+    @Override
     public void play(boolean isSub) {
         AudioAction.getInstance().initAudio();
         AudioAction.getInstance().playAudio();

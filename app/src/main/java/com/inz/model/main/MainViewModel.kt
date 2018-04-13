@@ -5,14 +5,18 @@ import android.databinding.ObservableField
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import com.howellsdk.api.ApiManager
 import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
+import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 import com.inz.utils.DebugLog
+import com.inz.utils.FileUtil
 import io.reactivex.functions.Action
 
 class MainViewModel(private var mContext:Context) : BaseViewModel{
      var mIsPlayBack = false
+     var mIsRecording = false
      fun setFullScreen(b: Boolean) {
         if(b){
             Log.i("123","main view model set full")
@@ -49,6 +53,9 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
 
     override fun onCreate() {
         //do jni
+        FileUtil.getVideoDir()
+        FileUtil.getPictureDir()
+        ApiManager.getInstance().setJNILogEnable(true)
     }
 
     override fun onDestory() {
@@ -60,6 +67,10 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val mCtrlVisibility       = ObservableField<Int>(View.VISIBLE)
     val mReplayListVisibility = ObservableField<Int>(View.VISIBLE)
     val mReplayCtrlVisibility = ObservableField<Int>(View.VISIBLE)
+    val mRecordText           = ObservableField<String>(mContext.getString(R.string.ctrl_record))
+
+
+
     val onClickCtrlBack       = Action {
         DebugLog.LogI("onclick ctrl back")
         CtrlAction.setPlayReview(mContext)
@@ -71,13 +82,27 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val onClickCtrlAlarm      = Action {  DebugLog.LogI("onclick ctrl alarm")
 
     }
-    val onClickCtrlRecord     = Action {  DebugLog.LogI("onclick ctrl record") }
+    val onClickCtrlRecord     = Action {
+        DebugLog.LogI("onclick ctrl record")
+        if (mIsRecording){//现在是录像 要停止
+            mIsRecording = false
+            mRecordText.set(mContext.getString(R.string.ctrl_record))
+            ModelMgr.getDownloadMgrInstance().stop()
+        }else{//现在没有录  要录像
+            mIsRecording = true
+            mRecordText.set(mContext.getString(R.string.ctrl_record_stop))
+            ModelMgr.getDownloadMgrInstance().start()
+        }
+
+
+    }
+
+
     val onClickCtrlCatch      = Action {
         DebugLog.LogI("onclick ctrl catch")
         ModelMgr.getApPlayerInstance().catchPic()
 
     }
-
 
 
 

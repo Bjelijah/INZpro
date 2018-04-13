@@ -4,7 +4,10 @@
     android:paddingLeft="@dimen/item_video_padding"
     android:paddingRight="@dimen/item_video_padding"
     android:paddingTop="@dimen/item_video_top"
+    android:paddingBottom="@dimen/item_video_bottom"
     android:id="@+id/item_video_ll"
+
+    android:background="@drawable/item_video_border"
     >
 
     <ImageView
@@ -14,6 +17,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
         />
 
     <TextView

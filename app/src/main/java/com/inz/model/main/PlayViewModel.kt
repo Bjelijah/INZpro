@@ -11,6 +11,7 @@ import android.widget.Toast
 import com.howellsdk.api.ApiManager
 import com.howellsdk.utils.RxUtil
 import com.howellsdk.utils.ThreadUtil
+import com.inz.action.Config
 import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
 import com.inz.model.ModelMgr
@@ -49,7 +50,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     }
                     else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
                 })
-                .init()
+                .init(Config.CAM_Crypto,Config.CAM_IP)
     }
 
     override fun onDestory() {
