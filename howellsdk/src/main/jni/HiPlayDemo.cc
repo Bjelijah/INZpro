@@ -1296,6 +1296,15 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
     netCloseFileListNecessary();
 }
 
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_clearStreamBuf
+        (JNIEnv *, jclass){
+    if (res==NULL)return;
+    if(res->play_handle==-1)return;
+    hwplay_clear_stream_buf(res->play_handle);
+}
+
+
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getTotalFrame
         (JNIEnv *, jclass){
     if(res == NULL) {LOGE("get total frame res==NULL");return -1;}

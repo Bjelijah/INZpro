@@ -80,6 +80,7 @@ public class JniUtil {
 	public static native void netCloseVideoList();
 
 	//local
+	public static native void clearStreamBuf();
 	public static native int getTotalFrame();
 	public static native int getCurFrame();
 	public static native void setCurFrame(int curFrame);

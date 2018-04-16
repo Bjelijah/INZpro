@@ -417,6 +417,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    clearStreamBuf
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_clearStreamBuf
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    getTotalFrame
  * Signature: ()I
  */

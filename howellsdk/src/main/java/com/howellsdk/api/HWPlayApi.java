@@ -31,6 +31,7 @@ public interface HWPlayApi {
     void playbackReLink(boolean isSub,long beg,long end);
 
     //local
+    void clearStreamBuf();
     int getTotalFrame();
     int getCurFrame();
     void setCurFrame(int curFrame);

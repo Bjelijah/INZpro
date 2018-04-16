@@ -70,6 +70,7 @@ abstract class BasePlayer {
     abstract fun init(crypto:Int,uri:String):BasePlayer
     abstract fun deinit():BasePlayer
     abstract fun play(isSub:Boolean):BasePlayer
+    abstract fun pause():BasePlayer
     abstract fun stop():BasePlayer
     abstract fun catchPic():BasePlayer
 

@@ -19,4 +19,12 @@ object Utils {
         return s
     }
 
+    fun formatMsec(mss:Long):String{
+        var hours = (mss % (1000*60*60*24))/(1000*60*60)
+        var min = (mss % (1000*60*60))/(1000*60)
+        var sec = (mss % (1000*60))/1000
+        var s= String.format("%02d:%02d:%02d",hours,min,sec)
+        return s
+    }
+
 }

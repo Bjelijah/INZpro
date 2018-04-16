@@ -2,7 +2,6 @@ package com.inz.model.main
 
 import android.content.Context
 import android.databinding.ObservableField
-import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -17,7 +16,6 @@ import com.inz.action.CtrlAction
 import com.inz.inzpro.BaseViewModel
 import com.inz.model.ModelMgr
 
-import com.inz.model.player.ApPlayer
 import com.inz.model.player.BasePlayer
 import com.inz.utils.MessageHelp
 import com.inz.utils.Utils
@@ -30,8 +28,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     var mWaiteNum = 0
     var mPlayer:BasePlayer?=null
     var nowPlayState = 0//0:playAp  1:playLocal
-
-
+    var mCurFrame = 0
+    var mCurMsec = 0
+    var mScheduledFlag = false
 
     override fun onCreate() {
 
@@ -81,24 +80,50 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun initInfo(){
         if (nowPlayState == 0)return
         RxUtil.doRxTask(object :RxUtil.CommonTask<Long>(1000){
+
+            var mTotalFrame =0
+            var mName = ""
+            var mEndTime = ""
             override fun doInIOThread() {
                 Log.i("123","~~~~~~~~~start sleep")
                 Thread.sleep(t)
+                mTotalFrame = mPlayer?.getTotalFrame()?:100
+                mName = when(Config.CAM_Crypto){
+                    0->"H264"
+                    1->"H265"
+                    2->"H264C"
+                    3->"H265C"
+                    else->"H264"
+                }
+                mEndTime = Utils.formatMsec(mPlayer?.getTotalMsec()?.toLong()?:0L)
             }
 
             override fun doInUIThread() {
                 Log.i("123","after sleep")
-                ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mPlayer?.getTotalFrame()?:100)
-                var msec = mPlayer?.getTotalMsec()
-                var frame = mPlayer?.getTotalFrame()
-                Log.i("123","msec = $msec    frame=$frame")
-                Utils.getTimeFromMsec(msec?:0)
-
-
+                ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotalFrame)
+                ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
+                ModelMgr.getReplayCtrlModelInstance(mContext).setEndTime(mEndTime)
+                stopNewTask()
+                setScheduledFlag(true)
+                newTimeTask(ApiManager.getInstance().localService)
             }
 
         })
     }
+
+    fun set2SeekFrame(cur:Int){
+        ModelMgr.getReplayCtrlModelInstance(mContext).setSBProgress(cur)
+    }
+
+    fun set2LocalFrame(cur:Int){
+        mPlayer?.setCurFrame(cur)
+    }
+
+
+    fun setCurTime(cur:String){
+        ModelMgr.getReplayCtrlModelInstance(mContext).setBegTime(cur)
+    }
+
 
     fun setSpeed(speed:Int){
         if (nowPlayState==0)return
@@ -111,7 +136,10 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
     fun playView(){
         mPlayer?.play(Config.CAM_IS_SUB)
+    }
 
+    fun pauseView(){
+        mPlayer?.pause()
     }
 
     fun stopView(){
@@ -120,6 +148,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
     fun change2AP(){
         if (nowPlayState==0)return
+        stopNewTask()
+        stopTimeTask()
         ThreadUtil.cachedThreadStart({
             stopView()
             Thread.sleep(500)
@@ -201,12 +231,24 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     mProcessVisibility.set(View.GONE)
                 }
                 //set speed
+
                 setSpeed(speed)
             }
 
         })
     }
 
+    fun onScheduled(curFrame:Int,curTime:String){
+        RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Boolean>(){
+            override fun doTask() {
+                if (nowPlayState==1){
+                    set2SeekFrame(curFrame)
+                    setCurTime(curTime)
+                }
+            }
+
+        })
+    }
 
 
 
@@ -225,6 +267,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     bWait = true
                 }
             }
+
             var speed:Int = (streamLen*8/1024/F_TIME).toInt()
             var timestamp = server.timestamp
             var firstTime = server.firstTimestamp
@@ -234,6 +277,27 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
     fun stopTimeTask(){
         ThreadUtil.scheduledSingleThreadShutDown()
+    }
+
+    fun setScheduledFlag(flag:Boolean){
+        mScheduledFlag = flag
+    }
+
+    fun newTimeTask(server:HWPlayApi){
+        Log.i("123","new time task")
+        ThreadUtil.scheduledThreadStart({
+//            Log.i("123","new  scheduled task")
+            if (mScheduledFlag){
+
+
+                onScheduled(server.curFrame,Utils.formatMsec(server.playedMsec.toLong()))
+            }
+        },
+                0,200,TimeUnit.MILLISECONDS)
+    }
+
+    fun stopNewTask(){
+        ThreadUtil.scheduledThreadShutDown()
     }
 
 }

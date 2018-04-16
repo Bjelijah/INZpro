@@ -12,6 +12,9 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 class ApPlayer :BasePlayer(){
+    override fun pause(): BasePlayer {
+        return this
+    }
 
     override fun init(crypto:Int,uri:String): BasePlayer {
         Observable.create(ObservableOnSubscribe<Boolean> { e->

@@ -8,6 +8,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class LocalPlayer :BasePlayer() {
+    override fun pause(): BasePlayer {
+        ApiManager.getInstance().localService
+                .playPause()
+        return this
+    }
+
     override fun init(crypto:Int,uri:String): BasePlayer {
         Observable.create(ObservableOnSubscribe<Boolean> {e->
             ApiManager.getInstance()
@@ -79,6 +85,7 @@ class LocalPlayer :BasePlayer() {
     override fun getCurFrame(): Int = ApiManager.getInstance().localService.curFrame
 
     override fun setCurFrame(curFrame: Int) {
+        ApiManager.getInstance().localService.clearStreamBuf()
         ApiManager.getInstance().localService.curFrame = curFrame
     }
 

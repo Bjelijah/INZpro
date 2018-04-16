@@ -76,12 +76,39 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
         seekBar, progress, fromUser ->
 
         Log.i("123",progress.toString()+"  isUser="+fromUser+  "mprogress="+mProcess.get())
-        mProcess.set(progress)
+//        mProcess.set(progress)
+        if (fromUser){
+
+        }
+
+
+    }
+
+    val onStartTrackingTouch = SeekBarBindingAdapter.OnStartTrackingTouch{sb->
+        Log.i("123","on start track touch")
+        //stop
+        ModelMgr.getPlayViewModelInstance(mContext).setScheduledFlag(false)
+        //pause
+        ModelMgr.getPlayViewModelInstance(mContext).pauseView()
+    }
+
+    val onStopTrackingTouch = SeekBarBindingAdapter.OnStopTrackingTouch{sb->
+        Log.i("123","on stop track touch")
+        ModelMgr.getPlayViewModelInstance(mContext).set2LocalFrame(sb.progress)
+
+        ModelMgr.getPlayViewModelInstance(mContext).setScheduledFlag(true)
+        ModelMgr.getPlayViewModelInstance(mContext).pauseView()
+
     }
 
     fun setSBMax(max:Int){
         mProcessMax.set(max)
     }
+
+    fun setSBProgress(progress:Int){
+        mProcess.set(progress)
+    }
+
 
     fun setBegTime(s:String){
         mReplayBeg.set(s)
@@ -94,5 +121,10 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
     fun setSpeed(s:String){
         mReplaySpeed.set(s)
     }
+
+    fun setName(s:String){
+        mReplayName.set(s)
+    }
+
 
 }

@@ -77,6 +77,11 @@ public class HwBasePlay implements HWPlayApi {
     }
 
     @Override
+    public void clearStreamBuf() {
+
+    }
+
+    @Override
     public int getTotalFrame() {
         return 0;
     }

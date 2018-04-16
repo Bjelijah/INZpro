@@ -26,6 +26,8 @@
             android:onProgressChanged="@{vm.onProgressChanged}"
             android:progress="@{vm.MProcess}"
             android:max="@{vm.MProcessMax}"
+            android:onStartTrackingTouch="@{vm.onStartTrackingTouch}"
+            android:onStopTrackingTouch="@{vm.onStopTrackingTouch}"
             />
 
 

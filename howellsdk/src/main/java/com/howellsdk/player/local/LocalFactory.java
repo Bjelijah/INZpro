@@ -107,5 +107,10 @@ public class LocalFactory {
         public int getPlayedMsec() {
             return JniUtil.getPlayedMsec();
         }
+
+        @Override
+        public void clearStreamBuf() {
+            JniUtil.clearStreamBuf();
+        }
     }
 }
