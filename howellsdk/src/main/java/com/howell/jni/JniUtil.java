@@ -78,6 +78,13 @@ public class JniUtil {
 	public static native ReplayFile[] netGetVideoListAll(int count);
 	public static native ReplayFile[] netGetVideoList(int startCount,int endCount);
 	public static native void netCloseVideoList();
+
+	//local
+	public static native int getTotalFrame();
+	public static native int getCurFrame();
+	public static native void setCurFrame(int curFrame);
+	public static native int getTotalMsec();
+	public static native int getPlayedMsec();
 	//transmission
 	
 	public static native synchronized void transInit();

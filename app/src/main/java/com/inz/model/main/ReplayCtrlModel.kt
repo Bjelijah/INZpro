@@ -30,7 +30,7 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
 
     val mReplayBeg   = ObservableField<String>("00:00:00")
     val mReplayEnd   = ObservableField<String>("00:00:00")
-    val mReplayName  = ObservableField<String>("H.265E")
+    val mReplayName  = ObservableField<String>("H.264")
     val mReplaySpeed = ObservableField<String>("524Kbps")
     val mProcess     = ObservableField<Int>(0)
     val mProcessMax  = ObservableField<Int>(100)
@@ -78,4 +78,21 @@ class ReplayCtrlModel(mContext: Context):BaseViewModel {
         Log.i("123",progress.toString()+"  isUser="+fromUser+  "mprogress="+mProcess.get())
         mProcess.set(progress)
     }
+
+    fun setSBMax(max:Int){
+        mProcessMax.set(max)
+    }
+
+    fun setBegTime(s:String){
+        mReplayBeg.set(s)
+    }
+
+    fun setEndTime(s:String){
+        mReplayEnd.set(s)
+    }
+
+    fun setSpeed(s:String){
+        mReplaySpeed.set(s)
+    }
+
 }

@@ -77,6 +77,31 @@ public class HwBasePlay implements HWPlayApi {
     }
 
     @Override
+    public int getTotalFrame() {
+        return 0;
+    }
+
+    @Override
+    public int getCurFrame() {
+        return 0;
+    }
+
+    @Override
+    public void setCurFrame(int curFrame) {
+
+    }
+
+    @Override
+    public int getTotalMsec() {
+        return 0;
+    }
+
+    @Override
+    public int getPlayedMsec() {
+        return 0;
+    }
+
+    @Override
     public boolean getRecordedFiles(String beg, String end,@Nullable Integer nowPage,@Nullable Integer pageSize) {
         return false;
     }

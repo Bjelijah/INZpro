@@ -20,6 +20,7 @@ import com.inz.model.ModelMgr
 import com.inz.model.player.ApPlayer
 import com.inz.model.player.BasePlayer
 import com.inz.utils.MessageHelp
+import com.inz.utils.Utils
 import java.util.concurrent.TimeUnit
 
 class PlayViewModel(private var mContext:Context):BaseViewModel {
@@ -67,12 +68,41 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     nowPlayState = 1
                 },{},{
                     Log.i("123","")
+                    //init seekbar
+                    initInfo()
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().localService)
                 },{
                     stopTimeTask()
                 },{})
                 .init(Config.CAM_Crypto,"whatever")
+    }
+
+    fun initInfo(){
+        if (nowPlayState == 0)return
+        RxUtil.doRxTask(object :RxUtil.CommonTask<Long>(1000){
+            override fun doInIOThread() {
+                Log.i("123","~~~~~~~~~start sleep")
+                Thread.sleep(t)
+            }
+
+            override fun doInUIThread() {
+                Log.i("123","after sleep")
+                ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mPlayer?.getTotalFrame()?:100)
+                var msec = mPlayer?.getTotalMsec()
+                var frame = mPlayer?.getTotalFrame()
+                Log.i("123","msec = $msec    frame=$frame")
+                Utils.getTimeFromMsec(msec?:0)
+
+
+            }
+
+        })
+    }
+
+    fun setSpeed(speed:Int){
+        if (nowPlayState==0)return
+        ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(String.format("%d Kbps",speed/1024))
     }
 
     fun setUrl(url:String){
@@ -170,6 +200,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 }else{
                     mProcessVisibility.set(View.GONE)
                 }
+                //set speed
+                setSpeed(speed)
             }
 
         })

@@ -417,6 +417,46 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    getTotalFrame
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getTotalFrame
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    getCurFrame
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getCurFrame
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    setCurFrame
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCurFrame
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    getTotalMsec
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getTotalMsec
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    getPlayedMsec
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPlayedMsec
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    transInit
  * Signature: ()V
  */

@@ -72,4 +72,10 @@ abstract class BasePlayer {
     abstract fun play(isSub:Boolean):BasePlayer
     abstract fun stop():BasePlayer
     abstract fun catchPic():BasePlayer
+
+    open fun getTotalFrame():Int = 0
+    open fun getCurFrame():Int = 0
+    open fun setCurFrame(curFrame:Int){}
+    open fun getTotalMsec():Int = 0
+    open fun getPlayedMsec():Int = 0
 }

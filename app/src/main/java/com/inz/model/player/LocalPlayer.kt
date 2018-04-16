@@ -73,4 +73,16 @@ class LocalPlayer :BasePlayer() {
     override fun catchPic(): BasePlayer {
         return this
     }
+
+    override fun getTotalFrame(): Int  =  ApiManager.getInstance().localService.totalFrame
+
+    override fun getCurFrame(): Int = ApiManager.getInstance().localService.curFrame
+
+    override fun setCurFrame(curFrame: Int) {
+        ApiManager.getInstance().localService.curFrame = curFrame
+    }
+
+    override fun getTotalMsec(): Int = ApiManager.getInstance().localService.totalMsec
+
+    override fun getPlayedMsec(): Int = ApiManager.getInstance().localService.playedMsec
 }

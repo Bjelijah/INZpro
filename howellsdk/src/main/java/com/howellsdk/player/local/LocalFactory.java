@@ -81,5 +81,31 @@ public class LocalFactory {
         public long getTimestamp() {
             return JniUtil.getTimeStamp();
         }
+
+
+        @Override
+        public int getTotalFrame() {
+            return JniUtil.getTotalFrame();
+        }
+
+        @Override
+        public int getCurFrame() {
+            return JniUtil.getCurFrame();
+        }
+
+        @Override
+        public void setCurFrame(int curFrame) {
+            JniUtil.setCurFrame(curFrame);
+        }
+
+        @Override
+        public int getTotalMsec() {
+            return JniUtil.getTotalMsec();
+        }
+
+        @Override
+        public int getPlayedMsec() {
+            return JniUtil.getPlayedMsec();
+        }
     }
 }

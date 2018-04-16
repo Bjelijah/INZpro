@@ -554,14 +554,15 @@ JNIEXPORT jbyteArray JNICALL Java_com_howell_jni_JniUtil_H264toHWStream
 
 
 static int register_nvr(const char* ip){
-    //	int ret = hwnet_init(5888);
+//    	int ret = hwnet_init(5888);
     //	/* 192.168.18.23 */
-    //	LOGI("ret=%d    ip=%s   ",ret,ip);
+    	LOGI(" ip=%s   ",ip);
     	res->user_handle = hwnet_login(ip,5198,"admin","12345");
     //	if(res->user_handle == -1){
     //		LOGE("hwnet_login fail");
     //		return 0;
     //	}
+    LOGE("~~~~~~~~~~uh=%d",res->user_handle);
     return res->user_handle>=0?1:0;
 }
 
@@ -652,7 +653,8 @@ static void on_download_fun(const char* buf,int len){
 
 void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata){
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
-
+//    LOGI("on live stream_fun");
+//    return;
     if(res == NULL){
         LOGE("on live stream_fun res==null error return");
         return;
@@ -983,18 +985,35 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     RECT area;
     HW_MEDIAINFO media_head;
     memset(&media_head,0,sizeof(media_head));
-    if (!isPlayBack){
+
+
+
+    LOGE("isPlayback=%d",isPlayBack);
+//    if (!isPlayBack){
         res->live_stream_handle = hwnet_get_live_stream(res->user_handle,slot,is_sub,0,on_live_stream_fun,0);
-        hwnet_get_live_stream_head(res->live_stream_handle,(char*)&media_head,1024,&res->media_head_len);
-    }else{
-        file_stream_t file_info;
-        res->file_stream_handle = hwnet_get_file_stream(res->user_handle,slot,res->beg,res->end,on_file_stream_fun,0,&file_info);
-        hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
-    }
+//        hwnet_get_live_stream_head(res->live_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+//    }else{
+//        file_stream_t file_info;
+//        res->file_stream_handle = hwnet_get_file_stream(res->user_handle,slot,res->beg,res->end,on_file_stream_fun,0,&file_info);
+//        hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+//    }
+    LOGE("lh=%d",res->live_stream_handle);
+
     LOGI("net ready play get live stream head vdec_code=");
     LOGE(" code= 0x%x   file_stream_handle=%d\n",media_head.vdec_code,res->file_stream_handle );
     LOGE("beg= [%04d-%02d-%02d %02d:%02d:%02d]\n",res->beg.wYear,res->beg.wMonth,res->beg.wDay,res->beg.wHour,res->beg.wMinute,res->beg.wSecond);
+
+    LOGE("head =0x%x",media_head.media_fourcc);
+    LOGE(" vc  0x%x",media_head.vdec_code);
+
     //ap:0 h264  1 h265  2 h264 Crypto  3 h265 Crypto
+
+    media_head.media_fourcc = HW_MEDIA_TAG;
+//    media_head.au_channel = 0;
+//    media_head.au_sample = 8000/1000;
+//    media_head.au_bits = 16;
+
+    LOGE("head =0x%x",media_head.media_fourcc);
 
     if (isCrypto==1){
         media_head.vdec_code = VDEC_HIS_H265;//VDEC_H264_ENCRYPT;//加密  用于bao VDEC_H264     VDEC_H264_ENCRYPT INZ_200系列
@@ -1007,12 +1026,26 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     }else {
         media_head.vdec_code = VDEC_H264;//默认 未加密 h264 用于 ap
     }
+    media_head.vdec_code = VDEC_H264;
+    media_head.adec_code = ADEC_G711U;
+    media_head.au_bits = 16;
+    media_head.au_channel = 1;
+    media_head.au_sample = 8;
+    media_head.dvr_version = 0;
+    LOGE("vc 0x%x     ac 0x%x    au 0x%x     ach 0x%x     as 0x%x   dvr 0x%x"
+
+
+
+                 ,media_head.vdec_code
+    ,media_head.adec_code,media_head.au_bits,media_head.au_channel,media_head.au_sample,media_head.dvr_version);
+
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
+    LOGE("open stream ph=%d",ph);
     hwplay_open_sound(ph);
     hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
     res->play_handle = ph;
-    LOGI("ready finish  play_handle=%d",ph);
+    LOGI("ready finish  play_handle=%d    isCrypto=%d    uh=%d  ",ph,isCrypto,res->user_handle);
     return res->play_handle>=0?true:false;
 }
 
@@ -1262,6 +1295,55 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
         (JNIEnv *, jclass){
     netCloseFileListNecessary();
 }
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getTotalFrame
+        (JNIEnv *, jclass){
+    if(res == NULL) {LOGE("get total frame res==NULL");return -1;}
+    if(res->play_handle==-1){LOGE("get total fram ph = -1");return -1;}
+    int totalFrame = 0;
+    BOOL ret = hwplay_get_total_frame(res->play_handle,&totalFrame);
+//    LOGI("get total frame=%d    ret=%d",totalFrame,ret);
+    return ret==TRUE?totalFrame:-1;
+}
+
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getCurFrame
+        (JNIEnv *, jclass){
+    if(res == NULL) return -1;
+    if(res->play_handle==-1)return -1;
+    int curFrame = 0;
+    BOOL ret = hwplay_get_current_frame(res->play_handle,&curFrame);
+    return ret==TRUE?curFrame:-1;
+}
+
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCurFrame
+        (JNIEnv *, jclass,jint cur){
+    if(res == NULL)return;
+    if (res->play_handle==-1)return;
+    hwplay_set_frame(res->play_handle,cur);
+}
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getTotalMsec
+        (JNIEnv *, jclass){
+    if(res == NULL){LOGE("get total msec res==NULL");return -1;}
+    if(res->play_handle==-1){LOGE("get total msec ph = -1");return -1;}
+    int totalMsec = 0;
+    BOOL ret = hwplay_get_total_msec(res->play_handle,&totalMsec);
+//    LOGI("get total msec =%d    ret=%d",totalMsec,ret);
+    return ret==TRUE?totalMsec:-1;
+}
+
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPlayedMsec
+        (JNIEnv *, jclass){
+    if (res==NULL)return -1;
+    if(res->play_handle==-1)return -1;
+    int curMsec = 0;
+    BOOL ret = hwplay_get_played_msec(res->play_handle,&curMsec);
+    return ret==TRUE?curMsec:-1;
+}
+
 
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime

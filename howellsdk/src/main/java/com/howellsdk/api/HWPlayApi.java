@@ -30,6 +30,13 @@ public interface HWPlayApi {
     void reLink(boolean isSub, @Nullable String begTime,@Nullable String endTime);//重连
     void playbackReLink(boolean isSub,long beg,long end);
 
+    //local
+    int getTotalFrame();
+    int getCurFrame();
+    void setCurFrame(int curFrame);
+    int getTotalMsec();
+    int getPlayedMsec();
+
     //fun
     boolean getRecordedFiles(String beg,String end,@Nullable Integer nowPage,@Nullable Integer pageSize);
     boolean ptzControl(PTZ_CMD cmd,int speed,@Nullable Integer presetNo);
