@@ -28,7 +28,7 @@ class ApPlayer :BasePlayer(){
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ isSuccess->
                     sendInitResult(isSuccess)
-                    if (isSuccess) play(Config.CAM_IS_SUB)
+
                 },{e-> e.printStackTrace()
                 })
         return this

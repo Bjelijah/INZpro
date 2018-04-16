@@ -1021,6 +1021,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_localReadyPlay
     if(res == NULL)return false;
     const char * _path = env->GetStringUTFChars(path,0);
     LOGE("path=%s\n",_path);
+    hwplay_init(1,0,0);
     PLAY_HANDLE ph = hwplay_open_local_file(_path);
     LOGI("open local file ph=%d",ph);
     hwplay_open_sound(ph);

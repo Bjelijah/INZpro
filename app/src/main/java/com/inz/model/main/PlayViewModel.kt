@@ -28,19 +28,26 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     val F_TIME = 1L//刷新率  s
     var mWaiteNum = 0
     var mPlayer:BasePlayer?=null
-
+    var nowPlayState = 0//0:playAp  1:playLocal
 
 
 
     override fun onCreate() {
 
         Log.e("123","onCreate!!!!")
+        initLocalPlay()
+        initApPlay() //now is ap
+    }
+
+    fun initApPlay(){
         mPlayer = ModelMgr.getApPlayerInstance()
-                .registPlayStateListener({
-                    //init
+                .registPlayStateListener({ isSuccess->//init
+                    if (isSuccess) playView()
+                    nowPlayState = 0
                 },{
                     //deinit
                 },{ //play
+                    stopTimeTask()
                     startTimeTask(ApiManager.getInstance().aPcamService)
                 },{//stop
                     stopTimeTask()
@@ -54,7 +61,47 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 .init(Config.CAM_Crypto,Config.CAM_IP)
     }
 
+    fun initLocalPlay(){
+        mPlayer = ModelMgr.getLoaclPlayerInstance()
+                .registPlayStateListener({
+                    nowPlayState = 1
+                },{},{
+                    Log.i("123","")
+                    stopTimeTask()
+                    startTimeTask(ApiManager.getInstance().localService)
+                },{
+                    stopTimeTask()
+                },{})
+                .init(Config.CAM_Crypto,"whatever")
+    }
+
+    fun setUrl(url:String){
+        mPlayer?.setUrl(url)
+    }
+
+    fun playView(){
+        mPlayer?.play(Config.CAM_IS_SUB)
+
+    }
+
+    fun stopView(){
+        mPlayer?.stop()
+    }
+
+    fun change2AP(){
+        if (nowPlayState==0)return
+        ThreadUtil.cachedThreadStart({
+            stopView()
+            Thread.sleep(500)
+            initApPlay()
+        })
+
+    }
+
+
+
     override fun onDestory() {
+
         mPlayer?.unregistPlayStateListener()
         mPlayer?.stop()
 
@@ -118,6 +165,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         RxUtil.doInUIThread(object : RxUtil.RxSimpleTask<Boolean>(){
             override fun doTask() {
                 if (bWait){
+
                     mProcessVisibility.set(View.VISIBLE)
                 }else{
                     mProcessVisibility.set(View.GONE)

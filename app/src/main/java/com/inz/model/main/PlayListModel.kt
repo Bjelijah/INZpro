@@ -28,20 +28,12 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     private val SHOW_PICTURE_FILE   = 0x02
 
     private var mShowCode       = SHOW_NONE
-    private var mLocalPlayer:BasePlayer?=null
+//    private var mLocalPlayer:BasePlayer?=null
     override fun onCreate() {
-        mLocalPlayer = ModelMgr.getLoaclPlayerInstance()
-                .registPlayStateListener({},{},{
-                    Log.i("123","")
-                    ModelMgr.getPlayViewModelInstance(mContext).startTimeTask(ApiManager.getInstance().localService)
-                },{
-                    ModelMgr.getPlayViewModelInstance(mContext).stopTimeTask()
-                },{})
-                .init(Config.CAM_Crypto,"whatever")
+
     }
 
     override fun onDestory() {
-        mLocalPlayer?.deinit()
     }
 
 
@@ -148,8 +140,10 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         var vidAdapter = MyVideoAdapter(mContext,object :MyVideoAdapter.OnItemClickListener{
             override fun onItemClickListener(bean:VideoBean,pos: Int) {
                 Log.i("123","video on ItemClick   pos=$pos   name=${bean.name}  path=${bean.path}")
-                mLocalPlayer?.setUrl(bean.path)
-                mLocalPlayer?.play(false)
+                ModelMgr.getPlayViewModelInstance(mContext).stopView()
+                ModelMgr.getPlayViewModelInstance(mContext).initLocalPlay()
+                ModelMgr.getPlayViewModelInstance(mContext).setUrl(bean.path)
+                ModelMgr.getPlayViewModelInstance(mContext).playView()
             }
 
             override fun onItemLongClickListener(bean:VideoBean,pos: Int) {
@@ -163,7 +157,6 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         updateVideoList(v)
 
     }
-
 
     fun updateVideoList(v:RecyclerView){
         var lst = FileUtil.getVideoDirFile()

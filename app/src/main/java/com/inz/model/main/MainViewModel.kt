@@ -74,6 +74,8 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val onClickCtrlBack       = Action {
         DebugLog.LogI("onclick ctrl back")
         CtrlAction.setPlayReview(mContext)
+        //play view
+        ModelMgr.getPlayViewModelInstance(mContext).change2AP()
     }
     val onClickCtrlReplay     = Action {
         DebugLog.LogI("onclick ctrl replay")

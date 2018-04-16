@@ -15,7 +15,8 @@ abstract class BasePlayer {
     }
 
     fun registPlayStateListener(o1: (Boolean) -> Unit, o2:(Boolean)->Unit,o3:(Boolean)->Unit,o4:(Boolean)->Unit,o5:(Boolean)->Unit):BasePlayer{
-            mListener.add(object :PlayStateListener{
+        mListener.clear() //just regist one
+        mListener.add(object :PlayStateListener{
                 override fun onInit(b: Boolean)     = o1(b)
                 override fun onDeinit(b: Boolean)   = o2(b)
                 override fun onPlay(b: Boolean)     = o3(b)
