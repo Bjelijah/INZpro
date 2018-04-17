@@ -46,6 +46,28 @@ public class ThreadUtil {
         sCachedThreadPool = null;
     }
 
+    public static ExecutorService newCachedThreadStart(Runnable r){
+        ExecutorService bar = Executors.newCachedThreadPool();
+        bar.execute(r);
+        return bar;
+    }
+
+    public static void newCachedThreadShutDown(ExecutorService thread){
+        if (thread==null)return;
+        thread.shutdown();
+        try {
+            if (!thread.awaitTermination(60,TimeUnit.SECONDS)){
+                thread.shutdown();
+                if (!thread.awaitTermination(60,TimeUnit.SECONDS)){
+                    System.err.print("new cached shut down error!!!!");
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        thread = null;
+    }
+
     public static void fixThreadStart(Runnable r, @Nullable Integer nThreads){
         if (sFixedThreadPool==null){
             sFixedThreadPool = Executors.newFixedThreadPool(nThreads==null?POOL_MAX:nThreads);
@@ -96,6 +118,18 @@ public class ThreadUtil {
         sScheduledThread.shutdown();
         sScheduledThread = null;
     }
+
+    public static ScheduledExecutorService newScheduledThreadStart(Runnable r,long delay,long period,TimeUnit t){
+        ScheduledExecutorService bar = Executors.newScheduledThreadPool(POOL_MAX);
+        bar.scheduleAtFixedRate(r,delay,period,t);
+        return bar;
+    }
+
+    public static void newScheduledThreadShutDown(ScheduledExecutorService service){
+        if (service==null)return;
+        service.shutdown();
+    }
+
 
     public static void scheduledSingleThreadStart(Runnable r,long delay,long period,TimeUnit t){
         if (sScheduledSingleThread == null){

@@ -16,6 +16,7 @@ object ModelMgr {
     var mApPlayer:ApPlayer                  ?=null
     var mLocalPlayer:LocalPlayer            ?=null
     var mDownloadMgr:DownloadMgr            ?=null
+    var mListItemModel:ListItemModel        ?=null
     fun init(c:Context){
         mContext = c
     }
@@ -67,6 +68,12 @@ object ModelMgr {
             mLocalPlayer = LocalPlayer()
         }
         return mLocalPlayer!!
+    }
+    fun getListItemModelInstance(c:Context):ListItemModel{
+        if (mListItemModel==null){
+            mListItemModel = ListItemModel(c)
+        }
+        return mListItemModel!!
     }
 
 }

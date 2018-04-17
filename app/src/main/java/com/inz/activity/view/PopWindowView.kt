@@ -5,15 +5,15 @@ import android.support.annotation.LayoutRes
 import android.widget.PopupWindow
 import com.inz.inzpro.BaseViewModel
 
-class SoundVolView (val mContext: Context):BaseView(){
+class PopWindowView (val mContext: Context):BaseView(){
 
 
     @LayoutRes
     var mLayoutId = 0
     lateinit var mViewModel:BaseViewModel
     companion object {
-        fun generate(context: Context,body:SoundVolView.()->PopupWindow):PopupWindow{
-            return with(SoundVolView(context)){body()}
+        fun generate(context: Context,body:PopWindowView.()->PopupWindow):PopupWindow{
+            return with(PopWindowView(context)){body()}
         }
     }
 
@@ -24,11 +24,8 @@ class SoundVolView (val mContext: Context):BaseView(){
         pw.contentView = v
         pw.isOutsideTouchable = true
         pw.setOnDismissListener { unBindView() }
-
         return pw
     }
-
-
 
     override fun getLayout(): Int = mLayoutId
 

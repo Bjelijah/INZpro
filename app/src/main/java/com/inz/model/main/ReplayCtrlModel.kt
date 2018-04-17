@@ -7,7 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.PopupWindow
 import com.inz.action.CtrlAction
-import com.inz.activity.view.SoundVolView
+import com.inz.activity.view.PopWindowView
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
@@ -52,7 +52,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
             mSoundVol = null
             return@OnClickListener
         }
-        mSoundVol = SoundVolView.generate(mContext,{
+        mSoundVol = PopWindowView.generate(mContext,{
             mLayoutId = R.layout.view_sound_vol
             mViewModel = ModelMgr.getSoundVolModelInstance(mContext)
             build()

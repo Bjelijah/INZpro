@@ -8,14 +8,17 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
+import android.widget.PopupWindow
 import com.howellsdk.api.ApiManager
 import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
+import com.inz.activity.view.PopWindowView
 import com.inz.adapter.MyPictureAdapter
 import com.inz.adapter.MyVideoAdapter
 import com.inz.bean.PictureBean
 import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
+import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 import com.inz.model.player.BasePlayer
 import com.inz.utils.FileUtil
@@ -29,6 +32,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     private val SHOW_PICTURE_FILE   = 0x02
 
     private var mShowCode       = SHOW_NONE
+    private var mFunPop: PopupWindow?=null
 //    private var mLocalPlayer:BasePlayer?=null
     override fun onCreate() {
 
@@ -110,7 +114,14 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
             }
 
             override fun onItemLongClick(pos: Int) {
-                Log.i("123","onItemLongClickListener pos= $pos")
+                mFunPop = PopWindowView.generate(mContext,{
+                    mLayoutId = R.layout.view_list_fun
+                    mViewModel = ModelMgr.getListItemModelInstance(mContext)
+                    build()
+                })
+                mFunPop?.showAsDropDown()
+
+
             }
 
         })
