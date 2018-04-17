@@ -107,6 +107,21 @@ public class HwBasePlay implements HWPlayApi {
     }
 
     @Override
+    public int getPos() {
+        return 0;
+    }
+
+    @Override
+    public void setPos(int pos) {
+
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+
+    }
+
+    @Override
     public boolean getRecordedFiles(String beg, String end,@Nullable Integer nowPage,@Nullable Integer pageSize) {
         return false;
     }

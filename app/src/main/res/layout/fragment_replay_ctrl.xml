@@ -130,7 +130,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/replay_ctrl_pause"
+                    android:src="@{vm.MReplaySrc}"
                     android:clickable="true"
                     android:onClick="@{vm.onClickReplayPauseAndPlay}"
                     />

@@ -86,6 +86,9 @@ public class JniUtil {
 	public static native void setCurFrame(int curFrame);
 	public static native int getTotalMsec();
 	public static native int getPlayedMsec();
+	public static native int getPos();
+	public static native void setPos(int pos);
+	public static native void setPlaySpeed(float speed);
 	//transmission
 	
 	public static native synchronized void transInit();

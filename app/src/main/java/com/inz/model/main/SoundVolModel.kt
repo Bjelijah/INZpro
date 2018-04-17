@@ -4,20 +4,27 @@ import android.content.Context
 import android.databinding.ObservableField
 import android.databinding.adapters.SeekBarBindingAdapter
 import android.util.Log
+import com.howellsdk.audio.AudioAction
 import com.inz.inzpro.BaseViewModel
 
-class SoundVolModel (mContext:Context):BaseViewModel{
+class SoundVolModel (var mContext:Context):BaseViewModel{
 
     override fun onCreate() {
+        var curVol = AudioAction.getInstance().getStreamVolum(mContext)
+        mProcess.set(curVol)
+        mProcessStr.set(curVol.toString())
     }
     override fun onDestory() {
     }
 
-    val mProcess     = ObservableField<String>("0")
+    val mProcessStr     = ObservableField<String>("0")
+    val mProcess        = ObservableField<Int>(0)
     val onProgressChanged         = SeekBarBindingAdapter.OnProgressChanged{
         seekBar, progress, fromUser ->
-
-        Log.i("123",progress.toString()+"  isUser="+fromUser+  "mprogress="+mProcess.get())
-        mProcess.set(progress.toString())
+        if (fromUser) {
+            mProcessStr.set(progress.toString())
+            AudioAction.getInstance().setStreamVolum(mContext, progress)
+        }
     }
+
 }

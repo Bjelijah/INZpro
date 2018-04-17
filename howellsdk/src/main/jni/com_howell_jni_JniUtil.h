@@ -465,6 +465,30 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPlayedMsec
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    getPos
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPos
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    setPos
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPos
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    setPlaySpeed
+ * Signature: (F)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPlaySpeed
+  (JNIEnv *, jclass, jfloat);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    transInit
  * Signature: ()V
  */

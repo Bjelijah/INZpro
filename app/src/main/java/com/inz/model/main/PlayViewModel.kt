@@ -13,7 +13,9 @@ import com.howellsdk.utils.RxUtil
 import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
 import com.inz.action.CtrlAction
+import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
+import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 
 import com.inz.model.player.BasePlayer
@@ -22,6 +24,8 @@ import com.inz.utils.Utils
 import java.util.concurrent.TimeUnit
 
 class PlayViewModel(private var mContext:Context):BaseViewModel {
+    val PLAY_SPEED         = doubleArrayOf(0.25,0.5,1.0,2.0,4.0)
+    var mPlaySpeedIndex = 2
     var mIsPlayback = false
     var mIsFull = false
     val F_TIME = 1L//刷新率  s
@@ -31,12 +35,14 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     var mCurFrame = 0
     var mCurMsec = 0
     var mScheduledFlag = false
-
+    var mVideoSourceArr:ArrayList<VideoBean> ?=null
+    var mVideoIndex = 0
     override fun onCreate() {
 
         Log.e("123","onCreate!!!!")
         initLocalPlay()
         initApPlay() //now is ap
+        mPlaySpeedIndex = 2
     }
 
     fun initApPlay(){
@@ -71,6 +77,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     initInfo()
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().localService)
+                    mPlaySpeedIndex = 2
                 },{
                     stopTimeTask()
                 },{})
@@ -95,7 +102,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     3->"H265C"
                     else->"H264"
                 }
-                mEndTime = Utils.formatMsec(mPlayer?.getTotalMsec()?.toLong()?:0L)
+                var msec = mPlayer?.getTotalMsec()?.toLong()?:0L
+                mEndTime = Utils.formatMsec(msec)
+                ModelMgr.getReplayCtrlModelInstance(mContext).setTotalMsec(msec)
             }
 
             override fun doInUIThread() {
@@ -104,7 +113,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setEndTime(mEndTime)
                 stopNewTask()
-                setScheduledFlag(true)
+                setScheduledFlag(true,0)
                 newTimeTask(ApiManager.getInstance().localService)
             }
 
@@ -119,6 +128,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.setCurFrame(cur)
     }
 
+    fun set2LocalPos(pos:Int){
+        mPlayer?.setPos(pos)
+    }
 
     fun setCurTime(cur:String){
         ModelMgr.getReplayCtrlModelInstance(mContext).setBegTime(cur)
@@ -143,6 +155,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun stopView(){
+        mPlayer?.setPlaySpeed(1.0f)
         mPlayer?.stop()
     }
 
@@ -218,7 +231,13 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         }
     }
 
+    fun setVideoSource(arr:ArrayList<VideoBean>){
+        mVideoSourceArr = arr
+    }
 
+    fun setVideoPlayCurIndex(index:Int){
+        mVideoIndex = index
+    }
 
 
     fun onTime(speed:Int,timestamp: Long,firstTimeStamp:Long,bWait:Boolean){
@@ -279,8 +298,12 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         ThreadUtil.scheduledSingleThreadShutDown()
     }
 
-    fun setScheduledFlag(flag:Boolean){
-        mScheduledFlag = flag
+    fun setScheduledFlag(flag:Boolean,delay:Int){
+        ThreadUtil.cachedThreadStart({
+            Thread.sleep(delay.toLong())
+            mScheduledFlag = flag
+
+        })
     }
 
     fun newTimeTask(server:HWPlayApi){
@@ -298,6 +321,62 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
     fun stopNewTask(){
         ThreadUtil.scheduledThreadShutDown()
+    }
+
+
+    fun onStopClick(){
+
+        stopTimeTask()
+        stopNewTask()
+        stopView()
+
+    }
+
+    fun onPlayClick(){
+        playView()
+    }
+
+    fun onPauseClick(){
+        pauseView()
+    }
+
+    fun onSlowClick(){
+        if (mPlaySpeedIndex > 0){
+            mPlaySpeedIndex--
+        }
+        var speed  = PLAY_SPEED[mPlaySpeedIndex]
+        mPlayer?.setPlaySpeed(speed.toFloat())
+        Toast.makeText(mContext,"${mContext.getString(R.string.play_speed)} $speed",Toast.LENGTH_SHORT).show()
+    }
+
+    fun onFastClick(){
+        if (mPlaySpeedIndex < PLAY_SPEED.size-1){
+            mPlaySpeedIndex++
+        }
+        var speed = PLAY_SPEED[mPlaySpeedIndex]
+        mPlayer?.setPlaySpeed(speed.toFloat())
+        Toast.makeText(mContext,"${mContext.getString(R.string.play_speed)} $speed",Toast.LENGTH_SHORT).show()
+    }
+
+
+
+    fun onPlayNextClick(){
+        var len = mVideoSourceArr?.size?:0
+        if( len==0)return
+        if (mVideoIndex == len -1)mVideoIndex=0
+        else mVideoIndex++
+        var url = mVideoSourceArr!![mVideoIndex].path
+        mPlayer?.stopAndPlayAnother(url)
+    }
+
+    fun onPlayLastClick(){
+        var len = mVideoSourceArr?.size?:0
+        if (len ==0)return
+        if (mVideoIndex == 0)mVideoIndex = len -1
+        else mVideoIndex--
+        var url = mVideoSourceArr!![mVideoIndex].path
+        mPlayer?.stopAndPlayAnother(url)
+
     }
 
 }

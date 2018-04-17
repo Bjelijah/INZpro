@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{vm.mProcess}"
+            android:text="@{vm.MProcessStr}"
             android:textSize="@dimen/sound_vol_text_size"
             android:textColor="@color/white_highlight"
             />
@@ -36,7 +36,9 @@
                 android:splitTrack="false"
                 app:seekBarRotation="CW270"
                 android:max="99"
+                android:progress="@{vm.MProcess}"
                 android:onProgressChanged="@{vm.onProgressChanged}"
+
                 />
         </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
     </LinearLayout>

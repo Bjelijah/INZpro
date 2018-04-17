@@ -18,6 +18,7 @@ abstract class BaseView() {
         mBinder = DataBindingUtil.inflate(LayoutInflater.from(context),getLayout(),null,false)
         mViewModel = getViewmodel()
         BinderHelper.defaultBinder.bind(mBinder,mViewModel)
+        mViewModel.onCreate()
         return mBinder.root
     }
 

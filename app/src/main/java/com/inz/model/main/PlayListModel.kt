@@ -9,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
 import com.howellsdk.api.ApiManager
+import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
 import com.inz.adapter.MyPictureAdapter
 import com.inz.adapter.MyVideoAdapter
@@ -140,10 +141,15 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         var vidAdapter = MyVideoAdapter(mContext,object :MyVideoAdapter.OnItemClickListener{
             override fun onItemClickListener(bean:VideoBean,pos: Int) {
                 Log.i("123","video on ItemClick   pos=$pos   name=${bean.name}  path=${bean.path}")
-                ModelMgr.getPlayViewModelInstance(mContext).stopView()
-                ModelMgr.getPlayViewModelInstance(mContext).initLocalPlay()
-                ModelMgr.getPlayViewModelInstance(mContext).setUrl(bean.path)
-                ModelMgr.getPlayViewModelInstance(mContext).playView()
+                ThreadUtil.cachedThreadStart({
+                    ModelMgr.getPlayViewModelInstance(mContext).stopView()
+                    Thread.sleep(500)
+                    ModelMgr.getPlayViewModelInstance(mContext).initLocalPlay()
+                    ModelMgr.getPlayViewModelInstance(mContext).setUrl(bean.path)
+                    ModelMgr.getPlayViewModelInstance(mContext).setVideoPlayCurIndex(pos)
+                    ModelMgr.getPlayViewModelInstance(mContext).playView()
+                })
+
             }
 
             override fun onItemLongClickListener(bean:VideoBean,pos: Int) {
@@ -169,6 +175,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
             arr.add(VideoBean(s,name))
         }
         (v.adapter as MyVideoAdapter).setData(arr)
+        ModelMgr.getPlayViewModelInstance(mContext).setVideoSource(arr)
         mUpdateVideoList.set(false)
     }
 

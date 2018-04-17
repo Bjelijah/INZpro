@@ -37,7 +37,9 @@ public interface HWPlayApi {
     void setCurFrame(int curFrame);
     int getTotalMsec();
     int getPlayedMsec();
-
+    int getPos();
+    void setPos(int pos);
+    void setSpeed(float speed);
     //fun
     boolean getRecordedFiles(String beg,String end,@Nullable Integer nowPage,@Nullable Integer pageSize);
     boolean ptzControl(PTZ_CMD cmd,int speed,@Nullable Integer presetNo);

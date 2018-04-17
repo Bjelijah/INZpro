@@ -92,4 +92,24 @@ class LocalPlayer :BasePlayer() {
     override fun getTotalMsec(): Int = ApiManager.getInstance().localService.totalMsec
 
     override fun getPlayedMsec(): Int = ApiManager.getInstance().localService.playedMsec
+
+    override fun setPos(pos: Int) {ApiManager.getInstance().localService.pos = pos}
+
+    override fun getPos(): Int = ApiManager.getInstance().localService.pos
+
+    override fun setPlaySpeed(speed: Float) {
+        ApiManager.getInstance().localService.setSpeed(speed)
+    }
+
+    override fun stopAndPlayAnother(url: String) {
+        Observable.create(ObservableOnSubscribe<Boolean> {e->
+            ApiManager.getInstance().localService.stop()
+            ApiManager.getInstance().localService.setUri(url)
+            ApiManager.getInstance().localService.play(false)
+            e.onNext(true)
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({},{e->e.printStackTrace()})
+    }
 }

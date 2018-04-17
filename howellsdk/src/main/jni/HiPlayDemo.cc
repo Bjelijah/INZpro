@@ -1353,7 +1353,32 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPlayedMsec
     return ret==TRUE?curMsec:-1;
 }
 
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPos
+        (JNIEnv *, jclass){
+    if(res==NULL)return -1;
+    if(res->play_handle==-1)return -1;
+    int pos = 0;
+    BOOL ret = hwplay_get_pos(res->play_handle,&pos);
+    return ret==TRUE?pos:-1;
+}
 
+
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPos
+        (JNIEnv *, jclass, jint pos){
+    if(res==NULL)return;
+    if(res->play_handle==-1)return;
+    BOOL ret =  hwplay_set_pos(res->play_handle, pos);
+    LOGI("jni setpos  pos=%d  ret=%d",pos,ret);
+    return;
+}
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPlaySpeed
+        (JNIEnv *, jclass, jfloat speed){
+    if(res==NULL)return;
+    if(res->play_handle==-1)return;
+    hwplay_set_speed(res->play_handle,speed);
+}
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
         (JNIEnv *, jclass){

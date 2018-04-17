@@ -112,5 +112,20 @@ public class LocalFactory {
         public void clearStreamBuf() {
             JniUtil.clearStreamBuf();
         }
+
+        @Override
+        public int getPos() {
+            return JniUtil.getPos();
+        }
+
+        @Override
+        public void setPos(int pos) {
+            JniUtil.setPos(pos);
+        }
+
+        @Override
+        public void setSpeed(float speed) {
+            JniUtil.setPlaySpeed(speed);
+        }
     }
 }

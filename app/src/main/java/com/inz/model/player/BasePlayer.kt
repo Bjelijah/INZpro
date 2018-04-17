@@ -79,4 +79,8 @@ abstract class BasePlayer {
     open fun setCurFrame(curFrame:Int){}
     open fun getTotalMsec():Int = 0
     open fun getPlayedMsec():Int = 0
+    open fun getPos():Int = 0
+    open fun setPos(pos:Int){}
+    open fun setPlaySpeed(speed:Float){}
+    open fun stopAndPlayAnother(url:String){}
 }

@@ -12,5 +12,5 @@
 
     <string name="catchPicTo">图片已保存到</string>
     <string name="catchPicError">图片保存失败！！</string>
-
+    <string name="play_speed">倍速：</string>
 </resources>

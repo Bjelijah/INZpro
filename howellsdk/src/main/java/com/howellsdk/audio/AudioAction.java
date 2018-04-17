@@ -90,6 +90,24 @@ public class AudioAction {
 		mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, bMute);
 	}
 
+	public void setStreamVolum(Context context,int vol){//vol  0- 100%
+		if (mAudioManager==null){
+			mAudioManager =  (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		}
+		int max =  mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,vol*max /100,0);
+	}
+
+	public int getStreamVolum(Context context){
+		if (mAudioManager==null){
+			mAudioManager =  (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		}
+		int max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		int cur = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		return cur*100/max;
+	}
+
+
 	/**
 	 *
 	 */

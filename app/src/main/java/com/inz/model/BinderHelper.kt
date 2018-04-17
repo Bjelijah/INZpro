@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.inz.model.ModelMgr
 import com.inz.utils.DebugLog
@@ -144,5 +145,9 @@ object BinderHelper {
         ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updateVideoList(v as RecyclerView)
     }
 
-
+    @BindingAdapter("android:src")
+    @JvmStatic
+    fun setSrc(v:ImageView,resId:Int){
+        v.setImageResource(resId)
+    }
 }
