@@ -25,7 +25,7 @@
         <!--android:screenOrientation="landscape"-->
         <activity android:name="com.inz.activity.MainActivity"
             android:theme="@style/MyAppTheme"
-            
+            android:screenOrientation="landscape"
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +33,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.inz.activity.BigImagesActivity"
+            android:theme="@style/MyAppTheme.BigImage"
+            android:screenOrientation="landscape"
+            />
+
+
+
     </application>
 
 </manifest>

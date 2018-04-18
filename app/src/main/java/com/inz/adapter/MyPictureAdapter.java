@@ -17,14 +17,12 @@ import com.inz.inzpro.R;
 import com.inz.utils.ScaleImageUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
@@ -88,6 +86,14 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
         }catch (Exception e){e.printStackTrace();}
     }
 
+    public void removePos(int pos){
+        if (pos<0 || pos > mList.size()-1)return;
+        mList.remove(pos);
+        notifyItemChanged(pos);
+    }
+
+
+
     public void clearData(){
         mList.clear();
         notifyDataSetChanged();
@@ -112,8 +118,8 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
     }
 
     public interface OnItemClickListener{
-        void onItemClick(int pos);
-        void onItemLongClick(int pos);
+        void onItemClick(View v,List<PictureBean> list,int pos);
+        void onItemLongClick(View v,int pos,PictureBean b);
     }
 
     private void init(final ViewHolder h, final PictureBean b, final int pos){
@@ -154,15 +160,21 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
                             @Override
                             public void onClick(View v) {
                                 if (mListener==null)return;
-                                mListener.onItemClick(pos);
+                                mListener.onItemClick(v,mList,pos);
                             }
                         });
                         h.ll.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
                                 if (mListener==null)return false;
-                                mListener.onItemLongClick(pos);
-                                return false;
+                                mListener.onItemLongClick(v,pos,b);
+
+
+
+
+
+
+                                return true;
                             }
                         });
                     }

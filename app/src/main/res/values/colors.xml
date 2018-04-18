@@ -19,7 +19,7 @@
     <color name="light_gray">#BABABA</color>
 
 
-
+    <color name="main_bk_light_gray">#787878</color>
     <color name="main_bk">#424242</color>
     <color name="main_bk_dark">#212121</color>
     <color name="main_bk_light">#303030</color>

@@ -1,17 +1,18 @@
 package com.inz.model.main
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.databinding.ObservableField
-import android.graphics.Bitmap
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
 import android.widget.PopupWindow
-import com.howellsdk.api.ApiManager
 import com.howellsdk.utils.ThreadUtil
-import com.inz.action.Config
+import com.inz.activity.BigImagesActivity
 import com.inz.activity.view.PopWindowView
 import com.inz.adapter.MyPictureAdapter
 import com.inz.adapter.MyVideoAdapter
@@ -20,7 +21,6 @@ import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
-import com.inz.model.player.BasePlayer
 import com.inz.utils.FileUtil
 import com.inz.utils.Utils
 
@@ -34,6 +34,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     private var mShowCode       = SHOW_NONE
     private var mFunPop: PopupWindow?=null
 //    private var mLocalPlayer:BasePlayer?=null
+
+    var activity:Activity?=null
+
     override fun onCreate() {
 
     }
@@ -106,29 +109,39 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mUpdateVideoList             = ObservableField<Boolean>(false)
 
 
-    fun initPictureList(v:RecyclerView,width:Int){
+    fun initPictureList(rv:RecyclerView, width:Int){
         Log.i("123","model  initPictureList")
         var picAdapter = MyPictureAdapter(mContext,object :MyPictureAdapter.OnItemClickListener{
-            override fun onItemClick(pos: Int) {
-                Log.i("123","onItemClickListener pos= $pos")
+            override fun onItemClick(v: View?, list: MutableList<PictureBean>?, pos: Int) {
+                var picPaths = ArrayList<String>()
+                list?.forEach {
+                    picPaths.add(it.path)
+                }
+                var intent = Intent(mContext,BigImagesActivity::class.java)
+                intent.putExtra("position",pos).putStringArrayListExtra("arrayList",picPaths)
+//                mContext.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
+                activity!!.startActivityForResult(intent,0,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
+
             }
 
-            override fun onItemLongClick(pos: Int) {
+
+            override fun onItemLongClick(v:View,pos: Int,bean:PictureBean) {
+                Log.i("123","on item long click pos=$pos     path=${bean.path}")
                 mFunPop = PopWindowView.generate(mContext,{
                     mLayoutId = R.layout.view_list_fun
                     mViewModel = ModelMgr.getListItemModelInstance(mContext)
                     build()
                 })
-                mFunPop?.showAsDropDown()
-
+                ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
+                ModelMgr.getListItemModelInstance(mContext).mBean = bean
+                mFunPop?.showAsDropDown(v)
 
             }
-
         })
         picAdapter.setWidth(width)
-        v.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        v.adapter = picAdapter
-        updatePictureList(v)
+        rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        rv.adapter = picAdapter
+        updatePictureList(rv)
     }
 
     fun updatePictureList(v:RecyclerView){
@@ -163,8 +176,15 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
             }
 
-            override fun onItemLongClickListener(bean:VideoBean,pos: Int) {
-
+            override fun onItemLongClickListener(v:View,bean:VideoBean,pos: Int) {
+                mFunPop = PopWindowView.generate(mContext,{
+                    mLayoutId = R.layout.view_list_fun
+                    mViewModel = ModelMgr.getListItemModelInstance(mContext)
+                    build()
+                })
+                ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
+                ModelMgr.getListItemModelInstance(mContext).mBean = bean
+                mFunPop?.showAsDropDown(v)
             }
 
         })

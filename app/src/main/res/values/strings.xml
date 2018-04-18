@@ -15,4 +15,9 @@
     <string name="play_speed">倍速：</string>
     <string name="item_del">删除</string>
     <string name="item_share">分享</string>
+    <string name="share_pic">分享图片</string>
+    <string name="big_image_activity_dialog_title_remove">删除</string>
+    <string name="big_image_activity_dialog_message">删除这张照片？</string>
+    <string name="big_image_activity_dialog_yes_button_name">确定</string>
+    <string name="big_image_activity_dialog_no_button_name">取消</string>
 </resources>

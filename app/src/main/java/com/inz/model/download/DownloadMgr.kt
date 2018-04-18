@@ -1,5 +1,6 @@
 package com.inz.model.download
 
+import android.util.Log
 import com.howellsdk.api.ApiManager
 import com.howellsdk.utils.ThreadUtil
 import com.inz.model.ModelMgr
@@ -35,24 +36,33 @@ class DownloadMgr {
                 var path = FileUtil.createNewVideoDirPathName()
                 ApiManager.getInstance().apDownLoadServer
                         .open(path).start()
-                obj.wait()
+                synchronized(obj){
+                    obj.wait()
+                }
                 ApiManager.getInstance().apDownLoadServer.stop().close()
                 ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).upDateVideoListState()
+                Log.e("123","thread new cached stop download")
+                Thread.sleep(100)
             }
         })
     }
 
     fun stepStop(){
         startFlag = false
-        obj.notify()
+        synchronized(obj){
+            obj.notify()
+        }
         ThreadUtil.newCachedThreadShutDown(task)
         timeTaskStop()
+        Log.e("123","step stop")
     }
 
     private fun timeTaskStart(){
         time = ThreadUtil.newScheduledThreadStart({
-            obj.notify()
-        },0,2,TimeUnit.SECONDS)
+            synchronized(obj){
+                obj.notify()
+            }
+        },0,2,TimeUnit.MINUTES)
     }
     private fun timeTaskStop(){
         ThreadUtil.newScheduledThreadShutDown(time)

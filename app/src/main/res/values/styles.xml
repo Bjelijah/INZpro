@@ -16,12 +16,32 @@
     <style name="MyAppTheme" parent="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/main_bk</item>
         <item name="colorPrimaryDark">@color/main_bk_dark</item>
+
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
 
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <!--<item name="android:textColor">@color/colorAccent</item>-->
+        <item name="android:colorPrimary">@color/white</item>
+        <item name="android:colorControlNormal">@color/white</item>
 
+        <item name="android:background">@color/main_bk_light_gray</item>
+    </style>
+
+    <style name="MyAppTheme.BigImage">
+        <!--<item name="android:background">@color/main_bk</item>-->
+        <!--<item name="android:textColor">@color/white_highlight</item>-->
+        <item name="android:alertDialogTheme">@style/MyDialogTheme</item>
+    </style>
+
+
+
+    <style name="MyToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white_highlight</item>
+    </style>
 
     <style name="MyCtrlButton" >
         <item name="android:textColor">@color/black</item>

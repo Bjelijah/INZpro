@@ -68,6 +68,7 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
         return new ViewHolder(v);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         VideoBean b = mList.get(position);
@@ -105,7 +106,7 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
             @Override
             public boolean onLongClick(View v) {
                 if (mListener==null)return false;
-                mListener.onItemLongClickListener(bean,pos);
+                mListener.onItemLongClickListener(v,bean,pos);
                 return true;
             }
         });
@@ -114,7 +115,7 @@ public class MyVideoAdapter extends RecyclerView.Adapter<MyVideoAdapter.ViewHold
 
     public interface OnItemClickListener{
         void onItemClickListener(VideoBean b,int pos);
-        void onItemLongClickListener(VideoBean b,int pos);
+        void onItemLongClickListener(View v,VideoBean b,int pos);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

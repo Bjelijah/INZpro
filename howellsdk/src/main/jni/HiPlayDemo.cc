@@ -986,17 +986,15 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     HW_MEDIAINFO media_head;
     memset(&media_head,0,sizeof(media_head));
 
-
-
     LOGE("isPlayback=%d",isPlayBack);
-//    if (!isPlayBack){
+    if (!isPlayBack){
         res->live_stream_handle = hwnet_get_live_stream(res->user_handle,slot,is_sub,0,on_live_stream_fun,0);
-//        hwnet_get_live_stream_head(res->live_stream_handle,(char*)&media_head,1024,&res->media_head_len);
-//    }else{
-//        file_stream_t file_info;
-//        res->file_stream_handle = hwnet_get_file_stream(res->user_handle,slot,res->beg,res->end,on_file_stream_fun,0,&file_info);
-//        hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
-//    }
+        hwnet_get_live_stream_head(res->live_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+    }else{
+        file_stream_t file_info;
+        res->file_stream_handle = hwnet_get_file_stream(res->user_handle,slot,res->beg,res->end,on_file_stream_fun,0,&file_info);
+        hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+    }
     LOGE("lh=%d",res->live_stream_handle);
 
     LOGI("net ready play get live stream head vdec_code=");
@@ -1007,12 +1005,6 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     LOGE(" vc  0x%x",media_head.vdec_code);
 
     //ap:0 h264  1 h265  2 h264 Crypto  3 h265 Crypto
-
-    media_head.media_fourcc = HW_MEDIA_TAG;
-//    media_head.au_channel = 0;
-//    media_head.au_sample = 8000/1000;
-//    media_head.au_bits = 16;
-
     LOGE("head =0x%x",media_head.media_fourcc);
 
     if (isCrypto==1){
@@ -1026,18 +1018,24 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     }else {
         media_head.vdec_code = VDEC_H264;//默认 未加密 h264 用于 ap
     }
-    media_head.vdec_code = VDEC_H264;
-    media_head.adec_code = ADEC_G711U;
-    media_head.au_bits = 16;
-    media_head.au_channel = 1;
-    media_head.au_sample = 8;
-    media_head.dvr_version = 0;
-    LOGE("vc 0x%x     ac 0x%x    au 0x%x     ach 0x%x     as 0x%x   dvr 0x%x"
+
+    if(media_head.media_fourcc!=HW_MEDIA_TAG){
+        memset(&media_head,0,sizeof(media_head));
+        media_head.media_fourcc = HW_MEDIA_TAG;
+        media_head.vdec_code = VDEC_H264;
+        media_head.adec_code = ADEC_G711U;
+        media_head.au_bits = 16;
+        media_head.au_channel = 1;
+        media_head.au_sample = 8;
+        media_head.dvr_version = 0;
+    }
 
 
-
-                 ,media_head.vdec_code
-    ,media_head.adec_code,media_head.au_bits,media_head.au_channel,media_head.au_sample,media_head.dvr_version);
+    LOGE("vc=0x%x     ac=0x%x    au=%d     auchannel %d     asample %d   dvr %d"
+    ,media_head.vdec_code
+    ,media_head.adec_code
+    ,media_head.au_bits
+    , media_head.au_channel,media_head.au_sample,media_head.dvr_version);
 
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);

@@ -1,5 +1,6 @@
 package com.inz.activity.fragment
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -38,6 +39,7 @@ class PlayListFragment :BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.e("456","oncreateView")
         var v = super.onCreateView(inflater, container, savedInstanceState)
         var rv:RecyclerView = v.findViewById(R.id.video_list_rv)
         var rp:RecyclerView = v.findViewById(R.id.video_list_rp)
@@ -51,8 +53,12 @@ class PlayListFragment :BaseFragment() {
                 v.viewTreeObserver.removeGlobalOnLayoutListener(this)
             }
         })
+        ModelMgr.getPlayListModelInstance(context).activity = activity
         return v
     }
+
+
+
 
 
 

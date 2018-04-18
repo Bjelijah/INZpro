@@ -11,6 +11,7 @@ class PopWindowView (val mContext: Context):BaseView(){
     @LayoutRes
     var mLayoutId = 0
     lateinit var mViewModel:BaseViewModel
+
     companion object {
         fun generate(context: Context,body:PopWindowView.()->PopupWindow):PopupWindow{
             return with(PopWindowView(context)){body()}
