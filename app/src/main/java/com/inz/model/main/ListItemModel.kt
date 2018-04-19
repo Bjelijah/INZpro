@@ -65,18 +65,18 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
     }
 
     val onClickConvert = Action {
+        mPop?.dismiss()
         ThreadUtil.cachedThreadStart({
             var path = mBean?.path
             var hwPath = path!!
             var p = path?.split(".")
             var h264Path = p!![0] + ".h264"
+            var mp4Path  = p!![0] + ".mp4"
             Log.i("123","h264path=$hwPath       mp4path=$h264Path")
             Log.i("123","convert hw->h264 start")
             JniUtil.hwFile2H264File(hwPath,h264Path)
             Log.i("123","convert hw->h264 end")
-
-
-
+            FileUtil.h264File2mp4File(h264Path,mp4Path)
         })
 
     }
