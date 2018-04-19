@@ -59,7 +59,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     stopTimeTask()
                 },{b->//catchPic
                     if (b)  {
-                        ModelMgr.getPlayListModelInstance(mContext).upDatePictureListState()
+                        ModelMgr.getPlayListModelInstance(mContext).updatePictureListState()
                         Toast.makeText(mContext,MessageHelp.msgCatchPic(mContext),Toast.LENGTH_LONG).show()
                     }
                     else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()

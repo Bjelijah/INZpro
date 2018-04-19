@@ -138,6 +138,13 @@ object BinderHelper {
         ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureList(v as RecyclerView)
     }
 
+    @BindingAdapter("update_picture_share")
+    @JvmStatic
+    fun onPictureShareUpdate(v:View,b:Boolean){
+        ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureShare(v as RecyclerView,b)
+    }
+
+
     @BindingAdapter("update_video_list")
     @JvmStatic
     fun onVideoListUpdate(v:View,b:Boolean){

@@ -271,15 +271,19 @@ public class ApiManager {
         return this;
     }
 
-    public HWDownloadApi getApDownLoadServer(){
+    public HWDownloadApi getApDownLoadServer(int type){
        if (mDownloadApi==null){
            mDownloadApi = new ApDownloadFactory
                    .Builder()
+                   .setType(type)
                    .build().create();
        }
        return mDownloadApi;
     }
-    public HWDownloadApi getHWDownloadApi() {
+
+
+
+    public HWDownloadApi getApDownLoadServer() {
         return mDownloadApi;
     }
 

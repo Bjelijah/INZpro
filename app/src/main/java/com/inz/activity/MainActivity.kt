@@ -3,9 +3,8 @@ package com.inz.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
+import android.content.res.Configuration
 import android.util.Log
-import android.view.View
 import com.inz.inzpro.R
 import com.inz.inzpro.BaseViewModel
 import com.inz.model.ModelMgr
@@ -25,13 +24,16 @@ class MainActivity:BaseActivity() {
         when(resultCode){
             Activity.RESULT_OK->{
                 Log.e("123","updata picture")
-                ModelMgr.getPlayListModelInstance(this).upDatePictureListState()
+                ModelMgr.getPlayListModelInstance(this).updatePictureListState()
             }
             Activity.RESULT_CANCELED->{}
             else->{}
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+    }
 
 
 }

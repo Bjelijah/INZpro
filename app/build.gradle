@@ -61,4 +61,5 @@ dependencies {
     kapt "com.google.dagger:dagger-android-support:2.+"
 
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
+    implementation 'com.googlecode.mp4parser:isoparser:1.1.21'
 }

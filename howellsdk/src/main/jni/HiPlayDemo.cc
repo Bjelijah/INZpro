@@ -22,8 +22,9 @@
 #include <stream_type.h>
 #include <hw_config.h>
 #include <string.h>
-
-
+#include <sys/types.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGW(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_WARN, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGE(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_ERROR, "JNI", __VA_ARGS__):(void)NULL)
@@ -124,6 +125,7 @@ typedef struct{
     int vCode;
     int isWriteHead;
     int enable;
+    int downType;
 }DOWN_LOAD_T;
 
 static DOWN_LOAD_T * g_downloadMgr = NULL;
@@ -633,6 +635,7 @@ static void on_download_fun(const char* buf,int len){
     if (g_downloadMgr==NULL)return;
     if(g_downloadMgr->enable==0)return;
     if(g_downloadMgr->callback_obj==NULL)return;
+    if(g_downloadMgr->downType!=0)return;
     if (g_downloadMgr->jvm->AttachCurrentThread( &g_downloadMgr->env, NULL) != JNI_OK) {
         LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);
         return;
@@ -649,6 +652,32 @@ static void on_download_fun(const char* buf,int len){
     }
 }
 
+static void on_download_h264(const char* buf,int len){
+    if (g_downloadMgr==NULL)return;
+    if(g_downloadMgr->enable==0)return;
+    if(g_downloadMgr->callback_obj==NULL)return;
+    if(g_downloadMgr->downType!=1)return;
+    if (g_downloadMgr->jvm->AttachCurrentThread( &g_downloadMgr->env, NULL) != JNI_OK) {
+        LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);
+        return;
+    }
+
+    stream_head head;
+    int head_len = sizeof(stream_head);
+    memset(&head,0,sizeof(head));
+    memcpy(&head,buf,sizeof(head));
+//    LOGI("len=%d  size=%d  tag=0x%x  type=%ld  len=%ld   sys_time=%ld   time_stamp=%ld"
+//                 ,len,sizeof(stream_head),head.tag,head.type,head.len,head.sys_time,head.time_stamp);
+    jbyteArray arr = g_downloadMgr->env->NewByteArray(len-head_len);
+    g_downloadMgr->env->SetByteArrayRegion(arr, 0, len-head_len, reinterpret_cast<const jbyte *>(buf+head_len));
+    g_downloadMgr->env->CallVoidMethod(g_downloadMgr->callback_obj,g_downloadMgr->on_data_method,arr);
+    g_downloadMgr->env->DeleteLocalRef(arr);
+
+
+    if (g_downloadMgr->jvm->DetachCurrentThread() != JNI_OK) {
+        LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
+    }
+}
 
 
 void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata){
@@ -665,7 +694,7 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
     }
 
     on_download_fun(buf,len);
-
+    on_download_h264(buf,len);
     //fixme 阻塞
 //    pthread_mutex_lock(&res->lock_play);
 
@@ -2560,6 +2589,12 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadDeinit
     }
 }
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadType
+        (JNIEnv *, jclass, jint flag){
+    if(g_downloadMgr==NULL)return;
+    g_downloadMgr->downType = flag;
+}
+
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetCallbackObj
         (JNIEnv *env, jclass, jobject obj, jint flag){
     if (g_downloadMgr==NULL)return;
@@ -2611,7 +2646,39 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
     if (!isEnable)g_downloadMgr->isWriteHead = 0;
 }
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2H264File
+        (JNIEnv *env, jclass, jstring hw, jstring h264){
+    const char * _hwPath = env->GetStringUTFChars(hw,0);
+    const char * _h264Path = env->GetStringUTFChars(h264,0);
 
+    int fdr = open(_hwPath,O_RDONLY|O_NDELAY);
+    int fdw = open(_h264Path,O_CREAT|O_WRONLY);
+    if (fdr<0 || fdw <0){
+        LOGE("open error");
+    }
+    int res = 0;
+    HW_MEDIAINFO mediaInfo;
+    memset(&mediaInfo,0,sizeof(mediaInfo));
+    res = read(fdr,&mediaInfo, sizeof(mediaInfo));
+    stream_head streamHead;
+    int streamHeadLen = sizeof(streamHead);
+    char *buf;
+    while (true){
+        res = read(fdr,&streamHead,streamHeadLen);
+        if (res <=0)break;
+        int bufLen = streamHead.len - streamHeadLen;
+        buf =(char *) malloc(bufLen);
+        res = read(fdr,buf,bufLen);
+        if (res <=0){free(buf);break;}
+        res = write(fdw,buf,bufLen);
+        if(res <=0){free(buf);break;}
+        free(buf);
+    }
+    close(fdr);
+    close(fdw);
+    env->ReleaseStringUTFChars(hw,_hwPath);
+    env->ReleaseStringUTFChars(h264,_h264Path);
+}
 
 
 

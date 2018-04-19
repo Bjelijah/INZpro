@@ -91,10 +91,12 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
             mIsRecording = false
             mRecordText.set(mContext.getString(R.string.ctrl_record))
             ModelMgr.getDownloadMgrInstance().stepStop()
+//            ModelMgr.getDownloadMgrInstance().stop()
         }else{//现在没有录  要录像
             mIsRecording = true
             mRecordText.set(mContext.getString(R.string.ctrl_record_stop))
             ModelMgr.getDownloadMgrInstance().stepTask()
+//            ModelMgr.getDownloadMgrInstance().start()
         }
 
 

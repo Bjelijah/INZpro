@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class ApDownloadFactory {
-
-    private ApDownloadFactory(){
-
+    int mType = 0;
+    private ApDownloadFactory(int type){
+        mType = type;
     }
 
     public HWDownloadApi create(){
@@ -21,10 +21,15 @@ public class ApDownloadFactory {
     }
 
     public static final class Builder{
+        int type = 0;
 
+        public Builder setType(int type) {
+            this.type = type;
+            return this;
+        }
 
         public ApDownloadFactory build(){
-            return new ApDownloadFactory();
+            return new ApDownloadFactory(type);
         }
     }
 
@@ -42,6 +47,7 @@ public class ApDownloadFactory {
             }
             //jni init
             JniUtil.downloadInit();
+            JniUtil.downloadType(mType);
             JniUtil.downloadSetCallbackObj(this,0);
             JniUtil.downloadSetCallbackMethod("saveData",0);
             return this;

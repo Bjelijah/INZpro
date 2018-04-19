@@ -13,6 +13,6 @@ object Config {
     val CAM_SLOT            = 0
     val CAM_Crypto          = 0   //0:h264  1:h265  2:h264crypto  3:h265crypto
     val CAM_IS_SUB          = false
-
+    val DOWN_WH_STREAM      = true //true down  hw  //false down h264 covert to mp4
 
 }

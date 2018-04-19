@@ -9,6 +9,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -33,18 +35,19 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
     List<PictureBean> mList;
 
     OnItemClickListener mListener;
+    boolean mShareMode = false;
     int mViewWidth;
     public MyPictureAdapter(Context c,OnItemClickListener l){
         mContext = c;
         mListener = l;
-
+        mShareMode = false;
     }
 
     public MyPictureAdapter(Context c,List<PictureBean> list,OnItemClickListener l){
         mContext = c;
         mList = list;
         mListener = l;
-
+        mShareMode = false;
     }
 
     private Pair<Integer,Integer> getWidthHeight(){
@@ -69,6 +72,13 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
         Log.i("123"," we set data ");
         notifyDataSetChanged();
     }
+
+    public void setShareMode(boolean isShareMode){
+        if (mShareMode==isShareMode)return;
+        mShareMode = isShareMode;
+        notifyDataSetChanged();
+    }
+
 
     public void addData(PictureBean b){
         Pair<Integer,Integer>p = getWidthHeight();
@@ -118,9 +128,12 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
     }
 
     public interface OnItemClickListener{
+        void onItemShareCheck(View v,int pos,PictureBean b,boolean isChecked);
         void onItemClick(View v,List<PictureBean> list,int pos);
         void onItemLongClick(View v,int pos,PictureBean b);
     }
+
+
 
     private void init(final ViewHolder h, final PictureBean b, final int pos){
         //TODO get pic
@@ -129,7 +142,15 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
         params.width = b.getWidth();
         params.height = b.getHeight();
         h.itemView.setLayoutParams(params);
-
+        h.ck.setVisibility(mShareMode?View.VISIBLE:View.GONE);
+        h.ck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.i("123","isChecked  isChecked="+isChecked+"  pos="+pos);
+                if (mListener==null)return;
+                mListener.onItemShareCheck(buttonView,pos,b,isChecked);
+            }
+        });
         Observable.create(new ObservableOnSubscribe<String>(){
 
             @Override
@@ -160,6 +181,7 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
                             @Override
                             public void onClick(View v) {
                                 if (mListener==null)return;
+                                if(mShareMode)return;
                                 mListener.onItemClick(v,mList,pos);
                             }
                         });
@@ -167,13 +189,8 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
                             @Override
                             public boolean onLongClick(View v) {
                                 if (mListener==null)return false;
+                                if (mShareMode)return false;
                                 mListener.onItemLongClick(v,pos,b);
-
-
-
-
-
-
                                 return true;
                             }
                         });
@@ -194,10 +211,12 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView iv;
         LinearLayout ll;
+        CheckBox ck;
         public ViewHolder(View itemView) {
             super(itemView);
             iv = itemView.findViewById(R.id.item_picture_iv);
             ll = itemView.findViewById(R.id.item_picture_ll);
+            ck = itemView.findViewById(R.id.item_picture_ck);
         }
     }
 

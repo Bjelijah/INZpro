@@ -737,6 +737,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadDeinit
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    downloadType
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadType
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    downloadSetCallbackObj
  * Signature: (Ljava/lang/Object;I)V
  */
@@ -766,6 +774,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetAudioCodeVideoCode
  */
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
   (JNIEnv *, jclass, jboolean);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    hwFile2H264File
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2H264File
+  (JNIEnv *, jclass, jstring, jstring);
 
 #ifdef __cplusplus
 }

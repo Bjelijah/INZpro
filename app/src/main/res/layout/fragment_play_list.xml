@@ -86,14 +86,40 @@
             android:layout_weight="1"
             android:visibility="@{vm.MPictureListVisibility}"
             app:update_picture_list="@{vm.MUpdatePictureList}"
+            app:update_picture_share="@{vm.MUpdatePictureShare}"
             />
 
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:visibility="@{vm.mShareBtnVisibility}">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/share_share"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/my_share_btn"
+                android:onClick="@{vm.onShareShareClick}"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/share_cancel"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/my_share_btn"
+                android:onClick="@{vm.onShareCancelClick}"/>
 
 
 
-
+        </LinearLayout>
 
 
 

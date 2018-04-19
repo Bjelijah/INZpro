@@ -37,6 +37,14 @@
             android:onClick="@{vm.onClickDelect}"/>
 
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="转换"
+            android:textColor="@color/colorAccent"
+            android:background="@color/main_bk"
+            android:onClick="@{vm.onClickConvert}"
+            />
 
 
     </LinearLayout>

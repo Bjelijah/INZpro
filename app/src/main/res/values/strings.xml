@@ -20,4 +20,9 @@
     <string name="big_image_activity_dialog_message">删除这张照片？</string>
     <string name="big_image_activity_dialog_yes_button_name">确定</string>
     <string name="big_image_activity_dialog_no_button_name">取消</string>
+
+
+    <string name="share_share">分享</string>
+    <string name="share_cancel">取消</string>
+    <string name="share_no_file_error">请选择要分享的文件</string>
 </resources>

@@ -129,9 +129,12 @@ public class JniUtil {
 	//download
 	public static native void downloadInit();
 	public static native void downloadDeinit();
+	public static native void downloadType(int flag);//0:hw  1:h264
 	public static native void downloadSetCallbackObj(Object obj,int flag);
 	public static native void downloadSetCallbackMethod(String methodName,int flag);
 	public static native void downloadSetAudioCodeVideoCode(int audioCode,int videoCode);
 	public static native void downloadEnable(boolean isEnable);
 
+	//util
+	public static native void hwFile2H264File(String hwFilePath,String h264FilePath);
 }

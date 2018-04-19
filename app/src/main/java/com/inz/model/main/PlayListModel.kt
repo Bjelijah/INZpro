@@ -5,12 +5,14 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.databinding.ObservableField
+import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
 import android.widget.PopupWindow
+import android.widget.Toast
 import com.howellsdk.utils.ThreadUtil
 import com.inz.activity.BigImagesActivity
 import com.inz.activity.view.PopWindowView
@@ -25,6 +27,7 @@ import com.inz.utils.FileUtil
 import com.inz.utils.Utils
 
 import io.reactivex.functions.Action
+import java.io.File
 
 class PlayListModel(private var mContext: Context):BaseViewModel {
     private val SHOW_NONE           = 0x00
@@ -33,6 +36,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     private var mShowCode       = SHOW_NONE
     private var mFunPop: PopupWindow?=null
+    private var mUriList:ArrayList<Uri> = ArrayList()
 //    private var mLocalPlayer:BasePlayer?=null
 
     var activity:Activity?=null
@@ -61,6 +65,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 mShowCode = SHOW_NONE
                 mShowRecordFile.set(false)
                 mRecordListVisibility.set(View.GONE)
+                mPictureListVisibility.set(View.INVISIBLE)
             }
             SHOW_PICTURE_FILE->{
                 mShowCode = SHOW_RECORD_FILE
@@ -92,7 +97,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
             SHOW_PICTURE_FILE->{
                 mShowCode = SHOW_NONE
                 mShowPictureFile.set(false)
-                mPictureListVisibility.set(View.GONE)
+                mPictureListVisibility.set(View.INVISIBLE)
             }
         }
 
@@ -104,14 +109,44 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mShowPictureFile             = ObservableField<Boolean>(false)
     val mRecordListVisibility        = ObservableField<Int>(View.GONE)
     val mPictureListVisibility       = ObservableField<Int>(View.GONE)
-
     val mUpdatePictureList           = ObservableField<Boolean>(false)
+    val mUpdatePictureShare          = ObservableField<Boolean>(false)
     val mUpdateVideoList             = ObservableField<Boolean>(false)
+    val mShareBtnVisibility          = ObservableField<Int>(View.GONE)
+    val onShareShareClick            = Action {
+        if(mUriList.size==0) {
+            Toast.makeText(mContext,mContext.getString(R.string.share_no_file_error),Toast.LENGTH_SHORT).show()
+            return@Action
+        }
 
+        //todo
+        var shareIntent = Intent()
+        shareIntent.action = Intent.ACTION_SEND_MULTIPLE
+        shareIntent.type = "image/*"
+        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,mUriList)
+        mContext.startActivity(Intent.createChooser(shareIntent,mContext.getString(R.string.share_share)))
+        mUriList.clear()
+        updatePictureShareState(false)
+    }
+
+    val onShareCancelClick           = Action {
+        updatePictureShareState(false)
+        mUriList.clear()
+    }
 
     fun initPictureList(rv:RecyclerView, width:Int){
         Log.i("123","model  initPictureList")
         var picAdapter = MyPictureAdapter(mContext,object :MyPictureAdapter.OnItemClickListener{
+            override fun onItemShareCheck(v: View?, pos: Int, b: PictureBean?, isChecked: Boolean) {
+                //TODO
+                var path = b?.path
+                if (isChecked)mUriList.add(Uri.fromFile(File(path)))
+                else mUriList.remove(Uri.fromFile(File(path)))
+
+                Log.i("123","urilist = $mUriList")
+
+            }
+
             override fun onItemClick(v: View?, list: MutableList<PictureBean>?, pos: Int) {
                 var picPaths = ArrayList<String>()
                 list?.forEach {
@@ -156,10 +191,24 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mUpdatePictureList.set(false)
     }
 
-    fun upDatePictureListState(){
+    fun updatePictureShare(v:RecyclerView,bShareMode:Boolean){
+        if (v.adapter is MyPictureAdapter) {
+            (v.adapter as MyPictureAdapter).setShareMode(bShareMode)
+        }
+    }
+
+
+    fun updatePictureListState(){
         Log.i("123","update picture list state")
         mUpdatePictureList.set(true)
     }
+
+    fun updatePictureShareState(b:Boolean){
+        mShareBtnVisibility.set(if (b)View.VISIBLE else View.GONE)
+
+        mUpdatePictureShare.set(b)
+    }
+
 
     fun initVideoList(v:RecyclerView){
         var vidAdapter = MyVideoAdapter(mContext,object :MyVideoAdapter.OnItemClickListener{
@@ -201,9 +250,11 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         for (s in lst){
             var str = s.split("/")
             var nameArr = str[str.lastIndex].split(".")
-            var nameStr = nameArr[0]
-            var name = Utils.getVideoName(nameStr)
-            arr.add(VideoBean(s,name))
+            if(nameArr[1]=="hw") {
+                var nameStr = nameArr[0]
+                var name = Utils.getVideoName(nameStr)
+                arr.add(VideoBean(s, name))
+            }
         }
         (v.adapter as MyVideoAdapter).setData(arr)
         ModelMgr.getPlayViewModelInstance(mContext).setVideoSource(arr)
