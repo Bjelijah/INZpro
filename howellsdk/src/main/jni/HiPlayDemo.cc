@@ -25,6 +25,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include "include/mp4/mp4record.h"
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGW(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_WARN, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGE(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_ERROR, "JNI", __VA_ARGS__):(void)NULL)
@@ -125,7 +126,7 @@ typedef struct{
     int vCode;
     int isWriteHead;
     int enable;
-    int downType;
+    int downType;//0 hw   1 h264  2
 }DOWN_LOAD_T;
 
 static DOWN_LOAD_T * g_downloadMgr = NULL;
@@ -2681,6 +2682,42 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2H264File
 }
 
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2mp4File
+        (JNIEnv *env, jclass, jstring hw, jstring mp4){
+#if 0
+    const char * _hwPath = env->GetStringUTFChars(hw,0);
+    const char * _mp4Path = env->GetStringUTFChars(mp4,0);
 
+    int fdr = open(_hwPath,O_RDONLY|O_NDELAY);
+    initMp4Encoder(_mp4Path,1920,1080);
+    int res = 0;
+    HW_MEDIAINFO mediaInfo;
+    memset(&mediaInfo,0,sizeof(mediaInfo));
+    res = read(fdr,&mediaInfo, sizeof(mediaInfo));
+    stream_head streamHead;
+    int streamHeadLen = sizeof(streamHead);
+    unsigned char *buf;
+    while (true){
+        res = read(fdr,&streamHead,streamHeadLen);
+        if (res <=0)break;
+
+        int bufLen = streamHead.len - streamHeadLen;
+        buf =(unsigned char *) malloc(bufLen);
+        res = read(fdr,buf,bufLen);
+        if (res <=0){free(buf);break;}
+        if(streamHead.type==2){
+            mp4AEncode(buf,bufLen);
+        }else{
+            mp4VEncode(buf,bufLen);
+        }
+        if(res <=0){free(buf);break;}
+        free(buf);
+    }
+    close(fdr);
+    closeMp4Encoder();
+    env->ReleaseStringUTFChars(hw,_hwPath);
+    env->ReleaseStringUTFChars(mp4,_mp4Path);
+#endif
+}
 
 

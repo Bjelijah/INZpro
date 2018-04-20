@@ -14,21 +14,22 @@
     </style>
 
     <style name="MyAppTheme" parent="AppTheme.NoActionBar">
-        <item name="colorPrimary">@color/main_bk</item>
+        <item name="colorPrimary">@color/main_bk_light</item>
         <item name="colorPrimaryDark">@color/main_bk_dark</item>
 
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:alertDialogTheme">@style/MyDialogTheme</item>
+
     </style>
 
 
-    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="MyDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:colorAccent">@color/colorAccent</item>
-        <!--<item name="android:textColor">@color/colorAccent</item>-->
-        <item name="android:colorPrimary">@color/white</item>
-        <item name="android:colorControlNormal">@color/white</item>
 
-        <item name="android:background">@color/main_bk_light_gray</item>
+        <item name="android:textColorPrimary">@color/white_highlight</item>
+
+        <item name="android:background">@color/main_bk</item>
     </style>
 
     <style name="MyAppTheme.BigImage">
@@ -51,7 +52,13 @@
         <item name="android:background">@drawable/my_ctrl_btn</item>
         <item name="android:layout_margin">2dp</item>
     </style>
-    
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+
+        <item name="colorControlNormal">@color/body</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
     <!--<style name="MyPlayCtrlButton">-->
         <!--<item name="android:background">@drawable/play_ctrl_btn</item>-->
     <!--</style>-->

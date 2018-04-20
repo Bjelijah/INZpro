@@ -50,6 +50,7 @@ android {
     packagingOptions{
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/ASL2.0'
+        pickFirst 'lib/armeabi-v7a/libmp4sdk.so'
         pickFirst 'lib/armeabi-v7a/libplayer_jni.so'
         pickFirst 'lib/armeabi-v7a/libhwtrans.so'
         pickFirst 'lib/armeabi-v7a/libhwplay.so'

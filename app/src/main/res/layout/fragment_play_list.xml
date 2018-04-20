@@ -97,7 +97,8 @@
             android:orientation="horizontal"
             android:layout_gravity="bottom"
             android:gravity="bottom"
-            android:visibility="@{vm.mShareBtnVisibility}">
+            app:visible_action_down="@{vm.mShareBtnVisibility}"
+           >
 
             <Button
                 android:layout_width="0dp"

@@ -1,12 +1,16 @@
 package com.inz.model.main
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.widget.PopupWindow
 import com.howell.jni.JniUtil
 import com.howellsdk.utils.ThreadUtil
+import com.inz.adapter.MyVideoAdapter
 import com.inz.bean.BaseBean
 import com.inz.bean.PictureBean
 import com.inz.bean.VideoBean
@@ -50,16 +54,35 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
     val onClickDelect = Action {
         Log.i("123","onclick del    path=${mBean?.path}")
         mPop?.dismiss()
-        try {
-            FileUtil.deleteFile(File(mBean?.path))
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-        if(mBean is PictureBean){
-            ModelMgr.getPlayListModelInstance(mContext).updatePictureListState()
-        }else if(mBean is VideoBean){
-            ModelMgr.getPlayListModelInstance(mContext).upDateVideoListState()
-        }
+        var dialog = AlertDialog.Builder(mContext)
+                .setTitle(mContext.getString(R.string.item_del))
+                .setMessage(
+                        when (mBean) {
+                            is PictureBean -> mContext.getString(R.string.item_del_msg_picture)
+                            is VideoBean -> mContext.getString(R.string.item_del_msg_video)
+                            else -> ""
+                        }
+                )
+                .setIcon(R.drawable.ic_priority_high_black_36dp)
+                .setPositiveButton(mContext.getString(R.string.ok)
+                ) { _, _ ->
+                    try {
+                        FileUtil.deleteFile(File(mBean?.path))
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                    }
+                    if(mBean is PictureBean){
+                        ModelMgr.getPlayListModelInstance(mContext).updatePictureListState()
+                    }else if(mBean is VideoBean){
+                        ModelMgr.getPlayListModelInstance(mContext).upDateVideoListState()
+                    }
+                }
+                .setNegativeButton(mContext.getString(R.string.cancel)){_,_->{}}
+                .create()
+                .show()
+
+
+
 
 
     }

@@ -783,6 +783,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2H264File
   (JNIEnv *, jclass, jstring, jstring);
 
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    hwFile2mp4File
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2mp4File
+  (JNIEnv *, jclass, jstring, jstring);
+
 #ifdef __cplusplus
 }
 #endif

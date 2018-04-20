@@ -8,6 +8,7 @@ import com.howellsdk.player.ecam.bean.StreamReqContext;
 public class JniUtil {
 	static{
 //		System.loadLibrary("jpush");
+		System.loadLibrary("mp4sdk");
 		System.loadLibrary("hwtrans");
 		System.loadLibrary("hwplay");
 		System.loadLibrary("player_jni");
@@ -137,4 +138,5 @@ public class JniUtil {
 
 	//util
 	public static native void hwFile2H264File(String hwFilePath,String h264FilePath);
+	public static native void hwFile2mp4File(String hwFilePath,String mp4FilePath);//no
 }

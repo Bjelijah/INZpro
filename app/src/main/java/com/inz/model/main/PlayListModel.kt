@@ -8,6 +8,7 @@ import android.databinding.ObservableField
 import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
@@ -112,10 +113,12 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mUpdatePictureList           = ObservableField<Boolean>(false)
     val mUpdatePictureShare          = ObservableField<Boolean>(false)
     val mUpdateVideoList             = ObservableField<Boolean>(false)
-    val mShareBtnVisibility          = ObservableField<Int>(View.GONE)
+    val mShareBtnVisibility          = ObservableField<Boolean>(false)
+
     val onShareShareClick            = Action {
         if(mUriList.size==0) {
             Toast.makeText(mContext,mContext.getString(R.string.share_no_file_error),Toast.LENGTH_SHORT).show()
+            mUriList.clear()
             return@Action
         }
 
@@ -176,6 +179,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         picAdapter.setWidth(width)
         rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv.adapter = picAdapter
+        rv.itemAnimator = null
         updatePictureList(rv)
     }
 
@@ -204,7 +208,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     }
 
     fun updatePictureShareState(b:Boolean){
-        mShareBtnVisibility.set(if (b)View.VISIBLE else View.GONE)
+        mShareBtnVisibility.set(b)
 
         mUpdatePictureShare.set(b)
     }
@@ -240,6 +244,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
         v.layoutManager = LinearLayoutManager(mContext)
         v.adapter = vidAdapter
+        v.itemAnimator = null
         updateVideoList(v)
 
     }

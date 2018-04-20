@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.Animation
+import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.inz.model.ModelMgr
@@ -157,4 +159,25 @@ object BinderHelper {
     fun setSrc(v:ImageView,resId:Int){
         v.setImageResource(resId)
     }
+
+    @BindingAdapter("visible_action_down")
+    @JvmStatic
+    fun setVisibleActionDown(v:View,bShow:Boolean){
+        var action :TranslateAnimation?=null
+        if(bShow){
+            action = TranslateAnimation(Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,0.0f,
+                    Animation.RELATIVE_TO_SELF,1.0f,Animation.RELATIVE_TO_SELF,0.0f)
+            action.duration = 500
+            v.startAnimation(action)
+            v.visibility = View.VISIBLE
+        }else{
+            action = TranslateAnimation(Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,0.0f,
+                    Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,1.0f)
+            action.duration = 500
+            v.startAnimation(action)
+            v.visibility = View.GONE
+        }
+
+    }
+
 }

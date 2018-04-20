@@ -70,13 +70,15 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
             b.setHeight(p.second);
         }
         Log.i("123"," we set data ");
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
+        notifyItemRangeChanged(0,mList.size());
     }
 
     public void setShareMode(boolean isShareMode){
         if (mShareMode==isShareMode)return;
         mShareMode = isShareMode;
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
+        notifyItemRangeChanged(0,mList.size());
     }
 
 
@@ -143,6 +145,7 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
         params.height = b.getHeight();
         h.itemView.setLayoutParams(params);
         h.ck.setVisibility(mShareMode?View.VISIBLE:View.GONE);
+        h.ck.setChecked(false);
         h.ck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
