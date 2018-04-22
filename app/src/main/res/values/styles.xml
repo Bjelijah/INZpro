@@ -63,6 +63,12 @@
         <!--<item name="android:background">@drawable/play_ctrl_btn</item>-->
     <!--</style>-->
 
+    <style name="waitDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:backgroundDimEnabled">true</item><!--true 屏幕变暗-->
+        <item name="android:windowBackground">@android:color/transparent</item><!-- 背景透明 -->
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 
 
 

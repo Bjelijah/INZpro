@@ -5,8 +5,7 @@
   jni\include/IHWVideo_Typedef.h jni/include/transmgr.h \
   jni/com_howell_jni_JniUtil.h jni/include\ecamstreamreq.h \
   jni/include/ice.h jni/include\osipparser2/sdp_message.h \
-  jni/include\osipparser2/osip_list.h jni/include\g711/g711.h \
-  jni/include/mp4/mp4record.h
+  jni/include\osipparser2/osip_list.h jni/include\g711/g711.h
 
 jni/include/stream_type.h:
 
@@ -37,5 +36,3 @@ jni/include\osipparser2/sdp_message.h:
 jni/include\osipparser2/osip_list.h:
 
 jni/include\g711/g711.h:
-
-jni/include/mp4/mp4record.h:

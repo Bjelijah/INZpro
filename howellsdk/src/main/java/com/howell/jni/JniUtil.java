@@ -8,10 +8,12 @@ import com.howellsdk.player.ecam.bean.StreamReqContext;
 public class JniUtil {
 	static{
 //		System.loadLibrary("jpush");
-		System.loadLibrary("mp4sdk");
+//		System.loadLibrary("mp4sdk");
 		System.loadLibrary("hwtrans");
 		System.loadLibrary("hwplay");
+
 		System.loadLibrary("player_jni");
+
 	}
 	
 	//yuv

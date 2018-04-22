@@ -44,6 +44,7 @@
             android:textColor="@color/colorAccent"
             android:background="@color/main_bk"
             android:onClick="@{vm.onClickConvert}"
+            android:visibility="gone"
             />
 
 

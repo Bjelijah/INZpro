@@ -13,17 +13,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
 import com.inz.activity.view.HackyViewPager;
 import com.inz.inzpro.R;
-import com.inz.model.ModelMgr;
 import com.inz.utils.FileUtil;
 import com.inz.utils.PhoneConfig;
 import com.inz.utils.ScaleImageUtils;
@@ -146,7 +143,7 @@ public class BigImagesActivity extends AppCompatActivity implements View.OnClick
                 Dialog alertDialog = new AlertDialog.Builder(BigImagesActivity.this).
                         setTitle(getResources().getString(R.string.big_image_activity_dialog_title_remove)).
                         setMessage(getResources().getString(R.string.big_image_activity_dialog_message)).
-                        setIcon(R.drawable.ic_priority_high_black_36dp).
+                        setIcon(R.drawable.ic_warning_white_36dp).
                         setPositiveButton(getResources().getString(R.string.big_image_activity_dialog_yes_button_name), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

@@ -9,10 +9,10 @@
 #ifndef __RTSP_Player__mp4record__
 #define __RTSP_Player__mp4record__
 
-#include <stdint.h>
-#include <string.h>
+#include<stdint.h>
+#include<string.h>
 
-int initMp4Encoder(const char * filename, int width, int height);
+int initMp4Encoder(const char * filename,int width,int height);
 int mp4VEncode(uint8_t * data ,int len);
 int mp4AEncode(uint8_t * data ,int len);
 void closeMp4Encoder();

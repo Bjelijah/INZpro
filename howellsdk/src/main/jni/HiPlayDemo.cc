@@ -25,7 +25,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "include/mp4/mp4record.h"
+//#include "include/mp4/mp4record.h"
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGW(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_WARN, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGE(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_ERROR, "JNI", __VA_ARGS__):(void)NULL)
@@ -193,7 +193,7 @@ void yv12gl_display(const unsigned char * y, const unsigned char *u,const unsign
         g_yuv_display->width = width;
         g_yuv_display->height = height;
     }
-   // LOGI("cpy y yv12gl_display");
+    // LOGI("cpy y yv12gl_display");
     memcpy(g_yuv_display->y,y,width*height);
     memcpy(g_yuv_display->u,u,width*height/4);
     memcpy(g_yuv_display->v,v,width*height/4);
@@ -260,12 +260,12 @@ void audio_play(const char* buf,int len)
         self->env->CallVoidMethod( self->obj, self->mid, NULL);
     }
 
-   // LOGE("start to detach audio play thread");
+    // LOGE("start to detach audio play thread");
 
     if (self->jvm->DetachCurrentThread() != JNI_OK) {
         LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
     }else{
-     //   LOGE("audio_play detach ok");
+        //   LOGE("audio_play detach ok");
     }
     /* char* data = (*self.env)->GetByteArrayElements(self.env,self.data_array,0); */
     /* memcpy(data,buf,len); */
@@ -559,8 +559,8 @@ JNIEXPORT jbyteArray JNICALL Java_com_howell_jni_JniUtil_H264toHWStream
 static int register_nvr(const char* ip){
 //    	int ret = hwnet_init(5888);
     //	/* 192.168.18.23 */
-    	LOGI(" ip=%s   ",ip);
-    	res->user_handle = hwnet_login(ip,5198,"admin","12345");
+    LOGI(" ip=%s   ",ip);
+    res->user_handle = hwnet_login(ip,5198,"admin","12345");
     //	if(res->user_handle == -1){
     //		LOGE("hwnet_login fail");
     //		return 0;
@@ -761,7 +761,7 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
         unsigned char* y = (unsigned char *)buf;
         unsigned char* u = y+w*h;
         unsigned char* v = u+w*h/4;
-      //  LOGI("on source callback  yv12 display  timestamp=%d\n",timestamp);
+        //  LOGI("on source callback  yv12 display  timestamp=%d\n",timestamp);
 
         yv12gl_display(y,u,v,w,h,timestamp);
     }
@@ -819,12 +819,12 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_login
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_loginOut
         (JNIEnv *, jclass){
-    	if(res==NULL)return false;
-    	if(res->user_handle<0)return false;
-    	int ret = hwnet_logout(res->user_handle);
-        res->user_handle = -1;
-        hwnet_release();
-    	return ret==1?true:false;
+    if(res==NULL)return false;
+    if(res->user_handle<0)return false;
+    int ret = hwnet_logout(res->user_handle);
+    res->user_handle = -1;
+    hwnet_release();
+    return ret==1?true:false;
     return false;
 }
 
@@ -1135,7 +1135,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
     if (g_transMgr!=NULL){
         g_transMgr->transDataLen = 0;
     }
-  //  hwplay_clear_stream_buf(res->play_handle);
+    //  hwplay_clear_stream_buf(res->play_handle);
     LOGI("play view playHandle=%d\n",res->play_handle);
     hwplay_play(res->play_handle);
 }
@@ -1434,7 +1434,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
     netCloseFileListNecessary();
 
     res->file_list_handle = hwnet_get_file_list_by_page(res->user_handle,0,1,beg,end,0,1,0,&page);
-   // hwnet_get_file_list(res->play_handle,0,beg,end,0);
+    // hwnet_get_file_list(res->play_handle,0,beg,end,0);
     res->total_file_list_count = page.page_count;
 //    LOGI("page count=%d\n",page.page_count);
     if (res->file_list_handle==-1){LOGE("file_list_handle==-1  get file list by page error");}
@@ -1878,7 +1878,7 @@ int on_my_socket_error_fun(int flag){//0 socket 1 sync  2 packet receive false  
 
 
 int on_my_data_fun(int type,const char *data,int len){
-  //  LOGI("  on data fun  len=%d\n",len);
+    //  LOGI("  on data fun  len=%d\n",len);
     if(res == NULL){
         LOGE("res == null");
         return -1;
@@ -2646,7 +2646,6 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadEnable
     g_downloadMgr->enable = isEnable?1:0;
     if (!isEnable)g_downloadMgr->isWriteHead = 0;
 }
-
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2H264File
         (JNIEnv *env, jclass, jstring hw, jstring h264){
     const char * _hwPath = env->GetStringUTFChars(hw,0);
@@ -2671,8 +2670,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_hwFile2H264File
         buf =(char *) malloc(bufLen);
         res = read(fdr,buf,bufLen);
         if (res <=0){free(buf);break;}
-        res = write(fdw,buf,bufLen);
-        if(res <=0){free(buf);break;}
+        res = write(fdw, buf, bufLen);
+        if (res <= 0) { free(buf);break; }
         free(buf);
     }
     close(fdr);
