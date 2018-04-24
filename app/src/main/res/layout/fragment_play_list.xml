@@ -39,7 +39,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/play_list_title_record"
                 android:textColor="@color/white_highlight"
-                android:textSize="@dimen/play_list_title_size"/>
+                android:textSize="@dimen/play_list_title_size"
+                android:layout_gravity="center_vertical"/>
 
         </LinearLayout>
 
@@ -74,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/play_list_title_picture"
                 android:textColor="@color/white_highlight"
-                android:textSize="@dimen/play_list_title_size"/>
+                android:textSize="@dimen/play_list_title_size"
+                android:layout_gravity="center_vertical"/>
 
         </LinearLayout>
 

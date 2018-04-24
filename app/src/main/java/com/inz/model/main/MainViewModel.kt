@@ -65,8 +65,8 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val mPlayViewFull         = ObservableField<Boolean>(false)
 
     val mCtrlVisibility       = ObservableField<Int>(View.VISIBLE)
-    val mReplayListVisibility = ObservableField<Int>(View.VISIBLE)
-    val mReplayCtrlVisibility = ObservableField<Int>(View.VISIBLE)
+    val mReplayListVisibility = ObservableField<Int>(View.INVISIBLE)
+    val mReplayCtrlVisibility = ObservableField<Int>(View.GONE)
     val mRecordText           = ObservableField<String>(mContext.getString(R.string.ctrl_record))
 
 
