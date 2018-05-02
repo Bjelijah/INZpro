@@ -21,7 +21,9 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val PLAY_STATE_STOP    = 0x01
     val PLAY_STATE_PAUSE   = 0x02
 
-
+    fun setContext(c:Context){
+        mContext = c
+    }
     override fun onCreate() {
     }
 

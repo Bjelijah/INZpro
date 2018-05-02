@@ -44,7 +44,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         initApPlay() //now is ap
         mPlaySpeedIndex = 2
     }
-
+    fun setContext(c:Context){
+        mContext = c
+    }
     fun initApPlay(){
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init

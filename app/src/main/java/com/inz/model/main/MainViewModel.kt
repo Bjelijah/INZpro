@@ -17,6 +17,10 @@ import io.reactivex.functions.Action
 class MainViewModel(private var mContext:Context) : BaseViewModel{
      var mIsPlayBack = false
      var mIsRecording = false
+    fun setContext(c:Context){
+        mContext = c
+    }
+
      fun setFullScreen(b: Boolean) {
         if(b){
             Log.i("123","main view model set full")

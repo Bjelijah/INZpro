@@ -1060,7 +1060,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
         media_head.dvr_version = 0;
     }
 
-
+    media_head.adec_code = ADEC_G711U;
     LOGE("vc=0x%x     ac=0x%x    au=%d     auchannel %d     asample %d   dvr %d"
     ,media_head.vdec_code
     ,media_head.adec_code

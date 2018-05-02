@@ -9,6 +9,10 @@ import com.inz.inzpro.BaseViewModel
 
 class SoundVolModel (var mContext:Context):BaseViewModel{
 
+    fun setContext(c:Context){
+        mContext = c
+    }
+
     override fun onCreate() {
         var curVol = AudioAction.getInstance().getStreamVolum(mContext)
         mProcess.set(curVol)

@@ -42,6 +42,12 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     var activity:Activity?=null
 
+
+    fun setContext(c:Context){
+        mContext = c
+    }
+
+
     override fun onCreate() {
 
     }

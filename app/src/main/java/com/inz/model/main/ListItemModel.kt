@@ -1,6 +1,7 @@
 package com.inz.model.main
 
 import android.app.AlertDialog
+import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -30,9 +31,16 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
     var mBean: BaseBean ?=null
 
     override fun onCreate() {
+        Log.e("123"," ListItemModel onCreate ")
+
     }
 
     override fun onDestory() {
+        Log.e("123"," ListItemModel onDestory ")
+    }
+
+    fun setContext(c:Context){
+        mContext = c
     }
 
     val onClickShare = Action{
@@ -42,7 +50,7 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
             ModelMgr.getPlayListModelInstance(mContext).updatePictureShareState(true)
         }else if(mBean is VideoBean){
             //do share here
-            Log.i("123","mbean is Video bean")
+            Log.i("123","mbean is Video bean  ")
             var path = mBean?.path
             var dialog = ProgressDialog(mContext,R.style.waitDialog)
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
@@ -51,13 +59,6 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
             dialog.setCanceledOnTouchOutside(true)
             dialog.show()
             Observable.create(ObservableOnSubscribe<Boolean> {e->
-
-
-
-
-
-
-
                 e.onNext(true)
             })
                     .subscribeOn(Schedulers.io())
@@ -82,6 +83,7 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
 
     }
 
+    /*fixme  */
     val onClickDelect = Action {
         Log.i("123","onclick del    path=${mBean?.path}")
         mPop?.dismiss()

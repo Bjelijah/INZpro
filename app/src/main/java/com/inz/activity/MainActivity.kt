@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.Log
+import android.view.WindowManager
 import com.inz.inzpro.R
 import com.inz.inzpro.BaseViewModel
 import com.inz.model.ModelMgr
@@ -35,5 +36,14 @@ class MainActivity:BaseActivity() {
         super.onConfigurationChanged(newConfig)
     }
 
+    override fun onResume() {
+        super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
 
 }

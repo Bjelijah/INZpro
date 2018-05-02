@@ -22,31 +22,44 @@ object ModelMgr {
     }
 
     fun getMainViewModelInstance(c: Context):MainViewModel{
-        if (mMainViewModel==null)
+        if (mMainViewModel==null) {
             mMainViewModel = MainViewModel(c)
+        }else{
+            mMainViewModel?.setContext(c)
+        }
         return mMainViewModel!!
     }
 
     fun getPlayViewModelInstance(c: Context):PlayViewModel{
-        if (mPlayViewModel==null)
+        if (mPlayViewModel==null) {
             mPlayViewModel = PlayViewModel(c)
+        }else{
+            mPlayViewModel?.setContext(c)
+        }
         return mPlayViewModel!!
     }
 
     fun getReplayCtrlModelInstance(c:Context):ReplayCtrlModel {
-        if(mReplayCtrlModel==null)
+        if(mReplayCtrlModel==null) {
             mReplayCtrlModel = ReplayCtrlModel(c)
+        }else{
+            mReplayCtrlModel?.setContext(c)
+        }
         return mReplayCtrlModel!!
     }
     fun getSoundVolModelInstance(c: Context):SoundVolModel {
         if (mSoundVolModel==null){
             mSoundVolModel = SoundVolModel(c)
+        }else{
+            mSoundVolModel?.setContext(c)
         }
         return mSoundVolModel!!
     }
     fun getPlayListModelInstance(c:Context):PlayListModel{
         if (mPlayListModel==null){
             mPlayListModel = PlayListModel(c)
+        }else{
+            mPlayListModel?.setContext(c)
         }
         return mPlayListModel!!
     }
@@ -72,6 +85,8 @@ object ModelMgr {
     fun getListItemModelInstance(c:Context):ListItemModel{
         if (mListItemModel==null){
             mListItemModel = ListItemModel(c)
+        }else{
+            mListItemModel?.setContext(c)
         }
         return mListItemModel!!
     }
