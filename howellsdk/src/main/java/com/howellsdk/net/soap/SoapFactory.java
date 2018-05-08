@@ -879,7 +879,7 @@ public class SoapFactory {
 
         @Override
         public Observable<Result> createAccount(CreateAccountReq req) {
-            final SoapObject rpc = new SoapObject(mNameSpace,"vodSearchReq")
+            final SoapObject rpc = new SoapObject(mNameSpace,"createAccountReq")
                     .addProperty("Account", req.getAccount())
                     .addProperty("Username", req.getUsername())
                     .addProperty("Password", req.getPassword())
