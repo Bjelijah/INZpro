@@ -163,6 +163,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
     fun change2AP(){
         if (nowPlayState==0)return
+        Log.i("123","chande2AP");
         stopNewTask()
         stopTimeTask()
         ThreadUtil.cachedThreadStart({

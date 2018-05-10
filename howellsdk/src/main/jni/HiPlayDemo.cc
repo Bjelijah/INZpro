@@ -25,12 +25,14 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 //#include "include/mp4/mp4record.h"
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGW(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_WARN, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGE(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_ERROR, "JNI", __VA_ARGS__):(void)NULL)
 
-
+struct timeval cur_t;
+struct timeval last_t;
 
 typedef struct{
     char set_time_method_name[32];
@@ -727,6 +729,33 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
 //    LOGI("on_file_stream_fun input data ret=%d",ret);
 }
 
+static void on_yuv_callback(PLAY_HANDLE handle,
+                            const unsigned char* y,
+                            const unsigned char* u,
+                            const unsigned char* v,
+                            int y_stride,
+                            int uv_stride,
+                            int width,
+                            int height,
+                            unsigned long long time,
+                            long user){
+    if(res==NULL)return;
+    if(res->is_exit)return;
+//    if (!user)return;
+
+//    int frameNum = 0;
+//    hwplay_get_framenum_in_buf(handle,&frameNum);
+    gettimeofday(&cur_t,NULL);
+//
+    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
+//
+    LOGI("  -- %ld\n",timeuse);
+    last_t = cur_t;
+
+    yv12gl_display(y,u,v,width,height,time);
+
+}
+
 
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
@@ -756,13 +785,17 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
 
         //		audio_play(buf,len,au_sample,au_channel,au_bits);
         audio_play(buf, len);//add cbj
-    }else if(type == 1){//视频
-
+    }else if(type == 1 && !user){//视频 user == 0 预览 1 playback
         unsigned char* y = (unsigned char *)buf;
         unsigned char* u = y+w*h;
         unsigned char* v = u+w*h/4;
-        //  LOGI("on source callback  yv12 display  timestamp=%d\n",timestamp);
-
+//        int frameNum = 0;
+//        hwplay_get_framenum_in_buf(handle,&frameNum);
+        LOGE("~~~~~~~~~");
+        gettimeofday(&cur_t,NULL);
+        long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
+        LOGI("%ld   %ld   -- %ld   framNum=%d\n",cur_t.tv_sec,cur_t.tv_usec,timeuse);
+        last_t = cur_t;
         yv12gl_display(y,u,v,w,h,timestamp);
     }
 }
@@ -1069,9 +1102,11 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
 
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
-    LOGE("open stream ph=%d",ph);
+    hwplay_set_max_framenum_in_buf(ph,12);
+    LOGE("open stream ph=%d    isPlayback=%d",ph,isPlayBack);
     hwplay_open_sound(ph);
-    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
+    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0 isPlayBack
+    hwplay_register_yuv_callback_ex(ph,on_yuv_callback,0);
     res->play_handle = ph;
     LOGI("ready finish  play_handle=%d    isCrypto=%d    uh=%d  ",ph,isCrypto,res->user_handle);
     return res->play_handle>=0?true:false;
@@ -1084,9 +1119,11 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_localReadyPlay
     LOGE("path=%s\n",_path);
     hwplay_init(1,0,0);
     PLAY_HANDLE ph = hwplay_open_local_file(_path);
+    hwplay_set_max_framenum_in_buf(ph,12);
     LOGI("open local file ph=%d",ph);
     hwplay_open_sound(ph);
     hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
+    hwplay_register_yuv_callback_ex(ph,on_yuv_callback,0);
     res->play_handle = ph;
     env->ReleaseStringUTFChars(path,_path);
     LOGI("local ready play    play_handle=%d\n",res->play_handle);

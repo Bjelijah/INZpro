@@ -8,8 +8,9 @@ object Config {
 
 
     val playType        = AP
-    val CAM_IP              = "192.168.18.104"
-//    val CAM_IP              = "192.168.1.100"
+//    val CAM_IP              = "192.168.3.7"
+//    val CAM_IP              = "192.168.18.104"
+    val CAM_IP              = "192.168.1.100"
     val CAM_SLOT            = 0
     val CAM_Crypto          = 0   //0:h264  1:h265  2:h264crypto  3:h265crypto
     val CAM_IS_SUB          = false
