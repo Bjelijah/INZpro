@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.inz.bean.PictureBean;
 import com.inz.inzpro.R;
 import com.inz.utils.ScaleImageUtils;
@@ -25,8 +26,10 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -35,19 +38,19 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
     List<PictureBean> mList;
 
     OnItemClickListener mListener;
-    boolean mShareMode = false;
+    boolean mCmdMode = false;
     int mViewWidth;
     public MyPictureAdapter(Context c,OnItemClickListener l){
         mContext = c;
         mListener = l;
-        mShareMode = false;
+        mCmdMode = false;
     }
 
     public MyPictureAdapter(Context c,List<PictureBean> list,OnItemClickListener l){
         mContext = c;
         mList = list;
         mListener = l;
-        mShareMode = false;
+        mCmdMode = false;
     }
 
     private Pair<Integer,Integer> getWidthHeight(){
@@ -74,9 +77,9 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
         notifyItemRangeChanged(0,mList.size());
     }
 
-    public void setShareMode(boolean isShareMode){
-        if (mShareMode==isShareMode)return;
-        mShareMode = isShareMode;
+    public void setCmdMode(boolean isCmdMode){
+        if (mCmdMode ==isCmdMode)return;
+        mCmdMode = isCmdMode;
 //        notifyDataSetChanged();
         notifyItemRangeChanged(0,mList.size());
     }
@@ -130,7 +133,7 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
     }
 
     public interface OnItemClickListener{
-        void onItemShareCheck(View v,int pos,PictureBean b,boolean isChecked);
+        void onItemCmdCheck(View v, int pos, PictureBean b, boolean isChecked);
         void onItemClick(View v,List<PictureBean> list,int pos);
         void onItemLongClick(View v,int pos,PictureBean b);
     }
@@ -144,71 +147,38 @@ public class MyPictureAdapter extends  RecyclerView.Adapter<MyPictureAdapter.Vie
         params.width = b.getWidth();
         params.height = b.getHeight();
         h.itemView.setLayoutParams(params);
-        h.ck.setVisibility(mShareMode?View.VISIBLE:View.GONE);
+        h.ck.setVisibility(mCmdMode ?View.VISIBLE:View.GONE);
         h.ck.setChecked(false);
         h.ck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.i("123","isChecked  isChecked="+isChecked+"  pos="+pos);
                 if (mListener==null)return;
-                mListener.onItemShareCheck(buttonView,pos,b,isChecked);
+                mListener.onItemCmdCheck(buttonView,pos,b,isChecked);
             }
         });
-        Observable.create(new ObservableOnSubscribe<String>(){
 
+        Glide.with(mContext)
+                .load(new File(b.getPath()))
+                .override(b.getWidth(),b.getHeight())
+                .into(h.iv);
+        h.ll.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void subscribe(ObservableEmitter<String> e) throws Exception {
-                e.onNext(b.getPath());
+            public void onClick(View v) {
+                if (mListener==null)return;
+                if(mCmdMode)return;
+                mListener.onItemClick(v,mList,pos);
             }
-        })
-                .map(new Function<String, Bitmap>() {
-                    @Override
-                    public Bitmap apply(String s) throws Exception {
-                        return ScaleImageUtils.INSTANCE.decodeFile(b.getWidth(),b.getHeight(),new File(s));
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Bitmap>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.i("123"," on subscribe");
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        Log.i("123","~~~~~~~~~~~on next  bitmap");
-                        h.iv.setImageBitmap(bitmap);
-//                        h.iv.setImageDrawable(mContext.getDrawable(R.mipmap.ic_launcher));
-                        h.ll.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (mListener==null)return;
-                                if(mShareMode)return;
-                                mListener.onItemClick(v,mList,pos);
-                            }
-                        });
-                        h.ll.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                if (mListener==null)return false;
-                                if (mShareMode)return false;
-                                mListener.onItemLongClick(v,pos,b);
-                                return true;
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        });
+        h.ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mListener==null)return false;
+                if (mCmdMode)return false;
+                mListener.onItemLongClick(v,pos,b);
+                return true;
+            }
+        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

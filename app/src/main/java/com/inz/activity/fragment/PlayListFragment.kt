@@ -1,35 +1,18 @@
 package com.inz.activity.fragment
 
-import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import com.inz.adapter.MyPictureAdapter
-import com.inz.adapter.MyVideoAdapter
-import com.inz.adapter.VideoAdapter
-import com.inz.bean.PictureBean
-import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 import com.inz.model.main.PlayListModel
-import com.inz.utils.FileUtil
-import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.ObservableSource
-import java.util.function.Function
 
 class PlayListFragment :BaseFragment() {
     override fun getLayout(): Int = R.layout.fragment_play_list
@@ -56,10 +39,5 @@ class PlayListFragment :BaseFragment() {
         ModelMgr.getPlayListModelInstance(context).activity = activity
         return v
     }
-
-
-
-
-
 
 }

@@ -52,6 +52,7 @@ public class JniUtil {
 	public static native boolean login(String ip);
 	public static native boolean loginOut();
 	public static native void setCallBackObj(Object o);
+	public static native void setCallBackMethodName(String methodName,int flag);
 	public static native boolean readyPlayLive();//use netReadyPlay
 
 	public static native boolean readyPlayTurnLive(Object turnSubScribeAckBean, int isPlayback);
@@ -81,6 +82,11 @@ public class JniUtil {
 	public static native ReplayFile[] netGetVideoListAll(int count);
 	public static native ReplayFile[] netGetVideoList(int startCount,int endCount);
 	public static native void netCloseVideoList();
+	//net set param
+	public static native void netSetSystemTime(int year,int month,int day,int hour,int min,int sec,int msec,int dayOfWeek);
+	public static native void netSetSystemTimeNow();
+	public static native void netRegistAlarm();
+	public static native void netUnregistAlarm();
 
 	//local
 	public static native void clearStreamBuf();

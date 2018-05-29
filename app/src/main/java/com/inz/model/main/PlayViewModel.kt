@@ -37,6 +37,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     var mScheduledFlag = false
     var mVideoSourceArr:ArrayList<VideoBean> ?=null
     var mVideoIndex = 0
+
     override fun onCreate() {
 
         Log.e("123","onCreate!!!!")
@@ -51,6 +52,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init
                     if (isSuccess) playView()
+
                     nowPlayState = 0
                 },{
                     //deinit
@@ -148,8 +150,16 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.setUrl(url)
     }
 
+    fun setAlarm(b:Boolean){
+        mPlayer?.setAlarm(b)
+    }
+
     fun playView(){
         mPlayer?.play(Config.CAM_IS_SUB)
+    }
+
+    fun reLinkPlayView(){
+        mPlayer?.rePlay()
     }
 
     fun pauseView(){
@@ -163,7 +173,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
     fun change2AP(){
         if (nowPlayState==0)return
-        Log.i("123","chande2AP");
+        mProcessVisibility.set(View.VISIBLE)
+        Log.i("123","chande2AP")
         stopNewTask()
         stopTimeTask()
         ThreadUtil.cachedThreadStart({
@@ -171,10 +182,19 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             Thread.sleep(500)
             initApPlay()
         })
-
     }
 
+    fun showRecord(b:Boolean){
+        if (b){
+            mRecordVisibility.set(View.VISIBLE)
+        }else{
+            mRecordVisibility.set(View.GONE)
+        }
+    }
 
+    fun showRecordText(num:Int){
+        mRecordTimeText.set(String.format("%02d:%02d",num/60,num%60))
+    }
 
     override fun onDestory() {
 
@@ -211,7 +231,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
     val mProcessVisibility      = ObservableField<Int>(View.VISIBLE)
     val mReplayCtrlVisibility   = ObservableField<Int>(View.GONE)
+    val mRecordVisibility       = ObservableField<Int>(View.GONE)
     val mPlayViewFull           = ObservableField<Boolean>(false)
+    val mRecordTimeText         = ObservableField<String>("00:00")
 
     fun setFullScreen(b: Boolean) {
         if (b){
@@ -229,9 +251,6 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
     fun setIsPlayReview(b:Boolean){
         mIsPlayback = !b
-        if (b){
-            mReplayCtrlVisibility.set(View.GONE)
-        }
     }
 
     fun setVideoSource(arr:ArrayList<VideoBean>){
@@ -247,8 +266,11 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         RxUtil.doInUIThread(object : RxUtil.RxSimpleTask<Boolean>(){
             override fun doTask() {
                 if (bWait){
+                    if (!mIsPlayback) {
+                        mProcessVisibility.set(View.VISIBLE)
+                        //todo we need relink
 
-                    mProcessVisibility.set(View.VISIBLE)
+                    }
                 }else{
                     mProcessVisibility.set(View.GONE)
                 }
@@ -287,6 +309,10 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 mWaiteNum++
                 if (mWaiteNum==3){
                     bWait = true
+                    if (!mIsPlayback) {
+                        reLinkPlayView()
+                    }
+                    mWaiteNum = 0
                 }
             }
 
@@ -294,6 +320,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             var timestamp = server.timestamp
             var firstTime = server.firstTimestamp
             onTime(speed,timestamp,firstTime,bWait)
+
+
         },0,F_TIME, TimeUnit.SECONDS)
     }
 

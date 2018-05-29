@@ -5,9 +5,9 @@
     <solid android:color="#ffffff"/>
     <corners android:radius="3600dp"/>
     <padding
-        android:left="10dp"
-        android:top="10dp"
-        android:right="10dp"
-        android:bottom="10dp"
+        android:left="@dimen/main_ctrl_padding_horizontal"
+        android:top="@dimen/main_ctrl_padding_vertical"
+        android:right="@dimen/main_ctrl_padding_horizontal"
+        android:bottom="@dimen/main_ctrl_padding_vertical"
         />
 </shape>

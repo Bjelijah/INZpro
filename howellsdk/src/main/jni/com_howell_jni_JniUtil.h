@@ -217,6 +217,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    setCallBackMethodName
+ * Signature: (Ljava/lang/String;I)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackMethodName
+  (JNIEnv *, jclass, jstring, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    readyPlayLive
  * Signature: ()Z
  */
@@ -413,6 +421,38 @@ JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoList
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netSetSystemTime
+ * Signature: (IIIIIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netSetSystemTime
+  (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netSetSystemTimeNow
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netSetSystemTimeNow
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netRegistAlarm
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netRegistAlarm
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netUnregistAlarm
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netUnregistAlarm
   (JNIEnv *, jclass);
 
 /*

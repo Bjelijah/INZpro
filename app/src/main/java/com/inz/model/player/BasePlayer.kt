@@ -67,9 +67,11 @@ abstract class BasePlayer {
 
 
     open fun setUrl(uri:String){}
+    open fun setAlarm(b:Boolean){}
     abstract fun init(crypto:Int,uri:String):BasePlayer
     abstract fun deinit():BasePlayer
     abstract fun play(isSub:Boolean):BasePlayer
+    abstract fun rePlay():BasePlayer
     abstract fun pause():BasePlayer
     abstract fun stop():BasePlayer
     abstract fun catchPic():BasePlayer

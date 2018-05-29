@@ -69,10 +69,15 @@ public class ApFactory {
     public final class ApProduct extends HwBasePlay{
         boolean lastIsPlayback = false;
 
+        private void onAlarm(int type,String msg){
+            cb.onAlarm(type,msg);
+        }
+
         @Override
         public HWPlayApi bindCam() {
             super.bindCam();
             JniUtil.setCallBackObj(this);
+            JniUtil.setCallBackMethodName("onAlarm",0);
             return this;
         }
 

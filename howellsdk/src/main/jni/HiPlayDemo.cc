@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <time.h>
 //#include "include/mp4/mp4record.h"
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGW(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_WARN, "JNI", __VA_ARGS__):(void)NULL)
@@ -132,6 +133,13 @@ typedef struct{
 }DOWN_LOAD_T;
 
 static DOWN_LOAD_T * g_downloadMgr = NULL;
+
+typedef struct {
+    int value;//一般为通道值
+    int status;//一般不用
+    int reserve[32];
+}ALARM_T;
+
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_logEnable
         (JNIEnv *, jclass, jboolean enable){
@@ -600,7 +608,28 @@ static void download_head(){
             media_head.adec_code = ADEC_AAC;
             break;
         case 1:
+            media_head.adec_code = ADEC_G711U;
+            break;
+        case 2:
+            media_head.adec_code = ADEC_HISG711A;
+            break;
+        case 3:
+            media_head.adec_code = ADEC_HISG711U;
+            break;
+        case 4:
+            media_head.adec_code = ADEC_HISADPCM;
+            break;
+        case 5:
+            media_head.adec_code = ADEC_RAW;
+            break;
+        case 6:
             media_head.adec_code = ADEC_G711A;
+            break;
+        case 7:
+            media_head.adec_code = ADEC_HISADPCM_DVI4;
+            break;
+        case 8:
+            media_head.adec_code = ADEC_G726_32;
             break;
         default:
             media_head.adec_code = ADEC_AAC;
@@ -618,10 +647,35 @@ static void download_head(){
         case 3:
             media_head.vdec_code = VDEC_HISH265_ENCRYPT;
             break;
+        case 4:
+            media_head.vdec_code = VDEC_HISH264;
+            break;
+        case 5:
+            media_head.vdec_code = VDEC_MJPEG;
+            break;
         default:
             media_head.vdec_code = VDEC_H264;
             break;
     }
+
+    if(media_head.vdec_code != VDEC_H264 &&
+       media_head.vdec_code != VDEC_HISH264 &&
+       media_head.vdec_code != VDEC_H264_ENCRYPT &&
+       media_head.vdec_code != VDEC_MJPEG &&
+       media_head.vdec_code != VDEC_HIS_H265 &&
+       media_head.vdec_code != VDEC_HISH265_ENCRYPT){
+        media_head.vdec_code = VDEC_H264;//默认  h264
+    }
+
+    if(media_head.adec_code != ADEC_G711U &&
+       media_head.adec_code != ADEC_HISG711A &&
+       media_head.adec_code != ADEC_HISG711U &&
+       media_head.adec_code != ADEC_AAC){
+        media_head.adec_code = ADEC_G711U;//默认  g711u
+    }
+
+
+
     jbyteArray arr = g_downloadMgr->env->NewByteArray(sizeof(media_head));
 
     g_downloadMgr->env->SetByteArrayRegion(arr, 0, len, reinterpret_cast<const jbyte *>(&media_head));
@@ -745,12 +799,12 @@ static void on_yuv_callback(PLAY_HANDLE handle,
 
 //    int frameNum = 0;
 //    hwplay_get_framenum_in_buf(handle,&frameNum);
-    gettimeofday(&cur_t,NULL);
+//    gettimeofday(&cur_t,NULL);
 //
-    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
+//    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
 //
-    LOGI("  -- %ld\n",timeuse);
-    last_t = cur_t;
+//    LOGI("  -- %ld\n",timeuse);
+//    last_t = cur_t;
 
     yv12gl_display(y,u,v,width,height,time);
 
@@ -763,6 +817,7 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
 //    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
 //    int ret = hwplay_is_pause(handle);
 //    LOGE("on source callback is pause=%d\n",ret);
+
     if (res!=NULL){
         if (res->is_exit){
             LOGE("on source callback is  exit return");
@@ -801,6 +856,52 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
 }
 
 
+
+/** * 	--如果alarm_type != HW_ALARM_MOTIONEX,则buf的数据结构为
+* 		struct
+* 		{
+* 			int value;//一般为通道值
+* 			int status;//一般不用
+* 			int reserve[32];
+* 		};
+* 	--如果alarm_type == HW_ALARM_MOTIONEX,则buf的数据结构为
+* 		struct
+* 		{
+* 			int slot;
+* 			int sec;//1970到现在的sec
+* 			unsigned msec;//毫秒
+* 			char data[128 * 128 / 8]//报警区域
+* 			int reserve[32];
+* 		};
+*/
+static void on_alarm_stream_fun(ALARM_STREAM_HANDLE handle,int alarm_type,const char* buf,int len,long userdata){
+    if(res==NULL)return;
+    if (handle!=res->alarm_stream_handle)return;
+    if(res->obj==NULL)return;
+
+    JNIEnv *env = NULL;
+    if (res->jvm->AttachCurrentThread( &env, NULL) != JNI_OK) {
+        LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);
+        return;
+    }
+    ALARM_T alt;
+    if (alarm_type!=HW_ALARM_MOTIONEX){
+        memcpy(&alt,buf,len);
+    }
+//    LOGI("value=%d  status=%d",alt.value,alt.status);
+    char a[128]="";
+    sprintf(a,"{\"value\":%d,\"status\":%d}",alt.value,alt.status);
+    jstring str = env->NewStringUTF(a);
+    env->CallVoidMethod(res->obj,res->mid,alarm_type,str);
+    env->DeleteLocalRef(str);
+    if (res->jvm->DetachCurrentThread() != JNI_OK) {
+        LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
+    }
+}
+
+
+
+
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         (JNIEnv *env, jclass cls){
     if(res == NULL){
@@ -810,6 +911,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         res->obj = NULL;
         res->is_exit = 0;
         res->play_handle = -1;
+        res->alarm_stream_handle = -1;
         res->isFirstTime = 1;
         res->firstTimestamp = 0;
         res->timestamp = 0;
@@ -870,6 +972,24 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
     }
     res->obj = env->NewGlobalRef(obj);
 }
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackMethodName
+        (JNIEnv *env, jclass, jstring method, jint flag){
+    if (res == NULL)return;
+    if (res->obj==NULL)return;
+    const char * _mehtod = env->GetStringUTFChars(method,0);
+    switch (flag){
+        case 0: {
+            jclass clz = env->GetObjectClass(res->obj);
+            res->mid = env->GetMethodID(clz, _mehtod, "(ILjava/lang/String;)V");
+            break;
+        }
+        default:
+            break;
+    }
+    env->ReleaseStringUTFChars(method,_mehtod);
+}
+
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
         (JNIEnv *, jclass){
@@ -952,6 +1072,9 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayTurnLive
             break;
         case 1:
             media_head.adec_code = ADEC_G711U;
+            break;
+        case 2:
+            media_head.adec_code = ADEC_HISADPCM;
             break;
         default:
             media_head.adec_code = ADEC_AAC;
@@ -1078,7 +1201,9 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
         media_head.vdec_code = VDEC_H264_ENCRYPT;//VDEC_HIS_H265;//h265
     }else if(isCrypto == 3){
         media_head.vdec_code = VDEC_HISH265_ENCRYPT;//h265 加密
-    }else {
+    }else if(isCrypto == -1){
+      //采用获取到的
+    } else {
         media_head.vdec_code = VDEC_H264;//默认 未加密 h264 用于 ap
     }
 
@@ -1093,7 +1218,23 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
         media_head.dvr_version = 0;
     }
 
-    media_head.adec_code = ADEC_G711U;
+    if(media_head.vdec_code != VDEC_H264 &&
+            media_head.vdec_code != VDEC_HISH264 &&
+            media_head.vdec_code != VDEC_H264_ENCRYPT &&
+            media_head.vdec_code != VDEC_MJPEG &&
+            media_head.vdec_code != VDEC_HIS_H265 &&
+            media_head.vdec_code != VDEC_HISH265_ENCRYPT){
+        media_head.vdec_code = VDEC_H264;//默认  h264
+    }
+
+    if(media_head.adec_code != ADEC_G711U &&
+            media_head.adec_code != ADEC_HISG711A &&
+            media_head.adec_code != ADEC_HISG711U &&
+            media_head.adec_code != ADEC_AAC){
+        media_head.adec_code = ADEC_G711U;//默认  g711u
+    }
+
+
     LOGE("vc=0x%x     ac=0x%x    au=%d     auchannel %d     asample %d   dvr %d"
     ,media_head.vdec_code
     ,media_head.adec_code
@@ -1359,6 +1500,57 @@ void netCloseFileListNecessary(){
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
         (JNIEnv *, jclass){
     netCloseFileListNecessary();
+}
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netSetSystemTime
+        (JNIEnv *, jclass, jint year, jint month, jint day, jint hour, jint min, jint sec, jint msec,jint dayOfWeek){
+    if(res==NULL)return;
+    if(res->user_handle<0)return;
+    SYSTEMTIME t;
+    t.wYear = year;
+    t.wMonth = month;
+    t.wDay = day;
+    t.wHour = hour;
+    t.wMinute = min;
+    t.wSecond = sec;
+    t.wMilliseconds = msec;
+    t.wDayofWeek = dayOfWeek;
+    hwnet_set_systime(res->user_handle,&t);
+}
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netSetSystemTimeNow
+        (JNIEnv *, jclass){
+    if(res == NULL)return;
+    if(res->user_handle<0)return;
+    time_t now = time(NULL);
+    struct tm * tm = localtime(&now);
+    LOGI("%d-%d-%d %d:%d:%d  %d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec,tm->tm_wday);
+    SYSTEMTIME t;
+    t.wYear = tm->tm_year+1900;
+    t.wMonth = tm->tm_mon+1;
+    t.wDay = tm->tm_mday;
+    t.wHour = tm->tm_hour;
+    t.wMinute = tm->tm_min;
+    t.wSecond = tm->tm_sec;
+    t.wMilliseconds = 0;
+    t.wDayofWeek = tm->tm_wday;
+    hwnet_set_systime(res->user_handle,&t);
+}
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netRegistAlarm
+        (JNIEnv *, jclass){
+    if (res==NULL)return;
+    if(res->user_handle<0)return;
+    res->alarm_stream_handle = hwnet_get_alarm_stream(res->user_handle,on_alarm_stream_fun,0);
+}
+
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netUnregistAlarm
+        (JNIEnv *, jclass){
+    if (res==NULL)return;
+    if (res->alarm_stream_handle<0)return;
+    hwnet_close_alarm_stream(res->alarm_stream_handle);
+    res->alarm_stream_handle=-1;
 }
 
 
@@ -2674,6 +2866,71 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_downloadSetAudioCodeVideoCode
     if(g_downloadMgr==NULL)return;
     g_downloadMgr->aCode = aCode;
     g_downloadMgr->vCode = vCode;
+    if(aCode==-1 || vCode==-1){
+        HW_MEDIAINFO media_head;
+        memset(&media_head,0,sizeof(media_head));
+        hwnet_get_live_stream_head(res->live_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+        LOGI("get live stream head    vd=0x%x   ac=0x%x\n",media_head.vdec_code ,media_head.adec_code);
+        if (aCode==-1) {
+            switch (media_head.adec_code){
+                case ADEC_AAC:
+                    g_downloadMgr->aCode = 0;
+                    break;
+                case ADEC_G711U:
+                    g_downloadMgr->aCode = 1;
+                    break;
+                case ADEC_HISG711A:
+                    g_downloadMgr->aCode = 2;
+                    break;
+                case ADEC_HISG711U:
+                    g_downloadMgr->aCode = 3;
+                    break;
+                case ADEC_HISADPCM:
+                    g_downloadMgr->aCode = 1;// 4//fixme
+                    break;
+                case ADEC_RAW:
+                    g_downloadMgr->aCode = 5;
+                    break;
+                case ADEC_G711A:
+                    g_downloadMgr->aCode = 6;
+                    break;
+                case ADEC_HISADPCM_DVI4:
+                    g_downloadMgr->aCode = 7;
+                    break;
+                case ADEC_G726_32:
+                    g_downloadMgr->aCode = 8;
+                    break;
+                default:
+                    g_downloadMgr->aCode = 0;
+                    break;
+            }
+        }
+        if (vCode==-1) {
+            switch (media_head.vdec_code){
+                case VDEC_H264:
+                    g_downloadMgr->vCode = 0;
+                    break;
+                case VDEC_HIS_H265:
+                    g_downloadMgr->vCode = 1;
+                    break;
+                case VDEC_H264_ENCRYPT:
+                    g_downloadMgr->vCode = 2;
+                    break;
+                case VDEC_HISH265_ENCRYPT:
+                    g_downloadMgr->vCode = 3;
+                    break;
+                case VDEC_HISH264:
+                    g_downloadMgr->vCode = 4;
+                    break;
+                case VDEC_MJPEG:
+                    g_downloadMgr->vCode = 5;
+                    break;
+                default:
+                    g_downloadMgr->vCode = 0;
+                    break;
+            }
+        }
+    }
 }
 
 

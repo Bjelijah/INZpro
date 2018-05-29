@@ -24,11 +24,13 @@ object CtrlAction {
         isPlayBack = false
         ModelMgr.getMainViewModelInstance(c).setIsPlayReview(true)
         ModelMgr.getPlayViewModelInstance(c).setIsPlayReview(true)
+        ModelMgr.getReplayCtrlModelInstance(c).setIsPlayReView(true)
     }
     fun setPlayPlayback(c:Context){
         isPlayBack = true
         ModelMgr.getMainViewModelInstance(c).setIsPlayReview(false)
         ModelMgr.getPlayViewModelInstance(c).setIsPlayReview(false)
+        ModelMgr.getReplayCtrlModelInstance(c).setIsPlayReView(false)
     }
 
 

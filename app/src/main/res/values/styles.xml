@@ -42,21 +42,41 @@
 
     <style name="MyToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="colorControlNormal">@color/white_highlight</item>
+        <item name="android:actionBarSize">@dimen/big_image_toolbar_height</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white</item>
     </style>
 
     <style name="MyCtrlButton" >
         <item name="android:textColor">@color/black</item>
-        <item name="android:elevation">1dp</item>
-        <item name="android:translationZ">1dp</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:elevation">@dimen/main_ctrl_btn_elevation</item>
+        <item name="android:translationZ">@dimen/main_ctrl_translationZ</item>
+        <item name="android:textSize">@dimen/main_ctrl_text_size</item>
         <item name="android:background">@drawable/my_ctrl_btn</item>
-        <item name="android:layout_margin">2dp</item>
+        <item name="android:layout_margin">@dimen/main_ctrl_btn_margin</item>
+
     </style>
 
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
 
         <item name="colorControlNormal">@color/body</item>
         <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:scaleX">@dimen/item_picture_checkbox_size</item>
+        <item name="android:scaleY">@dimen/item_picture_checkbox_size</item>
+    </style>
+
+
+
+
+
+    <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:colorAccent">@color/blue</item>
+        <item name="android:colorControlNormal">@color/blue</item>
+        <item name="android:colorControlActivated">@color/blue</item>
+        <item name="android:paddingTop">@dimen/replay_ctrl_seekbar_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/replay_ctrl_seekbar_padding_vertical</item>
+        <item name="android:scaleX">@dimen/replay_ctrl_seekbar_scale</item>
+        <item name="android:scaleY">@dimen/replay_ctrl_seekbar_scale</item>
+
     </style>
 
     <!--<style name="MyPlayCtrlButton">-->
@@ -70,7 +90,31 @@
     </style>
 
 
+    <style name="alertDialogTitle">
+        <item name="android:textSize">@dimen/alert_dialog_title_size</item>
+        <item name="android:textColor">@color/white_highlight</item>
+    </style>
 
+
+
+    <style name="alertDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/main_bk</item>
+        <item name="android:textSize">@dimen/alert_dialog_text_size</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:windowTitleStyle">@style/alertDialogTitle</item>
+        <item name="android:buttonBarStyle">@android:style/Holo.ButtonBar.AlertDialog</item>
+    </style>
+
+
+    <style name="list_fun_btn">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:background">@color/main_bk</item>
+        <item name="android:textSize">@dimen/list_fun_text_size</item>
+        <item name="android:paddingLeft">@dimen/list_fun_btn_padding_horizontal</item>
+        <item name="android:paddingRight">@dimen/list_fun_btn_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/list_fun_btn_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/list_fun_btn_padding_vertical</item>
+    </style>
 
 
 

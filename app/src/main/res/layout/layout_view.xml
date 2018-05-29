@@ -1,105 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-        <variable
-            name="vm"
-            type="com.inz.model.main.MainViewModel"/>
-    </data>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/main_bk_light"
+    android:padding="0dp"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:background="@color/main_bk_dark"
 
-        <LinearLayout
-            android:layout_width="0dp"
+        >
+        <fragment
+            android:id="@+id/fragment_play_view"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/file_border"
-            android:visibility="@{vm.MReplayListVisibility}"
-            >
-
-            <!--fragment  zuo-->
-            <fragment
-                android:id="@+id/fragment_play_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:name="com.inz.activity.fragment.PlayListFragment"
-                />
-
-        </LinearLayout>
-        <!--@{vm.MPlayViewFull ? match_parent : wrap_content ,default=wrap_content}-->
-        <!--android:layout_width="0dp"-->
-        <LinearLayout
-            android:id="@+id/ll_play"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:orientation="vertical"
-            app:layout_width="@{vm.MPlayViewWidth}"
-            app:layout_height="@{vm.MPlayViewHeight}"
-
-            android:background="@color/black"
-            android:padding="0dp"
-            >
-
-            <!--app:my_layout_width="@{vm.MPlayViewFull?@dimen/play_view_width_full:@dimen/play_view_width_normal,default=wrap_content}"-->
-            <!--app:my_layout_height="@{vm.MPlayViewFull?@dimen/play_view_height_full:@dimen/play_view_height_normal,default=wrap_content}"-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/black"
-              >
-                <fragment
-                    android:id="@+id/fragment_play_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:name="com.inz.activity.fragment.PlayFragment"
-                    />
-
-            </LinearLayout>
-
-
-
-            <!--<include-->
-                <!--android:id="@+id/layout_play"-->
-                <!--layout="@layout/layout_play_view"-->
-                <!--app:vm = "@{vm}"-->
-                <!--/>-->
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="@{vm.MReplayCtrlVisibility}">
-                <fragment
-                    android:id="@+id/fragment_replay_ctrl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:name="com.inz.activity.fragment.ReplayCtrlFragment"
-                    />
-
-
-            </LinearLayout>
-
-
-            <!--<include layout="@layout/layout_replay_ctrl"-->
-                <!--app:vm="@{vm}"/>-->
-
-
-        </LinearLayout>
-
-
-
-
-
+            android:name="com.inz.activity.fragment.PlayFragment"
+            />
 
     </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bk_light"
+       >
+        <fragment
+            android:id="@+id/fragment_replay_ctrl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.inz.activity.fragment.ReplayCtrlFragment"
+            />
 
+    </LinearLayout>
 
-</layout>
+</LinearLayout>

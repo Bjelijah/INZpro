@@ -12,19 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionName="myImage"
-        android:layout_marginTop="?attr/actionBarSize"/>
+        android:layout_marginTop="@dimen/big_image_toolbar_height"/>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/MyToolbar"
         >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/MyToolbar"
-            android:minHeight="@dimen/abc_action_bar_default_height_material"
             android:background="@color/main_bk_dark"
             >
 
@@ -33,8 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="5dip"
-                android:textSize="20sp"
+                android:layout_marginLeft="@dimen/big_image_title_margin_left"
+                android:textSize="@dimen/big_image_title_text_size"
                 android:text="TextView"
                 android:textColor="@color/white_highlight"
                 android:background="@color/transparent"/>

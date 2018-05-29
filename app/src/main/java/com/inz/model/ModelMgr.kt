@@ -17,6 +17,7 @@ object ModelMgr {
     var mLocalPlayer:LocalPlayer            ?=null
     var mDownloadMgr:DownloadMgr            ?=null
     var mListItemModel:ListItemModel        ?=null
+    var mMainCtrlModel:MainCtrlModel        ?=null
     fun init(c:Context){
         mContext = c
     }
@@ -90,5 +91,12 @@ object ModelMgr {
         }
         return mListItemModel!!
     }
-
+    fun getMainCtrlModelInstance(c:Context):MainCtrlModel{
+        if (mMainCtrlModel==null){
+            mMainCtrlModel = MainCtrlModel(c)
+        }else{
+            mMainViewModel?.setContext(c)
+        }
+        return mMainCtrlModel!!
+    }
 }

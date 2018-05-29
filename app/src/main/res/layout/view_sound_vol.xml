@@ -38,7 +38,7 @@
                 android:max="99"
                 android:progress="@{vm.MProcess}"
                 android:onProgressChanged="@{vm.onProgressChanged}"
-
+                android:theme="@style/MySeekBar"
                 />
         </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
     </LinearLayout>

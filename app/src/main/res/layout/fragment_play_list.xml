@@ -27,12 +27,13 @@
             android:background="@drawable/play_list_title_btn"
             android:padding="@dimen/play_list_padding"
             >
-            <!--android:src="@drawable/ic_expand_more_whit"-->
+            <!--android:src="@drawable/ic_expand_more_white"-->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
                 app:play_list_title_src="@{vm.MShowRecordFile}"
+                android:layout_gravity="center_vertical"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -64,11 +65,12 @@
             android:background="@drawable/play_list_title_btn"
             android:padding="@dimen/play_list_padding"
             >
-            <!--android:src="@drawable/ic_expand_more_whit"-->
+            <!--android:src="@drawable/ic_expand_more_white"-->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:play_list_title_src="@{vm.MShowPictureFile}"
+                android:layout_gravity="center_vertical"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -88,7 +90,7 @@
             android:layout_weight="1"
             android:visibility="@{vm.MPictureListVisibility}"
             app:update_picture_list="@{vm.MUpdatePictureList}"
-            app:update_picture_share="@{vm.MUpdatePictureShare}"
+            app:update_picture_cmd="@{vm.MUpdatePictureCmd}"
             />
 
 
@@ -99,17 +101,18 @@
             android:orientation="horizontal"
             android:layout_gravity="bottom"
             android:gravity="bottom"
-            app:visible_action_down="@{vm.mShareBtnVisibility}"
+            app:visible_action_down="@{vm.mCmdBtnVisibility}"
            >
 
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/share_share"
+                android:text="@{vm.mCmdBtnText}"
                 android:textColor="@color/colorAccent"
                 android:background="@drawable/my_share_btn"
-                android:onClick="@{vm.onShareShareClick}"/>
+                android:onClick="@{vm.onCmdClick}"
+                style="@style/list_fun_btn"/>
 
             <Button
                 android:layout_width="0dp"
@@ -118,9 +121,8 @@
                 android:text="@string/share_cancel"
                 android:textColor="@color/colorAccent"
                 android:background="@drawable/my_share_btn"
-                android:onClick="@{vm.onShareCancelClick}"/>
-
-
+                android:onClick="@{vm.onCmdCancelClick}"
+                style="@style/list_fun_btn"/>
 
         </LinearLayout>
 

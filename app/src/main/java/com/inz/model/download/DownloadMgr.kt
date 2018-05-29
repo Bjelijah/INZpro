@@ -17,6 +17,7 @@ class DownloadMgr {
     var task : ExecutorService?=null
     var time : ScheduledExecutorService?=null
     var mFilePath:String ?=null
+    var secNum = 0
     fun start(){
         var path = FileUtil.createNewVideoDirPathName(0)
         mFilePath = path
@@ -43,9 +44,11 @@ class DownloadMgr {
         timeTaskStart()
         task = ThreadUtil.newCachedThreadStart({
             while (startFlag){
+                FileUtil.deleteLastFileIfSpaceLimit(FileUtil.FILE_VIDEO_PATH,Config.FILE_DIR_VIDEO_SIZE,Config.FILE_DIR_LIMITE)
                 var path = FileUtil.createNewVideoDirPathName(if(Config.DOWN_WH_STREAM)0 else 1)
                 ApiManager.getInstance().getApDownLoadServer(if(Config.DOWN_WH_STREAM)0 else 1)
                         .open(path).start()
+                secNum = 0
                 synchronized(obj){
                     obj.wait()
                 }
@@ -58,6 +61,7 @@ class DownloadMgr {
     }
 
     fun stepStop(){
+        if(!startFlag)return
         startFlag = false
         synchronized(obj){
             obj.notify()
@@ -68,14 +72,22 @@ class DownloadMgr {
     }
 
     private fun timeTaskStart(){
+        secNum = 0
         time = ThreadUtil.newScheduledThreadStart({
-            synchronized(obj){
-                obj.notify()
+            ModelMgr.getPlayViewModelInstance(ModelMgr.mContext!!).showRecordText(secNum)
+            if (secNum>=60) {
+                synchronized(obj) {
+                    obj.notify()
+                }
+                secNum = 0
             }
-        },0,2,TimeUnit.MINUTES)
+            secNum ++
+
+        },0,1,TimeUnit.SECONDS)
     }
     private fun timeTaskStop(){
         ThreadUtil.newScheduledThreadShutDown(time)
+        secNum = 0
     }
 
 }

@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- layout_sound_vol -->
-    <dimen name="sound_vol_height">90dp</dimen>
-    <dimen name="sound_vol_seekbar_height">80dp</dimen>
-    <dimen name="sound_vol_text_size">10sp</dimen>
+    <dimen name="sound_vol_height">130dp</dimen>
+    <dimen name="sound_vol_seekbar_height">120dp</dimen>
+    <dimen name="sound_vol_text_size">15sp</dimen>
+
+    <!-- layout_main_ctrl -->
+    <dimen name="main_ctrl_btn_elevation">10dp</dimen>
+    <dimen name="main_ctrl_translationZ">1dp</dimen>
+    <dimen name="main_ctrl_btn_margin">2dp</dimen>
+    <dimen name="main_ctrl_text_size_small">10.5sp</dimen>
+    <dimen name="main_ctrl_text_size">18sp</dimen>
+    <dimen name="main_ctrl_padding_horizontal">12dp</dimen>
+    <dimen name="main_ctrl_padding_vertical">15dp</dimen>
 
 
     <!-- layout_replay_ctrl -->
-    <dimen name="replay_ctrl_padding">10dp</dimen>
-    <dimen name="replay_ctrl_padding_height">5dp</dimen>
-    <dimen name="replay_ctrl_text_margin">5dp</dimen>
+    <dimen name="replay_ctrl_padding">12dp</dimen>
+    <dimen name="replay_ctrl_padding_height">7dp</dimen>
+    <dimen name="replay_ctrl_text_margin">7dp</dimen>
     <dimen name="replay_ctrl_fun_margin">15dp</dimen>
-    <dimen name="replay_ctrl_text_size">12sp</dimen>
+    <dimen name="replay_ctrl_text_size">18sp</dimen>
+    <dimen name="replay_ctrl_seekbar_padding_vertical">10dp</dimen>
+    <dimen name="replay_ctrl_seekbar_padding_horizontal">20dp</dimen>
+    <dimen name="replay_ctrl_seekbar_margin">100dp</dimen>
+    <dimen name="replay_ctrl_seekbar_scale">1.3</dimen>
 
     <!-- play view -->
     <dimen name="play_view_width_normal">0dp</dimen>
@@ -20,13 +33,37 @@
     <dimen name="play_view_height_full">@dimen/match_parent</dimen>
 
     <dimen name="play_list_padding_end">1dp</dimen>
-    <dimen name="play_list_padding">10dp</dimen>
-    <dimen name="play_list_title_size">20sp</dimen>
+    <dimen name="play_list_padding">16dp</dimen>
+    <dimen name="play_list_title_size">28sp</dimen>
 
     <!-- item video -->
     <dimen name="item_video_padding">10dp</dimen>
     <dimen name="item_video_top">7dp</dimen>
     <dimen name="item_video_bottom">7dp</dimen>
-    <dimen name="item_video_text_size">15sp</dimen>
-    <dimen name="item_video_text_mar">10dp</dimen>
+    <dimen name="item_video_text_size">20sp</dimen>
+    <dimen name="item_video_text_margin">12dp</dimen>
+    <!-- item picture -->
+    <dimen name="item_picture_padding">14dp</dimen>
+    <dimen name="item_picture_padding_height">7dp</dimen>
+    <dimen name="item_picture_checkbox_size">1.3</dimen>
+    <!-- list fun -->
+    <dimen name="list_fun_text_size">20sp</dimen>
+    <dimen name="list_fun_btn_padding_vertical">18dp</dimen>
+    <dimen name="list_fun_btn_padding_horizontal">35dp</dimen>
+
+    <!-- big image -->
+    <!--android:minHeight="@dimen/abc_action_bar_default_height_material"-->
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <dimen name="big_image_toolbar_height">90dp</dimen>
+    <dimen name="big_image_title_text_size">28sp</dimen>
+    <dimen name="big_image_title_margin_left">7dp</dimen>
+
+    <!-- -->
+    <dimen name="alert_dialog_title_size">26sp</dimen>
+    <dimen name="alert_dialog_text_size">20sp</dimen>
+
+    <!-- record -->
+    <dimen name="play_record_show_margin">10dp</dimen>
+    <dimen name="play_record_show_text_size">18sp</dimen>
+    <dimen name="play_record_show_text_margin">5dp</dimen>
 </resources>

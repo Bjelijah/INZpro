@@ -62,6 +62,10 @@ class LocalPlayer :BasePlayer() {
         return this
     }
 
+    override fun rePlay(): BasePlayer {
+        return this
+    }
+
     override fun stop(): BasePlayer {
         Observable.create(ObservableOnSubscribe<Boolean> {  e->
             ApiManager.getInstance().localService

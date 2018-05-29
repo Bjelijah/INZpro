@@ -67,6 +67,7 @@ public interface HWPlayApi {
 
     interface IAPCamCB{
         void onRecordFileList(ArrayList<ReplayFile> files);
+        void onAlarm(int type,String msg);
     }
 
 }

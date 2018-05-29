@@ -3,7 +3,7 @@
     android:color="@color/black">
     <item>
         <selector>
-            <item android:drawable="@drawable/ic_volume_white_36dp"/>
+            <item android:drawable="@drawable/ic_volume_white"/>
         </selector>
     </item>
 </ripple>

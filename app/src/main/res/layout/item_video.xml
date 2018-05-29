@@ -1,60 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/item_video_padding"
+    android:paddingRight="@dimen/item_video_padding"
+    android:paddingTop="@dimen/item_video_top"
+    android:paddingBottom="@dimen/item_video_bottom"
+    android:id="@+id/item_video_ll"
+
+    android:background="@drawable/item_video_border"
     >
 
-    <data>
-        <variable
-            name="vm"
-            type="com.inz.model.main.VideoModel"/>
-
-    </data>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/item_video_iv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/item_video_padding"
-        android:paddingRight="@dimen/item_video_padding"
-        android:paddingTop="@dimen/item_video_top"
-       >
-        <!--android:layout_alignParentLeft="true"-->
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/item_video_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/item_video_text_size"
+        android:layout_toRightOf="@id/item_video_iv"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/item_video_text_margin"
+        android:text="asdf"
+        android:textColor="@color/white_highlight"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_navigate_next_white"
+        android:layout_centerVertical="true"
+
+        />
 
 
-            android:src="@mipmap/ic_launcher"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:text="asdf"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textSize="@dimen/item_video_text_size"
-            />
-        <!--android:layout_alignParentRight="true"-->
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:src="@drawable/ic_navigate_next_white_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-
-
-    </android.support.constraint.ConstraintLayout>
-
-
-</layout>
+</RelativeLayout>

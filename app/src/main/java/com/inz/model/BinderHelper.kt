@@ -125,7 +125,7 @@ object BinderHelper {
         if (bExpand){
             v.setBackgroundResource(R.drawable.ic_expand_less_white)
         }else{
-            v.setBackgroundResource(R.drawable.ic_expand_more_whit)
+            v.setBackgroundResource(R.drawable.ic_expand_more_white)
         }
     }
 
@@ -140,10 +140,10 @@ object BinderHelper {
         ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureList(v as RecyclerView)
     }
 
-    @BindingAdapter("update_picture_share")
+    @BindingAdapter("update_picture_cmd")
     @JvmStatic
-    fun onPictureShareUpdate(v:View,b:Boolean){
-        ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureShare(v as RecyclerView,b)
+    fun onPictureCmdUpdate(v:View,b:Boolean){
+        ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updatePictureCmd(v as RecyclerView,b)
     }
 
 

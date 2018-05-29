@@ -2,7 +2,6 @@ package com.inz.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -140,10 +139,10 @@ public class BigImagesActivity extends AppCompatActivity implements View.OnClick
 
                 break;
             case R.id.ib_delete:
-                Dialog alertDialog = new AlertDialog.Builder(BigImagesActivity.this).
+                AlertDialog alertDialog = new AlertDialog.Builder(BigImagesActivity.this,R.style.alertDialog).
                         setTitle(getResources().getString(R.string.big_image_activity_dialog_title_remove)).
                         setMessage(getResources().getString(R.string.big_image_activity_dialog_message)).
-                        setIcon(R.drawable.ic_warning_white_36dp).
+                        setIcon(R.drawable.ic_warning_white).
                         setPositiveButton(getResources().getString(R.string.big_image_activity_dialog_yes_button_name), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

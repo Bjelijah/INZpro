@@ -1,9 +1,13 @@
 package com.inz.activity
 
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.view.WindowManager
 import com.inz.inzpro.R
@@ -11,6 +15,12 @@ import com.inz.inzpro.BaseViewModel
 import com.inz.model.ModelMgr
 
 class MainActivity:BaseActivity() {
+
+    val REQUEST_EXTERNAL_STORAGE = 1
+    var PERMISSIONS_STORAGE =  arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+
+
     override fun getLayout(): Int  = R.layout.activity_main
 
 
@@ -44,6 +54,20 @@ class MainActivity:BaseActivity() {
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        verifyStoragePermissions()
+    }
+
+
+    fun verifyStoragePermissions(){
+        var permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (permission!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE)
+        }
+
     }
 
 }

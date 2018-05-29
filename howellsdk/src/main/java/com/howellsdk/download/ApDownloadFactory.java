@@ -49,6 +49,7 @@ public class ApDownloadFactory {
             JniUtil.downloadInit();
             JniUtil.downloadType(mType);
             JniUtil.downloadSetCallbackObj(this,0);
+            JniUtil.downloadSetAudioCodeVideoCode(-1,-1);
             JniUtil.downloadSetCallbackMethod("saveData",0);
             return this;
         }

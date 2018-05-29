@@ -44,7 +44,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val mReplaySpeed = ObservableField<String>("0 Kbps")
     val mProcess     = ObservableField<Int>(0)
     val mProcessMax  = ObservableField<Int>(100)
-
+    val mVisibility  = ObservableField<Int>(View.INVISIBLE)
 
     val onClickReplaySound = View.OnClickListener { v ->
         DebugLog.LogE("onClickReplaySound   "+mSoundVol+"  "+mSoundVol?.isShowing)
@@ -147,6 +147,10 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
 
     fun setName(s:String){
         mReplayName.set(s)
+    }
+
+    fun setIsPlayReView(b:Boolean){
+        mVisibility.set(if(b)View.INVISIBLE else View.VISIBLE)
     }
 
     private fun stopClick(){

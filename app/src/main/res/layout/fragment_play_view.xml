@@ -32,9 +32,39 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="@{vm.MProcessVisibility}"
+            style="?android:attr/progressBarStyleLarge"
             />
 
         <!--android:alpha="@{vm.MReplayCtrlAlpha}"-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="@dimen/play_record_show_margin"
+            android:visibility="@{vm.mRecordVisibility}">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fiber_manual_record_red"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/play_record_show_text_margin"
+                android:textColor="@color/red"
+                android:textSize="@dimen/play_record_show_text_size"
+                android:text="@{vm.mRecordTimeText}"
+                android:layout_gravity="center_vertical"
+                />
+
+        </LinearLayout>
+
+
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

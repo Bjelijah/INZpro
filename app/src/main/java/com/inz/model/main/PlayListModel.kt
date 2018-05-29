@@ -2,19 +2,20 @@ package com.inz.model.main
 
 import android.app.Activity
 import android.app.ActivityOptions
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.databinding.ObservableField
 import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import android.view.View
 import android.widget.PopupWindow
 import android.widget.Toast
 import com.howellsdk.utils.ThreadUtil
+import com.inz.action.CtrlAction
 import com.inz.activity.BigImagesActivity
 import com.inz.activity.view.PopWindowView
 import com.inz.adapter.MyPictureAdapter
@@ -26,11 +27,21 @@ import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 import com.inz.utils.FileUtil
 import com.inz.utils.Utils
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 import io.reactivex.functions.Action
+import io.reactivex.schedulers.Schedulers
 import java.io.File
+import java.net.URI
 
 class PlayListModel(private var mContext: Context):BaseViewModel {
+    companion object {
+        val CMD_SHARE = 0x00
+        val CMD_DEL   = 0x01
+    }
+
     private val SHOW_NONE           = 0x00
     private val SHOW_RECORD_FILE    = 0x01
     private val SHOW_PICTURE_FILE   = 0x02
@@ -41,7 +52,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 //    private var mLocalPlayer:BasePlayer?=null
 
     var activity:Activity?=null
-
+    var mCmd = CMD_SHARE
 
     fun setContext(c:Context){
         mContext = c
@@ -59,6 +70,12 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     val mPlayListTitleBtnRecordFile = Action {
         Log.i("123","on record file click")
+        //todo back click
+        CtrlAction.setPlayReview(mContext)
+        //play view
+        ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
+        ModelMgr.getPlayViewModelInstance(mContext).change2AP()
+
         when(mShowCode){
             SHOW_NONE->{
                 mShowCode = SHOW_RECORD_FILE
@@ -66,7 +83,8 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 mShowPictureFile.set(false)
                 mRecordListVisibility.set(View.VISIBLE)
                 mPictureListVisibility.set(View.GONE)
-
+                //刷新
+                upDateVideoListState()
             }
             SHOW_RECORD_FILE->{
                 mShowCode = SHOW_NONE
@@ -80,6 +98,8 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 mShowRecordFile.set(true)
                 mRecordListVisibility.set(View.VISIBLE)
                 mPictureListVisibility.set(View.GONE)
+                //刷新
+                upDateVideoListState()
             }
         }
     }
@@ -93,6 +113,8 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 mShowPictureFile.set(true)
                 mRecordListVisibility.set(View.GONE)
                 mPictureListVisibility.set(View.VISIBLE)
+                //刷新
+                updatePictureListState()
             }
             SHOW_RECORD_FILE->{
                 mShowCode = SHOW_PICTURE_FILE
@@ -100,6 +122,8 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 mShowPictureFile.set(true)
                 mRecordListVisibility.set(View.GONE)
                 mPictureListVisibility.set(View.VISIBLE)
+                //刷新
+                updatePictureListState()
             }
             SHOW_PICTURE_FILE->{
                 mShowCode = SHOW_NONE
@@ -117,11 +141,13 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mRecordListVisibility        = ObservableField<Int>(View.GONE)
     val mPictureListVisibility       = ObservableField<Int>(View.GONE)
     val mUpdatePictureList           = ObservableField<Boolean>(false)
-    val mUpdatePictureShare          = ObservableField<Boolean>(false)
+    val mUpdatePictureCmd            = ObservableField<Boolean>(false)
     val mUpdateVideoList             = ObservableField<Boolean>(false)
-    val mShareBtnVisibility          = ObservableField<Boolean>(false)
+    val mCmdBtnVisibility            = ObservableField<Boolean>(false)
+    val mCmdBtnText                  = ObservableField<String>(mContext.getString(R.string.share_share))
 
-    val onShareShareClick            = Action {
+
+    val onCmdClick            = Action {
         if(mUriList.size==0) {
             Toast.makeText(mContext,mContext.getString(R.string.share_no_file_error),Toast.LENGTH_SHORT).show()
             mUriList.clear()
@@ -129,24 +155,57 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         }
 
         //todo
-        var shareIntent = Intent()
-        shareIntent.action = Intent.ACTION_SEND_MULTIPLE
-        shareIntent.type = "image/*"
-        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,mUriList)
-        mContext.startActivity(Intent.createChooser(shareIntent,mContext.getString(R.string.share_share)))
-        mUriList.clear()
-        updatePictureShareState(false)
+        if (mCmd == CMD_SHARE) {
+            var shareIntent = Intent()
+            shareIntent.action = Intent.ACTION_SEND_MULTIPLE
+            shareIntent.type = "image/*"
+            shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, mUriList)
+            mContext.startActivity(Intent.createChooser(shareIntent, mContext.getString(R.string.share_share)))
+            mUriList.clear()
+            updatePictureCmdState(false, mCmd)
+        }else if(mCmd == CMD_DEL){
+            Log.i("123","mUriList=$mUriList")
+            var size = mUriList.size
+            AlertDialog.Builder(mContext,R.style.alertDialog)
+                    .setTitle(mContext.getString(R.string.item_del))
+                    .setMessage(
+                            "删除这$size 张图片？"
+                    )
+                    .setIcon(R.drawable.ic_warning_white)
+                    .setPositiveButton(mContext.getString(R.string.ok)
+                    ) { _, _ ->
+                        try {
+                            for(uri in mUriList){
+                                FileUtil.deleteFile(URI(uri.toString()))
+                            }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
+                        updatePictureListState()
+                        mUriList.clear()
+                        updatePictureCmdState(false, mCmd)
+                    }
+                    .setNegativeButton(mContext.getString(R.string.cancel)){_,_->
+                        mUriList.clear()
+                        updatePictureCmdState(false, mCmd)
+                    }
+                    .create()
+                    .show()
+
+
+
+        }
     }
 
-    val onShareCancelClick           = Action {
-        updatePictureShareState(false)
+    val onCmdCancelClick           = Action {
+        updatePictureCmdState(false,mCmd)
         mUriList.clear()
     }
 
     fun initPictureList(rv:RecyclerView, width:Int){
         Log.i("123","model  initPictureList")
         var picAdapter = MyPictureAdapter(mContext,object :MyPictureAdapter.OnItemClickListener{
-            override fun onItemShareCheck(v: View?, pos: Int, b: PictureBean?, isChecked: Boolean) {
+            override fun onItemCmdCheck(v: View?, pos: Int, b: PictureBean?, isChecked: Boolean) {
                 //TODO
                 var path = b?.path
                 if (isChecked)mUriList.add(Uri.fromFile(File(path)))
@@ -191,19 +250,27 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     fun updatePictureList(v:RecyclerView){
 
-        var lst = FileUtil.getPictureDirFile()
-        Log.i("123","updatePictruelist  ~~~~~ lst=$lst")
-        var arr :ArrayList<PictureBean> = ArrayList()
-        for (s in lst){
-            arr.add(PictureBean(s))
-        }
-        (v.adapter as MyPictureAdapter) .setData(arr)
-        mUpdatePictureList.set(false)
+        Observable.create(ObservableOnSubscribe<ArrayList<String>> {it->
+            it.onNext(FileUtil.getPictureDirFile())
+        })
+                .map {it->
+                    var arr :ArrayList<PictureBean> = ArrayList()
+                    for(s in it){
+                        arr.add(PictureBean(s))
+                    }
+                    arr
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({it->
+                    (v.adapter as MyPictureAdapter) .setData(it)
+                    mUpdatePictureList.set(false)
+                },{e->e.printStackTrace()})
     }
 
-    fun updatePictureShare(v:RecyclerView,bShareMode:Boolean){
+    fun updatePictureCmd(v:RecyclerView, bCmdMode:Boolean){
         if (v.adapter is MyPictureAdapter) {
-            (v.adapter as MyPictureAdapter).setShareMode(bShareMode)
+            (v.adapter as MyPictureAdapter).setCmdMode(bCmdMode)
         }
     }
 
@@ -213,10 +280,15 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mUpdatePictureList.set(true)
     }
 
-    fun updatePictureShareState(b:Boolean){
-        mShareBtnVisibility.set(b)
-
-        mUpdatePictureShare.set(b)
+    fun updatePictureCmdState(b:Boolean,cmd:Int){
+        mCmd = cmd
+        when (cmd){
+            CMD_SHARE-> mCmdBtnText.set(mContext.getString(R.string.share_share))
+            CMD_DEL->   mCmdBtnText.set(mContext.getString(R.string.share_del))
+            else ->     mCmdBtnText.set(mContext.getString(R.string.share_share))
+        }
+        mCmdBtnVisibility.set(b)
+        mUpdatePictureCmd.set(b)
     }
 
 
@@ -224,7 +296,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         var vidAdapter = MyVideoAdapter(mContext,object :MyVideoAdapter.OnItemClickListener{
             override fun onItemClickListener(bean:VideoBean,pos: Int) {
                 Log.i("123","video on ItemClick   pos=$pos   name=${bean.name}  path=${bean.path}")
+                CtrlAction.setPlayPlayback(mContext)
                 ThreadUtil.cachedThreadStart({
+                    ModelMgr.getMainCtrlModelInstance(mContext).stopRecording()
                     ModelMgr.getPlayViewModelInstance(mContext).stopView()
                     Thread.sleep(500)
                     ModelMgr.getPlayViewModelInstance(mContext).initLocalPlay()
@@ -256,20 +330,27 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     }
 
     fun updateVideoList(v:RecyclerView){
-        var lst = FileUtil.getVideoDirFile()
-        var arr:ArrayList<VideoBean> = ArrayList()
-        for (s in lst){
-            var str = s.split("/")
-            var nameArr = str[str.lastIndex].split(".")
-            if(nameArr[1]=="hw") {
-                var nameStr = nameArr[0]
-                var name = Utils.getVideoName(nameStr)
-                arr.add(VideoBean(s, name))
-            }
-        }
-        (v.adapter as MyVideoAdapter).setData(arr)
-        ModelMgr.getPlayViewModelInstance(mContext).setVideoSource(arr)
-        mUpdateVideoList.set(false)
+        Observable.create(ObservableOnSubscribe<ArrayList<String>> {e->
+            e.onNext(FileUtil.getVideoDirFile())
+        })
+                .map {
+                    var arr:ArrayList<VideoBean> = ArrayList()
+                    for (s in it){
+                        var str = s.split("/")
+                        var nameArr = str[str.lastIndex].split(".")
+                        if (nameArr[1]=="hw"){
+                            arr.add(VideoBean(s,Utils.getVideoName(nameArr[0])))
+                        }
+                    }
+                    arr
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({it->
+                    (v.adapter as MyVideoAdapter).setData(it)
+                    ModelMgr.getPlayViewModelInstance(mContext).setVideoSource(it)
+                    mUpdateVideoList.set(false)
+                },{e->e.printStackTrace()})
     }
 
     fun upDateVideoListState(){
