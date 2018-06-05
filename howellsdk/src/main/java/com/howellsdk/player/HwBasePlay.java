@@ -59,6 +59,11 @@ public class HwBasePlay implements HWPlayApi {
     }
 
     @Override
+    public boolean isPause() {
+        return JniUtil.isPause()==1?true:false;
+    }
+
+    @Override
     public void stop() {
         JniUtil.stopView();
         AudioAction.getInstance().stopAudio();
@@ -119,6 +124,16 @@ public class HwBasePlay implements HWPlayApi {
     @Override
     public void setSpeed(float speed) {
 
+    }
+
+    @Override
+    public boolean stepNext() {
+        return JniUtil.stepNext();
+    }
+
+    @Override
+    public boolean stepLast() {
+        return JniUtil.stepLast();
     }
 
     @Override

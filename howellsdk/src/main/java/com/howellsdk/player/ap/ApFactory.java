@@ -139,6 +139,16 @@ public class ApFactory {
         }
 
         @Override
+        public boolean stepNext() {
+            return super.stepNext();
+        }
+
+        @Override
+        public boolean stepLast() {
+            return super.stepLast();
+        }
+
+        @Override
         public void stop() {
             JniUtil.netStopPlay();
             super.stop();
@@ -148,6 +158,7 @@ public class ApFactory {
         @Override
         public void reLink(boolean isSub, @Nullable String begTime, @Nullable String endTime) {
             //stop
+            Log.i("123","reLink");
             stop();
             //reconnect;
             disconnect();
@@ -182,15 +193,16 @@ public class ApFactory {
             count = JniUtil.netGetVideoListPageCount(timeBeen[0],timeBeen[1],nowPage,pageSize);
             Log.i("123","count="+count);
             if (count>20 || count<0)count = 0;
-            if (count==0){
+            if (count==0 || true){//fixme
                 count = JniUtil.netGetVideoListCount(timeBeen[0],timeBeen[1]);
                 Log.i("123","all  count="+count);
                 replayFiles =  getRecordedFilesOld(count,nowPage,pageSize);
             }else{
+                Log.i("123","get videoList all");
                 replayFiles = JniUtil.netGetVideoListAll(count);
             }
-//            Log.i("123","length="+replayFiles.length);
-            if (replayFiles==null)return false;
+            Log.i("123","length="+replayFiles.length);
+            if (replayFiles==null){Log.e("123","replayFiles==null");return false;}
             ArrayList<ReplayFile> lists = new ArrayList<>();
             for (int i=0;i<replayFiles.length;i++){
 //                Log.i("123","file="+replayFiles[i]);
@@ -265,6 +277,11 @@ public class ApFactory {
             return JniUtil.getTimeStamp();
         }
 
+
+        @Override
+        public void setSpeed(float speed) {
+            JniUtil.setPlaySpeed(speed);
+        }
     }
 
     private ApTimeBean [] phaseTime(String startTime,String endTime){

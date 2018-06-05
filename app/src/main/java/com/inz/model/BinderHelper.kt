@@ -154,6 +154,13 @@ object BinderHelper {
         ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updateVideoList(v as RecyclerView)
     }
 
+    @BindingAdapter("update_remote_list")
+    @JvmStatic
+    fun onRemoteListUpdate(v:View,b:Boolean){
+        if(!b)return
+        ModelMgr.getPlayListModelInstance(ModelMgr.mContext!!).updataRemoteList(v as RecyclerView)
+    }
+
     @BindingAdapter("android:src")
     @JvmStatic
     fun setSrc(v:ImageView,resId:Int){

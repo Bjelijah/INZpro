@@ -71,7 +71,9 @@ public class JniUtil {
 	public static native int netGetStreamLenSomeTime();
 	public static native long getFirstTimeStamp();
 	public static native long getTimeStamp();
-
+	public static native long getFileLen();
+	public static native boolean stepNext();
+	public static native boolean stepLast();
 	//net ptz
 	public static native boolean netPtzMove(int flag);
 	public static native boolean netPtzCam(int flag);//0 1 2 3 4stop tele wide far near
@@ -95,6 +97,7 @@ public class JniUtil {
 	public static native void setCurFrame(int curFrame);
 	public static native int getTotalMsec();
 	public static native int getPlayedMsec();
+	public static native long getTotalLen();
 	public static native int getPos();
 	public static native void setPos(int pos);
 	public static native void setPlaySpeed(float speed);

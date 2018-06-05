@@ -27,4 +27,18 @@ object Utils {
         return s
     }
 
+    fun getNow():String{
+        var d = Date()
+        var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        return sdf.format(d)
+    }
+
+    fun fromTime(time:String,offset:Int,field:Int):String{
+        var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        var cal = Calendar.getInstance()
+        cal.time = sdf.parse(time)
+        cal.add(field,offset)
+        return sdf.format(cal.time)
+    }
+
 }

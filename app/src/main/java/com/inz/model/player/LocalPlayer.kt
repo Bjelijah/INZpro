@@ -1,6 +1,9 @@
 package com.inz.model.player
 
+import android.graphics.Bitmap
+import android.util.Log
 import com.howellsdk.api.ApiManager
+import com.inz.action.Config
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Scheduler
@@ -13,6 +16,8 @@ class LocalPlayer :BasePlayer() {
                 .playPause()
         return this
     }
+
+    override fun isPause(): Boolean = ApiManager.getInstance().localService.isPause
 
     override fun init(crypto:Int,uri:String): BasePlayer {
         Observable.create(ObservableOnSubscribe<Boolean> {e->
@@ -58,10 +63,14 @@ class LocalPlayer :BasePlayer() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({b->
                     sendPlayResult(b)
+                    Log.i("123","send play result $b")
                 },{e->e.printStackTrace()})
         return this
     }
 
+    override fun playback(isSub: Boolean,beg:String,end:String): BasePlayer {
+        return this
+    }
     override fun rePlay(): BasePlayer {
         return this
     }
@@ -79,6 +88,12 @@ class LocalPlayer :BasePlayer() {
                 },{e->e.printStackTrace()})
         return this
     }
+
+    override fun stepNext(): Boolean  = ApiManager.getInstance().localService.stepNext()
+
+
+    override fun stepLast(): Boolean
+        = ApiManager.getInstance().localService.stepLast()
 
     override fun catchPic(): BasePlayer {
         return this
@@ -109,11 +124,13 @@ class LocalPlayer :BasePlayer() {
         Observable.create(ObservableOnSubscribe<Boolean> {e->
             ApiManager.getInstance().localService.stop()
             ApiManager.getInstance().localService.setUri(url)
-            ApiManager.getInstance().localService.play(false)
+            ApiManager.getInstance().localService.play(Config.CAM_IS_SUB)
             e.onNext(true)
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({},{e->e.printStackTrace()})
+                .subscribe({
+                    sendPlayResult(it)
+                },{e->e.printStackTrace()})
     }
 }

@@ -26,12 +26,13 @@ class PlayListFragment :BaseFragment() {
         var v = super.onCreateView(inflater, container, savedInstanceState)
         var rv:RecyclerView = v.findViewById(R.id.video_list_rv)
         var rp:RecyclerView = v.findViewById(R.id.video_list_rp)
-
+        var rr:RecyclerView = v.findViewById(R.id.video_list_rr)
 
         v.viewTreeObserver.addOnGlobalLayoutListener(object :ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 var m = (getViewmodel() as PlayListModel)
                 m.initVideoList(rv)
+                m.initRemoteList(rr)
                 m.initPictureList(rp,v.width)
                 v.viewTreeObserver.removeGlobalOnLayoutListener(this)
             }

@@ -71,6 +71,7 @@ object ModelMgr {
         }
         return mApPlayer!!
     }
+
     fun getDownloadMgrInstance():DownloadMgr{
         if (mDownloadMgr==null){
             mDownloadMgr = DownloadMgr()

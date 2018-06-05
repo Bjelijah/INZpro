@@ -52,8 +52,49 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:visibility="@{vm.MRecordListVisibility}"
+
             app:update_video_list="@{vm.MUpdateVideoList}"
             />
+
+
+        <!-- remote file -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:onClick="@{vm.MPlayListTitleBtnRemoteFile}"
+            android:background="@drawable/play_list_title_btn"
+            android:padding="@dimen/play_list_padding"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:play_list_title_src="@{vm.mShowRemoteFile}"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/play_list_title_remote"
+                android:textColor="@color/white_highlight"
+                android:textSize="@dimen/play_list_title_size"
+                android:layout_gravity="center_vertical"/>
+
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/video_list_rr"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="@{vm.MRemoteListVisibility}"
+            app:update_remote_list="@{vm.MUpdateRemoteList}"
+            />
+
 
 
 

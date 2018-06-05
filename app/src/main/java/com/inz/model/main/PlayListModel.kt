@@ -15,12 +15,16 @@ import android.view.View
 import android.widget.PopupWindow
 import android.widget.Toast
 import com.howellsdk.utils.ThreadUtil
+import com.howellsdk.utils.Util
 import com.inz.action.CtrlAction
 import com.inz.activity.BigImagesActivity
 import com.inz.activity.view.PopWindowView
 import com.inz.adapter.MyPictureAdapter
+import com.inz.adapter.MyRemoteAdapter
 import com.inz.adapter.MyVideoAdapter
+import com.inz.bean.BaseBean
 import com.inz.bean.PictureBean
+import com.inz.bean.RemoteBean
 import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
@@ -35,25 +39,29 @@ import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.net.URI
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PlayListModel(private var mContext: Context):BaseViewModel {
     companion object {
         val CMD_SHARE = 0x00
         val CMD_DEL   = 0x01
     }
-
+    val MIN_CLICK_DELAY_TIME = 1000
     private val SHOW_NONE           = 0x00
     private val SHOW_RECORD_FILE    = 0x01
     private val SHOW_PICTURE_FILE   = 0x02
+    private val SHOW_REMOTE_FILE    = 0x03
 
     private var mShowCode       = SHOW_NONE
     private var mFunPop: PopupWindow?=null
     private var mUriList:ArrayList<Uri> = ArrayList()
+    private var mRemoteList:ArrayList<RemoteBean>?=null
 //    private var mLocalPlayer:BasePlayer?=null
 
     var activity:Activity?=null
     var mCmd = CMD_SHARE
-
+    private var mLastClickTime = 0L
     fun setContext(c:Context){
         mContext = c
     }
@@ -71,6 +79,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mPlayListTitleBtnRecordFile = Action {
         Log.i("123","on record file click")
         //todo back click
+        if (isFastClick())return@Action
+
+
         CtrlAction.setPlayReview(mContext)
         //play view
         ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
@@ -80,8 +91,10 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
             SHOW_NONE->{
                 mShowCode = SHOW_RECORD_FILE
                 mShowRecordFile.set(true)
+                mShowRemoteFile.set(false)
                 mShowPictureFile.set(false)
                 mRecordListVisibility.set(View.VISIBLE)
+                mRemoteListVisibility.set(View.GONE)
                 mPictureListVisibility.set(View.GONE)
                 //刷新
                 upDateVideoListState()
@@ -90,7 +103,14 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 mShowCode = SHOW_NONE
                 mShowRecordFile.set(false)
                 mRecordListVisibility.set(View.GONE)
-                mPictureListVisibility.set(View.INVISIBLE)
+            }
+            SHOW_REMOTE_FILE->{
+                mShowCode = SHOW_RECORD_FILE
+                mShowRemoteFile.set(false)
+                mShowRecordFile.set(true)
+                mRecordListVisibility.set(View.VISIBLE)
+                mRemoteListVisibility.set(View.GONE)
+                upDateVideoListState()
             }
             SHOW_PICTURE_FILE->{
                 mShowCode = SHOW_RECORD_FILE
@@ -101,17 +121,59 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 //刷新
                 upDateVideoListState()
             }
+
         }
     }
 
+    val mPlayListTitleBtnRemoteFile = Action {
+        if(isFastClick())return@Action
+        when(mShowCode){
+            SHOW_NONE->{
+                mShowCode = SHOW_REMOTE_FILE
+                mShowRecordFile.set(false)
+                mShowPictureFile.set(false)
+                mShowRemoteFile.set(true)
+                mRecordListVisibility.set(View.GONE)
+                mPictureListVisibility.set(View.GONE)
+                mRemoteListVisibility.set(View.VISIBLE)
+                upDateRemoteListState()
+            }
+            SHOW_RECORD_FILE->{
+                mShowCode = SHOW_REMOTE_FILE
+                mShowRecordFile.set(false)
+                mShowRemoteFile.set(true)
+                mRecordListVisibility.set(View.GONE)
+                mRemoteListVisibility.set(View.VISIBLE)
+                upDateRemoteListState()
+            }
+            SHOW_REMOTE_FILE->{
+                mShowCode = SHOW_NONE
+                mShowRemoteFile.set(false)
+                mRemoteListVisibility.set(View.GONE)
+            }
+            SHOW_PICTURE_FILE->{
+                mShowCode = SHOW_REMOTE_FILE
+                mShowPictureFile.set(false)
+                mShowRemoteFile.set(true)
+                mPictureListVisibility.set(View.GONE)
+                mRemoteListVisibility.set(View.VISIBLE)
+                upDateRemoteListState()
+            }
+        }
+    }
+
+
     val mPlayListTitleBtnPictureFile = Action {
         Log.i("123","on picture file click")
+        if (isFastClick())return@Action
         when(mShowCode){
             SHOW_NONE->{
                 mShowCode = SHOW_PICTURE_FILE
                 mShowRecordFile.set(false)
+                mShowRemoteFile.set(false)
                 mShowPictureFile.set(true)
                 mRecordListVisibility.set(View.GONE)
+                mRemoteListVisibility.set(View.GONE)
                 mPictureListVisibility.set(View.VISIBLE)
                 //刷新
                 updatePictureListState()
@@ -125,6 +187,15 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 //刷新
                 updatePictureListState()
             }
+            SHOW_REMOTE_FILE->{
+                mShowCode = SHOW_PICTURE_FILE
+                mShowRemoteFile.set(false)
+                mShowPictureFile.set(true)
+                mRemoteListVisibility.set(View.GONE)
+                mPictureListVisibility.set(View.VISIBLE)
+                updatePictureListState()
+            }
+
             SHOW_PICTURE_FILE->{
                 mShowCode = SHOW_NONE
                 mShowPictureFile.set(false)
@@ -137,12 +208,15 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
 
     val mShowRecordFile              = ObservableField<Boolean>(false)
+    val mShowRemoteFile              = ObservableField<Boolean>(false)
     val mShowPictureFile             = ObservableField<Boolean>(false)
     val mRecordListVisibility        = ObservableField<Int>(View.GONE)
+    val mRemoteListVisibility        = ObservableField<Int>(View.GONE)
     val mPictureListVisibility       = ObservableField<Int>(View.GONE)
     val mUpdatePictureList           = ObservableField<Boolean>(false)
     val mUpdatePictureCmd            = ObservableField<Boolean>(false)
     val mUpdateVideoList             = ObservableField<Boolean>(false)
+    val mUpdateRemoteList            = ObservableField<Boolean>(false)
     val mCmdBtnVisibility            = ObservableField<Boolean>(false)
     val mCmdBtnText                  = ObservableField<String>(mContext.getString(R.string.share_share))
 
@@ -191,9 +265,6 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                     }
                     .create()
                     .show()
-
-
-
         }
     }
 
@@ -204,48 +275,37 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     fun initPictureList(rv:RecyclerView, width:Int){
         Log.i("123","model  initPictureList")
-        var picAdapter = MyPictureAdapter(mContext,object :MyPictureAdapter.OnItemClickListener{
-            override fun onItemCmdCheck(v: View?, pos: Int, b: PictureBean?, isChecked: Boolean) {
-                //TODO
-                var path = b?.path
-                if (isChecked)mUriList.add(Uri.fromFile(File(path)))
-                else mUriList.remove(Uri.fromFile(File(path)))
-
-                Log.i("123","urilist = $mUriList")
-
+        var picAdapter = MyPictureAdapter(mContext,{v, pos, b, isChecked ->
+            var path = b?.path
+            if (isChecked)mUriList.add(Uri.fromFile(File(path)))
+            else mUriList.remove(Uri.fromFile(File(path)))
+            Log.i("123","urilist = $mUriList")
+        },{ v, list, pos ->
+            var picPaths = ArrayList<String>()
+            list?.forEach {
+                picPaths.add(it.path)
             }
-
-            override fun onItemClick(v: View?, list: MutableList<PictureBean>?, pos: Int) {
-                var picPaths = ArrayList<String>()
-                list?.forEach {
-                    picPaths.add(it.path)
-                }
-                var intent = Intent(mContext,BigImagesActivity::class.java)
-                intent.putExtra("position",pos).putStringArrayListExtra("arrayList",picPaths)
+            var intent = Intent(mContext,BigImagesActivity::class.java)
+            intent.putExtra("position",pos).putStringArrayListExtra("arrayList",picPaths)
 //                mContext.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
-                activity!!.startActivityForResult(intent,0,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
+            activity!!.startActivityForResult(intent,0,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
 
-            }
-
-
-            override fun onItemLongClick(v:View,pos: Int,bean:PictureBean) {
-                Log.i("123","on item long click pos=$pos     path=${bean.path}")
-                mFunPop = PopWindowView.generate(mContext,{
-                    mLayoutId = R.layout.view_list_fun
-                    mViewModel = ModelMgr.getListItemModelInstance(mContext)
-                    build()
-                })
-                ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
-                ModelMgr.getListItemModelInstance(mContext).mBean = bean
-                mFunPop?.showAsDropDown(v)
-
-            }
+        },{ v, pos, b ->
+            Log.i("123","on item long click pos=$pos     path=${b.path}")
+            mFunPop = PopWindowView.generate(mContext,{
+                mLayoutId = R.layout.view_list_fun
+                mViewModel = ModelMgr.getListItemModelInstance(mContext)
+                build()
+            })
+            ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
+            ModelMgr.getListItemModelInstance(mContext).mBean = b
+            mFunPop?.showAsDropDown(v)
         })
         picAdapter.setWidth(width)
         rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv.adapter = picAdapter
         rv.itemAnimator = null
-        updatePictureList(rv)
+//        updatePictureList(rv)
     }
 
     fun updatePictureList(v:RecyclerView){
@@ -293,39 +353,33 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
 
     fun initVideoList(v:RecyclerView){
-        var vidAdapter = MyVideoAdapter(mContext,object :MyVideoAdapter.OnItemClickListener{
-            override fun onItemClickListener(bean:VideoBean,pos: Int) {
-                Log.i("123","video on ItemClick   pos=$pos   name=${bean.name}  path=${bean.path}")
-                CtrlAction.setPlayPlayback(mContext)
-                ThreadUtil.cachedThreadStart({
-                    ModelMgr.getMainCtrlModelInstance(mContext).stopRecording()
-                    ModelMgr.getPlayViewModelInstance(mContext).stopView()
-                    Thread.sleep(500)
-                    ModelMgr.getPlayViewModelInstance(mContext).initLocalPlay()
-                    ModelMgr.getPlayViewModelInstance(mContext).setUrl(bean.path)
-                    ModelMgr.getPlayViewModelInstance(mContext).setVideoPlayCurIndex(pos)
-                    ModelMgr.getPlayViewModelInstance(mContext).playView()
-                })
-
-            }
-
-            override fun onItemLongClickListener(v:View,bean:VideoBean,pos: Int) {
-                mFunPop = PopWindowView.generate(mContext,{
-                    mLayoutId = R.layout.view_list_fun
-                    mViewModel = ModelMgr.getListItemModelInstance(mContext)
-                    build()
-                })
-                ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
-                ModelMgr.getListItemModelInstance(mContext).mBean = bean
-                mFunPop?.showAsDropDown(v)
-            }
-
+        var vidAdapter = MyVideoAdapter(mContext,{b, pos ->
+            if (isFastClick())return@MyVideoAdapter
+            CtrlAction.setPlayPlayback(mContext)
+            ThreadUtil.cachedThreadStart({
+                ModelMgr.getMainCtrlModelInstance(mContext).stopRecording()
+                ModelMgr.getPlayViewModelInstance(mContext).stopView()
+                Thread.sleep(500)
+                ModelMgr.getPlayViewModelInstance(mContext).initLocalPlay()
+                ModelMgr.getPlayViewModelInstance(mContext).setUrl(b.path)
+                ModelMgr.getPlayViewModelInstance(mContext).setVideoPlayCurIndex(pos)
+                ModelMgr.getPlayViewModelInstance(mContext).playView()
+            })
+        },{v, b, _ ->
+            mFunPop = PopWindowView.generate(mContext,{
+                mLayoutId = R.layout.view_list_fun
+                mViewModel = ModelMgr.getListItemModelInstance(mContext)
+                build()
+            })
+            ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
+            ModelMgr.getListItemModelInstance(mContext).mBean = b
+            mFunPop?.showAsDropDown(v)
         })
 
         v.layoutManager = LinearLayoutManager(mContext)
         v.adapter = vidAdapter
         v.itemAnimator = null
-        updateVideoList(v)
+//        updateVideoList(v)
 
     }
 
@@ -347,8 +401,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({it->
+                    Log.i("123","${v.adapter}")
                     (v.adapter as MyVideoAdapter).setData(it)
-                    ModelMgr.getPlayViewModelInstance(mContext).setVideoSource(it)
+                    ModelMgr.getPlayViewModelInstance(mContext).setVideoSource(it as ArrayList<BaseBean>)
                     mUpdateVideoList.set(false)
                 },{e->e.printStackTrace()})
     }
@@ -358,4 +413,58 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mUpdateVideoList.set(true)
     }
 
+    fun initRemoteList(v:RecyclerView){
+        var remoteAdapter = MyRemoteAdapter(mContext,{b, pos ->
+            if (isFastClick())return@MyRemoteAdapter
+            CtrlAction.setPlayPlayback(mContext)
+            //todo 点击播放
+//            Log.i("123","on click b=$b  pos=$pos")
+            ThreadUtil.cachedThreadStart {
+                Log.i("123","cachedThreadStart")
+                ModelMgr.getMainCtrlModelInstance(mContext).stopRecording()
+                ModelMgr.getPlayViewModelInstance(mContext).stopView()
+                Thread.sleep(500)
+                ModelMgr.getPlayViewModelInstance(mContext).initRemotePlay(b.beg,b.end)
+                ModelMgr.getPlayViewModelInstance(mContext).setRemotePlayCurIndex(pos) }
+
+
+
+        },{v, b, pos ->
+            //todo 长按菜单
+//            Log.i("123","on long click b=$b pos=$pos")
+        })
+        v.layoutManager = LinearLayoutManager(mContext)
+        v.adapter = remoteAdapter
+        v.itemAnimator = null
+//        upDateRemoteListState()//不需要刷新
+    }
+
+
+    fun updataRemoteList(v:RecyclerView){
+        //远程获取
+        (v.adapter as MyRemoteAdapter).setData(mRemoteList)
+    }
+
+    fun upDateRemoteListState(){
+        var now = Utils.getNow()
+        var beg = Utils.fromTime(now,-3,Calendar.MONTH)
+        Log.i("123","now = $now    beg=$beg")
+        ModelMgr.getApPlayerInstance().searchRemoteFile(beg,now,0,200)
+    }
+
+    fun onUpDateRemoteListState(f:ArrayList<RemoteBean>){
+        mRemoteList = f
+        mUpdateRemoteList.set(true)
+    }
+
+
+    fun isFastClick():Boolean{
+        val curClickTime = System.currentTimeMillis()
+        var flag = true
+        if (curClickTime - mLastClickTime >= MIN_CLICK_DELAY_TIME){
+            flag = false
+        }
+        mLastClickTime = curClickTime
+        return flag
+    }
 }

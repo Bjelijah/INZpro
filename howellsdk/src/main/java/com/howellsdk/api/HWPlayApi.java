@@ -26,6 +26,7 @@ public interface HWPlayApi {
     void play(boolean isSub);//播放
     void playback(boolean isSub,String begTime,String endTime);
     boolean playPause();
+    boolean isPause();
     void stop();//停止
     void reLink(boolean isSub, @Nullable String begTime,@Nullable String endTime);//重连
     void playbackReLink(boolean isSub,long beg,long end);
@@ -40,6 +41,8 @@ public interface HWPlayApi {
     int getPos();
     void setPos(int pos);
     void setSpeed(float speed);
+    boolean stepNext();
+    boolean stepLast();
     //fun
     boolean getRecordedFiles(String beg,String end,@Nullable Integer nowPage,@Nullable Integer pageSize);
     boolean ptzControl(PTZ_CMD cmd,int speed,@Nullable Integer presetNo);

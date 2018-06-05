@@ -20,7 +20,9 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val PLAY_STATE_PLAYING = 0x00
     val PLAY_STATE_STOP    = 0x01
     val PLAY_STATE_PAUSE   = 0x02
-
+    @Volatile var mIsUser = false
+    val MIN_CLICK_DELAY_TIME = 1000
+    private var mLastClickTime = 0L
     fun setContext(c:Context){
         mContext = c
     }
@@ -43,7 +45,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val mReplayName  = ObservableField<String>("H.264")
     val mReplaySpeed = ObservableField<String>("0 Kbps")
     val mProcess     = ObservableField<Int>(0)
-    val mProcessMax  = ObservableField<Int>(100)
+    val mProcessMax  = ObservableField<Int>(0)
     val mVisibility  = ObservableField<Int>(View.INVISIBLE)
 
     val onClickReplaySound = View.OnClickListener { v ->
@@ -69,14 +71,14 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
 
 
 
-    val onClickReplayStop         = Action { stopClick() }
-    val onClickReplayFastRewind   = Action { ModelMgr.getPlayViewModelInstance(mContext).onSlowClick() }
-    val onClickReplaySkipLast     = Action { ModelMgr.getPlayViewModelInstance(mContext).onPlayLastClick() }
-    val onClickReplayPauseAndPlay = Action { pauseAndPlayClick() }
-    val onClickReplaySkipNext     = Action { ModelMgr.getPlayViewModelInstance(mContext).onPlayNextClick() }
-    val onClickReplayFastForward  = Action { ModelMgr.getPlayViewModelInstance(mContext).onFastClick() }
-    val onClickReplayCatch        = Action { ModelMgr.getApPlayerInstance().catchPic() }
-    val onClickReplayZoom         = Action { CtrlAction.setFullOrNot(mContext) }
+    val onClickReplayStop         = Action { if(isFastClick())return@Action;stopClick() }
+    val onClickReplayFastRewind   = Action { if(isFastClick())return@Action;ModelMgr.getPlayViewModelInstance(mContext).onSlowClick() }
+    val onClickReplaySkipLast     = Action { pauseView();ModelMgr.getPlayViewModelInstance(mContext).onPlayLastClick() }
+    val onClickReplayPauseAndPlay = Action { if(isFastClick())return@Action;pauseAndPlayClick() }
+    val onClickReplaySkipNext     = Action { pauseView();ModelMgr.getPlayViewModelInstance(mContext).onPlayNextClick() }
+    val onClickReplayFastForward  = Action { if(isFastClick())return@Action;ModelMgr.getPlayViewModelInstance(mContext).onFastClick() }
+    val onClickReplayCatch        = Action { if(isFastClick())return@Action;ModelMgr.getApPlayerInstance().catchPic() }
+    val onClickReplayZoom         = Action { if(isFastClick())return@Action;CtrlAction.setFullOrNot(mContext) }
 
     val onProgressChanged         = SeekBarBindingAdapter.OnProgressChanged{
         seekBar, progress, fromUser ->
@@ -93,32 +95,42 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
 
     val onStartTrackingTouch = SeekBarBindingAdapter.OnStartTrackingTouch{sb->
         Log.i("123","on start track touch")
+        mIsUser = true
         //stop
         ModelMgr.getPlayViewModelInstance(mContext).setScheduledFlag(false,0)
         //pause
-        ModelMgr.getPlayViewModelInstance(mContext).pauseView()
+        ModelMgr.getPlayViewModelInstance(mContext).pause()
     }
 
     val onStopTrackingTouch = SeekBarBindingAdapter.OnStopTrackingTouch{sb->
         Log.i("123","on stop track touch")
 //        ModelMgr.getPlayViewModelInstance(mContext).set2LocalFrame(sb.progress)
-
+        ModelMgr.getPlayViewModelInstance(mContext).pause()
         var pos =if (sb.max!=0)sb.progress *100 / sb.max else 0
         Log.e("123","set pos pos=$pos")
-        ModelMgr.getPlayViewModelInstance(mContext).set2LocalPos(pos)
-        ModelMgr.getPlayViewModelInstance(mContext).pauseView()
+        ModelMgr.getPlayViewModelInstance(mContext).set2LocalPos(pos,sb.progress)
         ModelMgr.getPlayViewModelInstance(mContext).setScheduledFlag(true,400)
 
-
+        mIsUser = false
     }
+
+
+
 
     fun initUi(){
         mReplayBeg.set("00:00:00")
         mReplayEnd.set("00:00:00")
         mReplaySpeed.set("0 Kbps")
         mProcess.set(0)
-        mProcessMax.set(100)
+        mProcessMax.set(0)
+
+        mPlayState = PLAY_STATE_PLAYING
+        mReplaySrc.set(R.drawable.replay_ctrl_pause)
+
+        mIsUser = false
     }
+
+    fun getProcessMax():Int = mProcessMax.get()?:0
 
     fun setTotalMsec(msec:Long){
         mTotalMsec = msec
@@ -129,7 +141,9 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
     fun setSBProgress(progress:Int){
-        mProcess.set(progress)
+        if (!mIsUser) {
+            mProcess.set(progress)
+        }
     }
 
 
@@ -154,6 +168,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
     private fun stopClick(){
+
         ModelMgr.getPlayViewModelInstance(mContext).onStopClick()
         initUi()
         mReplaySrc.set(R.drawable.replay_ctrl_play)
@@ -183,5 +198,22 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
             }
             else->{}
         }
+    }
+
+    fun pauseView(){
+        mPlayState = PLAY_STATE_PAUSE
+        mReplaySrc.set(R.drawable.replay_ctrl_play)
+    }
+
+
+
+    fun isFastClick():Boolean{
+        val curClickTime = System.currentTimeMillis()
+        var flag = true
+        if (curClickTime - mLastClickTime >= MIN_CLICK_DELAY_TIME){
+            flag = false
+        }
+        mLastClickTime = curClickTime
+        return flag
     }
 }

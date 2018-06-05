@@ -21,8 +21,11 @@ import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.media.RingtoneManager.getDefaultUri
 import android.widget.Toast
 import com.howellsdk.utils.RxUtil
+import com.inz.bean.BaseBean
+import com.inz.bean.RemoteBean
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
+import kotlinx.android.synthetic.main.fragment_play_view.view.*
 import java.util.concurrent.TimeUnit
 
 
@@ -31,8 +34,12 @@ class ApPlayer :BasePlayer(){
     var mIsSub = false
     @Volatile private var mIsReLinking   = false
     override fun pause(): BasePlayer {
+        ApiManager.getInstance().aPcamService
+                .playPause()
         return this
     }
+
+    override fun isPause(): Boolean = ApiManager.getInstance().aPcamService.isPause
 
     override fun setAlarm(b: Boolean) {
         mIsAlarmEnable = b
@@ -53,6 +60,18 @@ class ApPlayer :BasePlayer(){
                             Config.CAM_Crypto,
                             object :HWPlayApi.IAPCamCB{
                                 override fun onRecordFileList(files: ArrayList<ReplayFile>?) {
+                                    val l = ArrayList<BaseBean>()
+//                                    Log.i("123","files=$files")
+                                    files?.forEach {it ->
+                                        var begStr = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+                                                it.begYear,it.begMonth,it.begDay,it.begHour,it.begMin,it.begSec)
+
+                                        var endStr = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+                                                it.endYear,it.endMonth,it.endDay,it.endHour,it.endMin,it.endSec)
+                                        var name = begStr
+                                        l.add(RemoteBean(name,begStr,endStr))
+                                    }
+                                    sendRecordFileListResult(l)
                                 }
 
                                 override fun onAlarm(type: Int, msg: String?) {
@@ -121,6 +140,20 @@ class ApPlayer :BasePlayer(){
         return this
     }
 
+    override fun playback(isSub: Boolean,beg:String,end:String): BasePlayer {
+        Observable.create(ObservableOnSubscribe<Boolean> {
+            it.onNext(ApiManager.getInstance().aPcamService.connect())
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mIsSub = isSub
+                    ApiManager.getInstance().aPcamService.playback(isSub,beg,end)
+                    sendPlayResult(it)
+                },{e->e.printStackTrace()})
+        return this
+    }
+
     override fun rePlay(): BasePlayer {
         if (mIsReLinking){Log.i("123","isRelinging  return");return this}
         Observable.create(ObservableOnSubscribe<Boolean> {it->
@@ -166,6 +199,12 @@ class ApPlayer :BasePlayer(){
                 },{e->e.printStackTrace()})
         return this
     }
+
+    override fun stepNext(): Boolean = ApiManager.getInstance().aPcamService.stepNext()
+
+    override fun stepLast(): Boolean = ApiManager.getInstance().aPcamService.stepLast()
+
+
     override fun catchPic(): BasePlayer {
         FileUtil.getPictureDir()
         var nameDirPath = FileUtil.FILE_PICTURE_PATH + FileUtil.getFileName() + ".jpg"
@@ -196,5 +235,38 @@ class ApPlayer :BasePlayer(){
                    sendCatchResult(b)
                 },{e->e.printStackTrace()})
         return this
+    }
+
+    override fun searchRemoteFile(beg: String, end: String, curPage: Int?, pageSize: Int?) {
+        Observable.create(ObservableOnSubscribe<Boolean> {
+            it.onNext(ApiManager.getInstance().aPcamService.getRecordedFiles(beg,end,curPage,pageSize))
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    Log.i("123","get recordedFiles=$it")
+                },{e->e.printStackTrace()})
+    }
+
+
+    override fun setPlaySpeed(speed: Float) {
+        ApiManager.getInstance().aPcamService.setSpeed(speed)
+    }
+
+    override fun stopAndPlayAnother(url: String) {
+        var strs = url.split("&")
+        var beg = strs[0]
+        var end = strs[1]
+        Log.i("123","beg=$beg   end=$end")
+        Observable.create(ObservableOnSubscribe<Boolean> {
+            ApiManager.getInstance().aPcamService.stop()
+            ApiManager.getInstance().aPcamService.playback(Config.CAM_IS_SUB,beg,end)
+            it.onNext(true)
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    sendPlayResult(it)
+                },{e->e.printStackTrace()})
     }
 }

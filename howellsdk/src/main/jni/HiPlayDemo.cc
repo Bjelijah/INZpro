@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
+#include <net_sdk.h>
 //#include "include/mp4/mp4record.h"
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
 #define LOGW(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_WARN, "JNI", __VA_ARGS__):(void)NULL)
@@ -103,7 +104,7 @@ struct StreamResource
     long firstTimestamp;
     long timestamp;
     int stream_len;
-
+    unsigned long long file_len;
 };
 static struct StreamResource * res = NULL;
 
@@ -764,7 +765,7 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 }
 
 void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long userdata){
-    res->stream_len += len;
+
     if(res == NULL){
         LOGE("on file stream_fun res==NULL error");
         return;
@@ -777,10 +778,20 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
     if (res->is_pause){
         sem_wait(&res->sem_play);
     }
+//    LOGI("on_file_stream_fun");
+    int num = 12;
+    int ret = 0;
+    while (num>0){
+        if (res==NULL)return;
+        if (res->is_exit == 1)return;
+        ret = hwplay_input_data(res->play_handle, buf ,len);
+        if (ret==1)break;
+        num--;
+        usleep(40000);
+    }
 
-
-    int ret = hwplay_input_data(res->play_handle, buf ,len);
 //    LOGI("on_file_stream_fun input data ret=%d",ret);
+
 }
 
 static void on_yuv_callback(PLAY_HANDLE handle,
@@ -800,13 +811,12 @@ static void on_yuv_callback(PLAY_HANDLE handle,
 //    int frameNum = 0;
 //    hwplay_get_framenum_in_buf(handle,&frameNum);
 //    gettimeofday(&cur_t,NULL);
-//
 //    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
-//
-//    LOGI("  -- %ld\n",timeuse);
+//    LOGI("  -- %ld       frameNum=%d\n",timeuse,frameNum);
 //    last_t = cur_t;
-
+//    LOGI("do yv12 gl display    width=%d   height=%d    user=%d",width,height,user);
     yv12gl_display(y,u,v,width,height,time);
+//    LOGI("do yv12 gl display  ok");
 
 }
 
@@ -832,7 +842,9 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
             res->firstTimestamp = timestamp;
         }
         res->timestamp = timestamp;
+
     }
+//    LOGI("on souce callback  timestamp=%d",timestamp);
     //download
 
 
@@ -840,16 +852,16 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
 
         //		audio_play(buf,len,au_sample,au_channel,au_bits);
         audio_play(buf, len);//add cbj
-    }else if(type == 1 && !user){//视频 user == 0 预览 1 playback
+    }else if(type == 1 && user){//视频 user == 0 预览 1 playback
         unsigned char* y = (unsigned char *)buf;
         unsigned char* u = y+w*h;
         unsigned char* v = u+w*h/4;
-//        int frameNum = 0;
-//        hwplay_get_framenum_in_buf(handle,&frameNum);
+        int frameNum = 0;
+        hwplay_get_framenum_in_buf(handle,&frameNum);
         LOGE("~~~~~~~~~");
         gettimeofday(&cur_t,NULL);
         long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
-        LOGI("%ld   %ld   -- %ld   framNum=%d\n",cur_t.tv_sec,cur_t.tv_usec,timeuse);
+        LOGI("%ld   %ld   -- %ld   framNum=%d\n",cur_t.tv_sec,cur_t.tv_usec,timeuse,frameNum);
         last_t = cur_t;
         yv12gl_display(y,u,v,w,h,timestamp);
     }
@@ -1027,7 +1039,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
     res->isFirstTime = 1;
     hwplay_open_sound(ph);
     //hwplay_set_max_framenum_in_buf(ph,is_playback?25:5);
-    int b = hwplay_register_source_data_callback(ph,on_source_callback,0);
+    int b = hwplay_register_source_data_callback(ph,on_source_callback,1);
     return res->play_handle>=0?true:false;
 }
 
@@ -1116,7 +1128,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayTurnLive
     hwplay_get_stream_buf_remain(res->play_handle,&remain);
 
     LOGI("remain=%d      stream_buf_len=%d    play_handle=%d\n",remain,stream_buf_len, res->play_handle);
-    int b = hwplay_register_source_data_callback(ph,on_source_callback,0);
+    int b = hwplay_register_source_data_callback(ph,on_source_callback,1);
     return res->play_handle>=0?true:false;
 }
 
@@ -1180,6 +1192,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
         file_stream_t file_info;
         res->file_stream_handle = hwnet_get_file_stream(res->user_handle,slot,res->beg,res->end,on_file_stream_fun,0,&file_info);
         hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+        res->file_len = file_info.len;
     }
     LOGE("lh=%d",res->live_stream_handle);
 
@@ -1246,9 +1259,14 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     hwplay_set_max_framenum_in_buf(ph,12);
     LOGE("open stream ph=%d    isPlayback=%d",ph,isPlayBack);
     hwplay_open_sound(ph);
-    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0 isPlayBack
-    hwplay_register_yuv_callback_ex(ph,on_yuv_callback,0);
+    hwplay_register_source_data_callback(ph,on_source_callback,0);//user data==0   1 isPlayBack
+    hwplay_register_yuv_callback_ex(ph, on_yuv_callback, 0);
+//    if(!isPlayBack) {
+//        hwplay_register_yuv_callback_ex(ph, on_yuv_callback, 0);
+//    }
     res->play_handle = ph;
+    res->isFirstTime = 1;
+    res->firstTimestamp = 0;
     LOGI("ready finish  play_handle=%d    isCrypto=%d    uh=%d  ",ph,isCrypto,res->user_handle);
     return res->play_handle>=0?true:false;
 }
@@ -1263,7 +1281,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_localReadyPlay
     hwplay_set_max_framenum_in_buf(ph,12);
     LOGI("open local file ph=%d",ph);
     hwplay_open_sound(ph);
-    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
+    hwplay_register_source_data_callback(ph,on_source_callback,0);//user data==0
     hwplay_register_yuv_callback_ex(ph,on_yuv_callback,0);
     res->play_handle = ph;
     env->ReleaseStringUTFChars(path,_path);
@@ -1284,7 +1302,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isNetReady
     if (res->live_stream_handle==-1&&res->file_stream_handle==-1){
         ret = false;
     }
-
+    LOGI("isNetRead ok");
     return ret;
 }
 
@@ -1352,6 +1370,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
         res->file_stream_handle = -1;
     }
     res->stream_len = 0;
+    LOGI("netStopPlay ok");
 
 }
 
@@ -1369,6 +1388,9 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
     res->is_exit = 1;
     res->play_handle = -1;
 
+
+
+    LOGI("stop play ok");
     //deInit265Decode();
 }
 
@@ -1382,6 +1404,41 @@ JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getTimeStamp
         (JNIEnv *, jclass){
     if (res==NULL)return 0;
     return res->timestamp;
+}
+
+static void* on_step_thread(void* arg){
+    int flag = (int)arg;
+//    LOGI("flag=%d",flag);
+    BOOL ret = 0;
+    if (flag==0){
+        ret = hwplay_step_froward(res->play_handle);
+    }else if(flag ==1){
+        ret = hwplay_step_back(res->play_handle);
+    }
+    pthread_detach(pthread_self());
+    return (void *)ret;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_stepNext
+        (JNIEnv *, jclass){
+    if (res==NULL)return false;
+    if (res->play_handle<0)return false;
+    void* b=0;
+    pthread_t p ;
+    pthread_create(&p,NULL,on_step_thread,(void *)0);
+    pthread_join(p,&b);
+    return (int)b?true:false;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_stepLast
+        (JNIEnv *, jclass){
+    if (res==NULL)return false;
+    if (res->play_handle<0)return false;
+    pthread_t p ;
+    void* b=0;
+    pthread_create(&p,NULL,on_step_thread,(void *)1);
+    pthread_join(p,&b);
+    return (int)b?true:false;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzMove
@@ -1475,8 +1532,8 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListCount
     LOGI("total_file_list_count=%d   list handle all=%d\n",res->total_file_list_count,res->file_list_handle_all);
     if (res->total_file_list_count==-1 ||  res->file_list_handle_all==-1) {
         res->file_list_handle_all = hwnet_get_file_list(res->user_handle, 0, beg_time, end_time, 0);
-        hwnet_get_file_count(res->file_list_handle_all, &res->total_file_list_count);
-
+        BOOL ret = hwnet_get_file_count(res->file_list_handle_all, &res->total_file_list_count);
+        LOGI("hwnet_get_file_count  ret=%d",ret);
     }
     LOGI("play_handle=%d  list handle_all=%d    count=%d\n",res->play_handle, res->file_list_handle_all,res->total_file_list_count);
     return res->total_file_list_count;
@@ -1610,6 +1667,14 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPlayedMsec
     return ret==TRUE?curMsec:-1;
 }
 
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getTotalLen
+        (JNIEnv *, jclass){
+    if (res==NULL)return -1;
+    if (res->is_exit)return -1;
+    return res->file_len;
+}
+
+
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPos
         (JNIEnv *, jclass){
     if(res==NULL)return -1;
@@ -1625,10 +1690,12 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPos
         (JNIEnv *, jclass, jint pos){
     if(res==NULL)return;
     if(res->play_handle==-1)return;
-    BOOL ret =  hwplay_set_pos(res->play_handle, pos);
-    LOGI("jni setpos  pos=%d  ret=%d",pos,ret);
+    hwplay_set_pos(res->play_handle, pos);
     return;
 }
+
+
+
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPlaySpeed
         (JNIEnv *, jclass, jfloat speed){

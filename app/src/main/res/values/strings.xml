@@ -10,6 +10,7 @@
     <string name="ctrl_catch">拍照</string>
 
     <string name="play_list_title_record">录像文件</string>
+    <string name="play_list_title_remote">远程文件</string>
     <string name="play_list_title_picture">照片文件</string>
 
     <string name="catchPicTo">图片已保存到</string>
@@ -35,4 +36,7 @@
 
     <string name="replay_state_error">回放文件无法重复录像！！</string>
     <string name="alarm_msg_text">收到报警！</string>
+
+    <string name="step_next_error">单步进失败！！</string>
+    <string name="step_last_error">单步退失败！！</string>
 </resources>

@@ -361,6 +361,30 @@ JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getTimeStamp
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    getFileLen
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getFileLen
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    stepNext
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_stepNext
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    stepLast
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_stepLast
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    netPtzMove
  * Signature: (I)Z
  */
@@ -501,6 +525,14 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getTotalMsec
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_getPlayedMsec
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    getTotalLen
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getTotalLen
   (JNIEnv *, jclass);
 
 /*

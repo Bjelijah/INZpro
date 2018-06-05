@@ -1,5 +1,7 @@
 package com.howellsdk.player.local;
 
+import android.util.Log;
+
 import com.howell.jni.JniUtil;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.player.HwBasePlay;
@@ -58,6 +60,7 @@ public class LocalFactory {
                 JniUtil.stopView();
             }
             JniUtil.localReadyPlay(mCrypto,mPath);
+            Log.i("123","local factory start play");
             super.play(isSub);
         }
 
@@ -126,6 +129,16 @@ public class LocalFactory {
         @Override
         public void setSpeed(float speed) {
             JniUtil.setPlaySpeed(speed);
+        }
+
+        @Override
+        public boolean stepLast() {
+            return super.stepLast();
+        }
+
+        @Override
+        public boolean stepNext() {
+            return super.stepNext();
         }
     }
 }

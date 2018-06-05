@@ -7,12 +7,15 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import com.howell.jni.JniUtil
 import com.howellsdk.api.ApiManager
 import com.howellsdk.api.HWPlayApi
 import com.howellsdk.utils.RxUtil
 import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
 import com.inz.action.CtrlAction
+import com.inz.bean.BaseBean
+import com.inz.bean.RemoteBean
 import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
@@ -21,7 +24,11 @@ import com.inz.model.ModelMgr
 import com.inz.model.player.BasePlayer
 import com.inz.utils.MessageHelp
 import com.inz.utils.Utils
+import java.text.ParsePosition
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class PlayViewModel(private var mContext:Context):BaseViewModel {
     val PLAY_SPEED         = doubleArrayOf(0.25,0.5,1.0,2.0,4.0)
@@ -31,13 +38,17 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     val F_TIME = 1L//刷新率  s
     var mWaiteNum = 0
     var mPlayer:BasePlayer?=null
-    var nowPlayState = 0//0:playAp  1:playLocal
+    var nowPlayState = 0//0:playAp  1:playLocal  2:playRemote
     var mCurFrame = 0
     var mCurMsec = 0
     var mScheduledFlag = false
-    var mVideoSourceArr:ArrayList<VideoBean> ?=null
+    var mVideoSourceArr:ArrayList<BaseBean> ?=null
     var mVideoIndex = 0
 
+    var mRemoteBeg=""
+    var mRemoteEnd=""
+    var mRemoteBegTime = 0L
+    var mRemoteOffset = 0
     override fun onCreate() {
 
         Log.e("123","onCreate!!!!")
@@ -51,8 +62,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun initApPlay(){
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init
+                    Log.i("123","init ap  init = $isSuccess")
                     if (isSuccess) playView()
-
                     nowPlayState = 0
                 },{
                     //deinit
@@ -67,6 +78,41 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                         Toast.makeText(mContext,MessageHelp.msgCatchPic(mContext),Toast.LENGTH_LONG).show()
                     }
                     else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
+                },{files->//todo 远程回放列表
+                    mVideoSourceArr = files
+                    mVideoIndex = 0
+                    ModelMgr.getPlayListModelInstance(mContext).onUpDateRemoteListState(files as ArrayList<RemoteBean>)
+                })
+                .init(Config.CAM_Crypto,Config.CAM_IP)
+    }
+
+    fun initRemotePlay(beg:String,end:String){
+        mPlayer = ModelMgr.getApPlayerInstance()
+                .registPlayStateListener({//init
+                    if(it)playBack(beg,end)
+                    nowPlayState = 2
+                    mRemoteBeg = beg
+                    mRemoteEnd = end
+                },{//deinit
+                },{//play
+                    Log.i("123","play ok")
+                    initInfoRemote(beg,end)
+                    stopTimeTask()
+                    startTimeTask(ApiManager.getInstance().aPcamService)
+                    mPlaySpeedIndex = 2
+                },{//stop
+                    stopNewTask()
+                    stopTimeTask()
+                },{b->//catchPicture
+                    if (b)  {
+                        ModelMgr.getPlayListModelInstance(mContext).updatePictureListState()
+                        Toast.makeText(mContext,MessageHelp.msgCatchPic(mContext),Toast.LENGTH_LONG).show()
+                    }
+                    else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
+                },{files->//search record
+                    mVideoSourceArr = files
+                    mVideoIndex = 0
+                    ModelMgr.getPlayListModelInstance(mContext).onUpDateRemoteListState(files as ArrayList<RemoteBean>)
                 })
                 .init(Config.CAM_Crypto,Config.CAM_IP)
     }
@@ -76,20 +122,58 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 .registPlayStateListener({
                     nowPlayState = 1
                 },{},{
-                    Log.i("123","")
                     //init seekbar
                     initInfo()
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().localService)
                     mPlaySpeedIndex = 2
                 },{
+                    stopNewTask()
                     stopTimeTask()
-                },{})
+                },{},{})
                 .init(Config.CAM_Crypto,"whatever")
     }
 
+    fun initInfoRemote(beg:String,end:String){
+        if (nowPlayState != 2)return
+        RxUtil.doRxTask(object :RxUtil.CommonTask<Void>(){
+            var mTotaltime = 0L
+            var mName = ""
+            var mEndTime = ""
+            override fun doInIOThread() {
+                var smf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                var begDate = smf.parse(beg)
+                var endDate = smf.parse(end)
+                mRemoteBegTime = begDate.time
+                mTotaltime = endDate.time - begDate.time
+                Log.i("123","beg=$beg,$begDate,${begDate.time}  end=$end,$endDate,${endDate.time}                time len = $mTotaltime")
+                mName = when(Config.CAM_Crypto){
+                    0->"H264"
+                    1->"H265"
+                    2->"H264C"
+                    3->"H265C"
+                    else->"H264"
+                }
+                mEndTime = Utils.formatMsec(mTotaltime)
+                mRemoteOffset = 0
+            }
+
+            override fun doInUIThread() {
+                Log.i("123","  total=$mTotaltime     set max totaltime=${mTotaltime.toInt()}")
+                ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
+                ModelMgr.getReplayCtrlModelInstance(mContext).setTotalMsec(mTotaltime)
+                ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotaltime.toInt())
+                ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
+                ModelMgr.getReplayCtrlModelInstance(mContext).setEndTime(mEndTime)
+                stopNewTask()
+                setScheduledFlag(true,0)
+                newTimeTask(ApiManager.getInstance().aPcamService)
+            }
+        })
+    }
+
     fun initInfo(){
-        if (nowPlayState == 0)return
+        if (nowPlayState != 1)return
         RxUtil.doRxTask(object :RxUtil.CommonTask<Long>(1000){
 
             var mTotalFrame =0
@@ -113,6 +197,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
             override fun doInUIThread() {
                 Log.i("123","after sleep")
+                ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
                 ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotalFrame)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setEndTime(mEndTime)
@@ -132,12 +217,27 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.setCurFrame(cur)
     }
 
-    fun set2LocalPos(pos:Int){
-        mPlayer?.setPos(pos)
-    }
-
     fun setCurTime(cur:String){
         ModelMgr.getReplayCtrlModelInstance(mContext).setBegTime(cur)
+    }
+
+    fun set2LocalPos(pos:Int,progress:Int){
+
+        RxUtil.doInIOTthread(object :RxUtil.RxSimpleTask<Void>(){
+            override fun doTask() {
+                if(nowPlayState==1) {
+                    mPlayer?.setPos(pos)
+                }else if(nowPlayState == 2){
+                    Log.i("123","set 2 LocalPos=$progress")
+                    mRemoteOffset = progress
+                    var setBegDate = Date(mRemoteBegTime + mRemoteOffset)
+                    var smf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    var str = smf.format(setBegDate)
+                    Log.i("123","str = $str")
+                    ApiManager.getInstance().aPcamService.reLink(Config.CAM_IS_SUB,str,mRemoteEnd)
+                }
+            }
+        })
     }
 
 
@@ -158,11 +258,30 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.play(Config.CAM_IS_SUB)
     }
 
+    fun playBack(beg:String,end:String){
+        mPlayer?.playback(Config.CAM_IS_SUB,beg,end)
+    }
+
     fun reLinkPlayView(){
         mPlayer?.rePlay()
     }
 
     fun pauseView(){
+        mPlayer?.pause()
+    }
+
+    fun remotePause(){
+        if (mPlayer?.isPause()==false){
+            mPlayer?.pause()
+        }else{
+            mPlayer?.pause()
+            var offset = ApiManager.getInstance().aPcamService.timestamp - ApiManager.getInstance().aPcamService.firstTimestamp+mRemoteOffset
+            set2LocalPos(0,offset.toInt())
+        }
+    }
+
+
+    fun pause(){
         mPlayer?.pause()
     }
 
@@ -172,7 +291,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun change2AP(){
-        if (nowPlayState==0)return
+        if (nowPlayState==0){Log.e("123","change 2 ap now is playview state=0 return");return}
         mProcessVisibility.set(View.VISIBLE)
         Log.i("123","chande2AP")
         stopNewTask()
@@ -253,7 +372,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mIsPlayback = !b
     }
 
-    fun setVideoSource(arr:ArrayList<VideoBean>){
+    fun setVideoSource(arr:ArrayList<BaseBean>){
         mVideoSourceArr = arr
     }
 
@@ -261,8 +380,11 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mVideoIndex = index
     }
 
+    fun setRemotePlayCurIndex(index:Int){
+        mVideoIndex = index
+    }
 
-    fun onTime(speed:Int,timestamp: Long,firstTimeStamp:Long,bWait:Boolean){
+    fun onTime(speed:Int,bWait:Boolean){
         RxUtil.doInUIThread(object : RxUtil.RxSimpleTask<Boolean>(){
             override fun doTask() {
                 if (bWait){
@@ -275,7 +397,6 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     mProcessVisibility.set(View.GONE)
                 }
                 //set speed
-
                 setSpeed(speed)
             }
 
@@ -290,10 +411,23 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     setCurTime(curTime)
                 }
             }
-
         })
     }
+    fun onScheduled(firstTimeStamp: Long,timestamp: Long){
+        var tPos = (timestamp - firstTimeStamp)
+        if (tPos<0) tPos = 0
+        if (tPos>ModelMgr.getReplayCtrlModelInstance(mContext).getProcessMax()) tPos = 0
+        RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Boolean>(){
+            override fun doTask() {
+                if(nowPlayState==2) {
+                    var p = mRemoteOffset+tPos
+                    set2SeekFrame(p.toInt())
+                    setCurTime(Utils.formatMsec(p))
+                }
+            }
+        })
 
+    }
 
 
 
@@ -317,9 +451,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             }
 
             var speed:Int = (streamLen*8/1024/F_TIME).toInt()
-            var timestamp = server.timestamp
-            var firstTime = server.firstTimestamp
-            onTime(speed,timestamp,firstTime,bWait)
+
+            onTime(speed,bWait)
 
 
         },0,F_TIME, TimeUnit.SECONDS)
@@ -333,18 +466,18 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         ThreadUtil.cachedThreadStart({
             Thread.sleep(delay.toLong())
             mScheduledFlag = flag
-
         })
     }
 
     fun newTimeTask(server:HWPlayApi){
         Log.i("123","new time task")
         ThreadUtil.scheduledThreadStart({
-//            Log.i("123","new  scheduled task")
+            //            Log.i("123","new  scheduled task")
             if (mScheduledFlag){
-
-
-                onScheduled(server.curFrame,Utils.formatMsec(server.playedMsec.toLong()))
+                when (nowPlayState){
+                    1-> onScheduled(server.curFrame, Utils.formatMsec(server.playedMsec.toLong()))
+                    2-> onScheduled(server.firstTimestamp,server.timestamp)
+                }
             }
         },
                 0,200,TimeUnit.MILLISECONDS)
@@ -364,11 +497,19 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun onPlayClick(){
-        playView()
+        if(nowPlayState!=2) {
+            playView()
+        }else{
+            playBack(mRemoteBeg,mRemoteEnd)
+        }
     }
 
     fun onPauseClick(){
-        pauseView()
+        if (nowPlayState!=2) {
+            pauseView()
+        }else{
+            remotePause()
+        }
     }
 
     fun onSlowClick(){
@@ -392,22 +533,17 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
 
     fun onPlayNextClick(){
-        var len = mVideoSourceArr?.size?:0
-        if( len==0)return
-        if (mVideoIndex == len -1)mVideoIndex=0
-        else mVideoIndex++
-        var url = mVideoSourceArr!![mVideoIndex].path
-        mPlayer?.stopAndPlayAnother(url)
+        if(mPlayer?.isPause()==false)mPlayer?.pause()
+        if(mPlayer?.stepNext()==false){
+            Toast.makeText(mContext,mContext.getString(R.string.step_next_error),Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun onPlayLastClick(){
-        var len = mVideoSourceArr?.size?:0
-        if (len ==0)return
-        if (mVideoIndex == 0)mVideoIndex = len -1
-        else mVideoIndex--
-        var url = mVideoSourceArr!![mVideoIndex].path
-        mPlayer?.stopAndPlayAnother(url)
-
+        if (mPlayer?.isPause()==false)mPlayer?.pause()
+        if(mPlayer?.stepLast()==false){
+            Toast.makeText(mContext,mContext.getString(R.string.step_last_error),Toast.LENGTH_SHORT).show()
+        }
     }
 
 }
