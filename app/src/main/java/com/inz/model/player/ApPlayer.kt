@@ -238,12 +238,18 @@ class ApPlayer :BasePlayer(){
     }
 
     override fun searchRemoteFile(beg: String, end: String, curPage: Int?, pageSize: Int?) {
+        var needLogin = false
         Observable.create(ObservableOnSubscribe<Boolean> {
+            if (!JniUtil.isLogin()){
+                needLogin = true
+                ApiManager.getInstance().aPcamService.connect()
+            }
             it.onNext(ApiManager.getInstance().aPcamService.getRecordedFiles(beg,end,curPage,pageSize))
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    if (needLogin) ApiManager.getInstance().aPcamService.disconnect()
                     Log.i("123","get recordedFiles=$it")
                 },{e->e.printStackTrace()})
     }

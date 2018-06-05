@@ -51,6 +51,7 @@ public class JniUtil {
 	public static native synchronized void netDeinit();
 	public static native boolean login(String ip);
 	public static native boolean loginOut();
+	public static native boolean isLogin();
 	public static native void setCallBackObj(Object o);
 	public static native void setCallBackMethodName(String methodName,int flag);
 	public static native boolean readyPlayLive();//use netReadyPlay

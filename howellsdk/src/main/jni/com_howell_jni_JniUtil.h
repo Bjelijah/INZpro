@@ -209,6 +209,14 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_loginOut
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    isLogin
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isLogin
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    setCallBackObj
  * Signature: (Ljava/lang/Object;)V
  */

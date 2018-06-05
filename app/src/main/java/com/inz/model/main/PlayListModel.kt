@@ -447,7 +447,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     fun upDateRemoteListState(){
         var now = Utils.getNow()
-        var beg = Utils.fromTime(now,-3,Calendar.MONTH)
+        var beg = Utils.fromTime(now,-7,Calendar.DAY_OF_MONTH)
         Log.i("123","now = $now    beg=$beg")
         ModelMgr.getApPlayerInstance().searchRemoteFile(beg,now,0,200)
     }

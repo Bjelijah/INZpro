@@ -975,6 +975,12 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_loginOut
     return false;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isLogin
+        (JNIEnv *, jclass){
+    if(res==NULL)return false;
+    return res->user_handle<0? false:true;
+}
+
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
         (JNIEnv *env, jclass, jobject obj){
     if(res == NULL) return;
@@ -1716,7 +1722,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
         (JNIEnv *env, jclass, jobject begObj, jobject endObj, jint pageSize, jint curPageNo){
     if(res==NULL){LOGE("res==null error");return -1;}
-    if (res->user_handle==-1){LOGE("play handle==-1 error");return -1;}
+    if (res->user_handle==-1){LOGE("user handle==-1 error");return -1;}
     SYSTEMTIME beg,end;
     memset(&beg,0,sizeof(beg));
     memset(&end,0,sizeof(end));
@@ -1734,6 +1740,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
     res->total_file_list_count = page.page_count;
 //    LOGI("page count=%d\n",page.page_count);
     if (res->file_list_handle==-1){LOGE("file_list_handle==-1  get file list by page error");}
+
     return res->file_list_handle>-1?page.page_count:-1;
 }
 

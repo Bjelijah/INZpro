@@ -112,7 +112,7 @@ public class ApTimeBean {
     public ApTimeBean(String time,int timeType){
         Calendar calendar = Calendar.getInstance();
         if (timeType==0){
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 calendar.setTime(df.parse(time));
             } catch (ParseException e) {

@@ -115,9 +115,9 @@ public class ApFactory {
         @Override
         public void playback(boolean isSub, String begTime, String endTime) {
 //            ApTimeBean bean[] = phaseTime(begTime,endTime);
-            Log.i("123","ap Factory play back ");
+//            Log.i("123","ap Factory play back begTime="+begTime+"  endTime="+endTime);
             lastIsPlayback = true;
-            Log.i("123","net set play back time begTime="+begTime+"   endTime="+endTime);
+//            Log.i("123","net set play back time begTime="+begTime+"   endTime="+endTime);
             if (JniUtil.isNetReady()){
                 //关掉重开
                 Log.i("123","is net ready we close it");
