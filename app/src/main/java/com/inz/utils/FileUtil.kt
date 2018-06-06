@@ -25,9 +25,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object FileUtil {
-    val A_GB = 1024*1024*1024L
-    val A_MB = 1024*1024L
-    val A_KB = 1024L
+    val A_GB:Double = 1024*1024*1024.0
+    val A_MB:Double = 1024*1024.0
+    val A_KB:Double = 1024.0
 
 
     var FILE_SD_DIR:String?=null
@@ -260,6 +260,27 @@ object FileUtil {
             }
         }
     }
+
+    fun fmtSpeed(speed:Long):String{
+        if (speed<=0)return "0kbps"
+        var gb = speed / A_GB
+        var mb = (speed % A_GB) / A_MB
+        var kb = (speed % A_MB) / A_KB
+
+        var gbValue:Double = (speed / A_GB).toDouble()
+        return if(gbValue>=1){
+            String.format("%.2fGbps",gbValue)
+        }else{
+            var mbValue:Double = (speed / A_MB).toDouble()
+            if (mbValue>=1){
+                String.format("%.2fMbps",mbValue)
+            }else{
+                var kbValue:Double = (speed / A_KB).toDouble()
+                String.format("%.0fKbps",kbValue)
+            }
+        }
+    }
+
 
     class SortByString():Comparator<String>{
         override fun compare(o1: String?, o2: String?): Int {

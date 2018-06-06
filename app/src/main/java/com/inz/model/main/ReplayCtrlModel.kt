@@ -43,7 +43,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val mReplayBeg   = ObservableField<String>("00:00:00")
     val mReplayEnd   = ObservableField<String>("00:00:00")
     val mReplayName  = ObservableField<String>("H.264")
-    val mReplaySpeed = ObservableField<String>("0 Kbps")
+    val mReplaySpeed = ObservableField<String>("0Kbps")
     val mProcess     = ObservableField<Int>(0)
     val mProcessMax  = ObservableField<Int>(0)
     val mVisibility  = ObservableField<Int>(View.INVISIBLE)

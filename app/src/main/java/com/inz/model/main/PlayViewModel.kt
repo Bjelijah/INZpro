@@ -22,6 +22,7 @@ import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 
 import com.inz.model.player.BasePlayer
+import com.inz.utils.FileUtil
 import com.inz.utils.MessageHelp
 import com.inz.utils.Utils
 import java.text.ParsePosition
@@ -151,8 +152,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 mName = when(Config.CAM_Crypto){
                     0->"H264"
                     1->"H265"
-                    2->"H264C"
-                    3->"H265C"
+                    2->"H264 C"
+                    3->"H265 C"
                     else->"H264"
                 }
                 mEndTime = Utils.formatMsec(mTotaltime)
@@ -242,9 +243,12 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
 
-    fun setSpeed(speed:Int){
+
+    fun setSpeed(speed:Long){
         if (nowPlayState==0)return
-        ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(String.format("%d Kbps",speed/1024))
+
+//        ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(String.format("%d Kbps",speed/1024))
+        ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(FileUtil.fmtSpeed(speed))
     }
 
     fun setUrl(url:String){
@@ -391,7 +395,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mVideoIndex = index
     }
 
-    fun onTime(speed:Int,bWait:Boolean){
+    fun onTime(speed:Long,bWait:Boolean){
         RxUtil.doInUIThread(object : RxUtil.RxSimpleTask<Boolean>(){
             override fun doTask() {
                 if (bWait){
@@ -459,7 +463,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 }
             }
 
-            var speed:Int = (streamLen*8/1024/F_TIME).toInt()
+//            var speed:Int = (streamLen*8/1024/F_TIME).toInt()
+            var speed = (streamLen*8/F_TIME)
 
             onTime(speed,bWait)
 

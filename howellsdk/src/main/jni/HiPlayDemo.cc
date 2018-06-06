@@ -750,7 +750,7 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
         LOGE("on live stream_fun is exit return");
         return;
     }
-
+    res->stream_len += len;
     on_download_fun(buf,len);
     on_download_h264(buf,len);
     //fixme 阻塞
@@ -774,7 +774,7 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
         LOGE("on file stream is exit return");
         return;
     }
-
+    res->stream_len += len;
     if (res->is_pause){
         sem_wait(&res->sem_play);
     }
@@ -835,7 +835,7 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
         }
     }
 
-    res->stream_len += len;
+//    res->stream_len += len;
     if (res!=NULL){
         if (res->isFirstTime){
             res->isFirstTime = 0;

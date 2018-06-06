@@ -169,6 +169,7 @@ public class ApFactory {
             }else{
                 play(isSub);
             }
+
         }
 
         private  ReplayFile[] getRecordedFilesOld(int count,int nowPage,int pageSize){//nowPage from 0;
