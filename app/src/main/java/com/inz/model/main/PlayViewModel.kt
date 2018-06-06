@@ -138,6 +138,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         if (nowPlayState != 2)return
         RxUtil.doRxTask(object :RxUtil.CommonTask<Void>(){
             var mTotaltime = 0L
+
             var mName = ""
             var mEndTime = ""
             override fun doInIOThread() {
@@ -266,6 +267,11 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.rePlay()
     }
 
+    fun reLinkRemoteView(){
+        var offset = ApiManager.getInstance().aPcamService.timestamp - ApiManager.getInstance().aPcamService.firstTimestamp+mRemoteOffset
+        set2LocalPos(0,offset.toInt())
+    }
+
     fun pauseView(){
         mPlayer?.pause()
     }
@@ -275,14 +281,15 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             mPlayer?.pause()
         }else{
             mPlayer?.pause()
-            var offset = ApiManager.getInstance().aPcamService.timestamp - ApiManager.getInstance().aPcamService.firstTimestamp+mRemoteOffset
-            set2LocalPos(0,offset.toInt())
+            reLinkRemoteView()
         }
     }
 
 
+
     fun pause(){
         mPlayer?.pause()
+
     }
 
     fun stopView(){
@@ -445,6 +452,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     bWait = true
                     if (!mIsPlayback) {
                         reLinkPlayView()
+                    }else if(nowPlayState==2 && mPlayer?.isPause()==false){
+                        reLinkRemoteView()
                     }
                     mWaiteNum = 0
                 }

@@ -97,11 +97,11 @@ class MyVideoAdapter : RecyclerView.Adapter<MyVideoAdapter.ViewHolder> {
         holder.tv.text = bean.name
         if (mSelectPos == pos) {
             //TODO 加边框
-            Log.i("123","加边框")
+//            Log.i("123","加边框")
             holder.ll.setBackgroundResource(R.drawable.item_video_border)
         } else {
             //todo 没边框
-            Log.i("123","没边框")
+//            Log.i("123","没边框")
             holder.ll.setBackgroundColor(mContext.getColor(R.color.main_bk_light))
         }
         holder.ll.isLongClickable = true
