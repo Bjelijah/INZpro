@@ -69,6 +69,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 },{
                     //deinit
                 },{ //play
+                    nowPlayState = 0
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().aPcamService)
                 },{//stop
@@ -96,6 +97,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     mRemoteEnd = end
                 },{//deinit
                 },{//play
+                    nowPlayState = 2
                     Log.i("123","play ok")
                     initInfoRemote(beg,end)
                     stopTimeTask()
@@ -124,6 +126,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     nowPlayState = 1
                 },{},{
                     //init seekbar
+                    nowPlayState = 1
                     initInfo()
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().localService)
@@ -188,8 +191,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 mName = when(Config.CAM_Crypto){
                     0->"H264"
                     1->"H265"
-                    2->"H264C"
-                    3->"H265C"
+                    2->"H264 C"
+                    3->"H265 C"
                     else->"H264"
                 }
                 var msec = mPlayer?.getTotalMsec()?.toLong()?:0L
@@ -245,7 +248,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
 
     fun setSpeed(speed:Long){
-        if (nowPlayState==0)return
+//        if (nowPlayState==0)return
 
 //        ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(String.format("%d Kbps",speed/1024))
         ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(FileUtil.fmtSpeed(speed))

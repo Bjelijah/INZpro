@@ -738,29 +738,45 @@ static void on_download_h264(const char* buf,int len){
 }
 
 
-void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata){
+void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata) {
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
 //    LOGI("on live stream_fun");
 //    return;
-    if(res == NULL){
+    if (res == NULL) {
         LOGE("on live stream_fun res==null error return");
         return;
     }
-    if(res->is_exit == 1){
+    if (res->is_exit == 1) {
         LOGE("on live stream_fun is exit return");
         return;
     }
     res->stream_len += len;
-    on_download_fun(buf,len);
-    on_download_h264(buf,len);
+    on_download_fun(buf, len);
+    on_download_h264(buf, len);
     //fixme 阻塞
 //    pthread_mutex_lock(&res->lock_play);
 
-    int ret = hwplay_input_data(res->play_handle, buf ,len);
+//    int num = 12;
+//    while (num > 0) {
+//        if (res==NULL)return;
+//        if (res->is_exit == 1)return;
+//        int ret = hwplay_input_data(res->play_handle, buf, len);
+//        LOGE("input data  ret=%d",ret);
+//        if (ret==1)break;
+////        LOGE("input data  ret=%d",ret);
+//        num--;
+//        usleep(40000);
+//    }
+
 //    pthread_mutex_unlock(&res->lock_play);
     //	LOGI("on live stream fun len=%d",len);
 
     //hi265InputData(buf,len);
+
+
+
+    int ret = hwplay_input_data(res->play_handle, buf, len);
+    LOGE("input data  ret=%d",ret);
 
 }
 
@@ -810,11 +826,18 @@ static void on_yuv_callback(PLAY_HANDLE handle,
 
 //    int frameNum = 0;
 //    hwplay_get_framenum_in_buf(handle,&frameNum);
-//    gettimeofday(&cur_t,NULL);
-//    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
-//    LOGI("  -- %ld       frameNum=%d\n",timeuse,frameNum);
-//    last_t = cur_t;
-//    LOGI("do yv12 gl display    width=%d   height=%d    user=%d",width,height,user);
+////    gettimeofday(&cur_t,NULL);
+////    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
+////    LOGI("  -- %ld       frameNum=%d\n",timeuse,frameNum);
+////    last_t = cur_t;
+////    LOGI("do yv12 gl display    width=%d   height=%d    user=%d",width,height,user);
+//    if(frameNum >15){
+//        hwplay_set_speed(handle,4.0);
+//    }else if(frameNum <12){
+//        hwplay_set_speed(handle,1.0);
+//    }
+
+
     yv12gl_display(y,u,v,width,height,time);
 //    LOGI("do yv12 gl display  ok");
 
@@ -1040,7 +1063,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
 //	LOGE(" code= 0x%x",media_head.vdec_code);
 
 
-    PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,0,area);
+    PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),2*1024*1024,0,area);
     res->play_handle = ph;
     res->isFirstTime = 1;
     hwplay_open_sound(ph);
@@ -1118,7 +1141,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayTurnLive
 //	//	media_head.vdec_code = 0x0f;
 //	media_head.vdec_code = 0x10;
 
-    PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,isPlayback,area);
+    PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),2*1024*1024,isPlayback,area);
     res->play_handle = ph;
     res->isFirstTime = 1;
     res->firstTimestamp = 0;
@@ -1261,8 +1284,9 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     , media_head.au_channel,media_head.au_sample,media_head.dvr_version);
 
 
-    PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
-    hwplay_set_max_framenum_in_buf(ph,12);
+    PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),2*1024*1024,isPlayBack,area);
+    hwplay_set_max_framenum_in_buf(ph,5);
+
     LOGE("open stream ph=%d    isPlayback=%d",ph,isPlayBack);
     hwplay_open_sound(ph);
     hwplay_register_source_data_callback(ph,on_source_callback,0);//user data==0   1 isPlayBack

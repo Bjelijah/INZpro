@@ -12,10 +12,9 @@ import com.howellsdk.api.player.ZoomableTextureView
  */
 
 class PlayGLTextureView(private val mContext: Context, attrs: AttributeSet) : ZoomableTextureView(mContext, attrs) {
-    internal var mRenderer: GLESRendererImpl
+    private var mRenderer: GLESRendererImpl = GLESRendererImpl(mContext, this, null)
 
     init {
-        mRenderer = GLESRendererImpl(mContext, this, null)
         setRenderer(mRenderer)
         setRenderMode(GLESTextureView.RENDERMODE_WHEN_DIRTY)
     }

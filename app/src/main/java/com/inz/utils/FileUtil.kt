@@ -247,35 +247,35 @@ object FileUtil {
         var gb = space / A_GB
         var mb = (space % A_GB) / A_MB
         var kb = (space % A_MB) / A_KB
-        var gbValue:Double = (space / A_GB).toDouble()
+        var gbValue:Double = (space / A_GB)
         return if (gbValue>=1){
             String.format("%.2fGB",gbValue)
         }else{
-            var mbValue:Double = (space / A_MB).toDouble()
+            var mbValue:Double = (space / A_MB)
             if (mbValue >= 1){
                 String.format("%.2fMB",mbValue)
             }else {
-                var kbValue:Double = (space / A_KB).toDouble()
+                var kbValue:Double = (space / A_KB)
                 String.format("%.2fKB",kbValue)
             }
         }
     }
 
     fun fmtSpeed(speed:Long):String{
-        if (speed<=0)return "0kbps"
+        if (speed<=0)return "0Kbps"
         var gb = speed / A_GB
         var mb = (speed % A_GB) / A_MB
         var kb = (speed % A_MB) / A_KB
 
-        var gbValue:Double = (speed / A_GB).toDouble()
+        var gbValue:Double = (speed / A_GB)
         return if(gbValue>=1){
             String.format("%.2fGbps",gbValue)
         }else{
-            var mbValue:Double = (speed / A_MB).toDouble()
+            var mbValue:Double = (speed / A_MB)
             if (mbValue>=1){
                 String.format("%.2fMbps",mbValue)
             }else{
-                var kbValue:Double = (speed / A_KB).toDouble()
+                var kbValue:Double = (speed / A_KB)
                 String.format("%.0fKbps",kbValue)
             }
         }

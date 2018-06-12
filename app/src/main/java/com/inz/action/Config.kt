@@ -5,7 +5,7 @@ object Config {
     val AP   = 0x01
     val TURN = 0x02
 
-
+//
 
     val playType        = AP
 //    val CAM_IP              = "192.168.3.7"

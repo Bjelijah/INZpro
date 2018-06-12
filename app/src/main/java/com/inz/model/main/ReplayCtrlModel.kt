@@ -120,7 +120,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     fun initUi(){
         mReplayBeg.set("00:00:00")
         mReplayEnd.set("00:00:00")
-        mReplaySpeed.set("0 Kbps")
+        mReplaySpeed.set("0Kbps")
         mProcess.set(0)
         mProcessMax.set(0)
 
