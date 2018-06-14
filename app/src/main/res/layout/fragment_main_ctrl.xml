@@ -27,7 +27,8 @@
             android:textSize="@dimen/main_ctrl_text_size_small"
             android:layout_gravity="center_vertical"
             style="@style/MyCtrlButton"
-            android:onClick="@{vm.onClickCtrlAlarm}"/>
+            android:onClick="@{vm.onClickCtrlAlarm}"
+            android:visibility="gone"/>
 
         <android.widget.Space
             android:layout_width="0dp"

@@ -429,6 +429,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
     fun onScheduled(firstTimeStamp: Long,timestamp: Long){
         var tPos = (timestamp - firstTimeStamp)
+//        Log.i("123","tPos=$tPos     timestamp=$timestamp    firstTimeStamp=$firstTimeStamp")
         if (tPos<0) tPos = 0
         if (tPos>ModelMgr.getReplayCtrlModelInstance(mContext).getProcessMax()) tPos = 0
         RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Boolean>(){

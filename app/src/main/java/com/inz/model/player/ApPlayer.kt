@@ -155,7 +155,7 @@ class ApPlayer :BasePlayer(){
     }
 
     override fun rePlay(): BasePlayer {
-        if (mIsReLinking){Log.i("123","isRelinging  return");return this}
+//        if (mIsReLinking){Log.i("123","isRelinging  return");return this}
         Observable.create(ObservableOnSubscribe<Boolean> {it->
             Log.e("123","relink..........")
             mIsReLinking = true

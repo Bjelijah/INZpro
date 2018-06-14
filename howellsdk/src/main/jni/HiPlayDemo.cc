@@ -738,6 +738,7 @@ static void on_download_h264(const char* buf,int len){
 }
 
 
+
 void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata) {
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
 //    LOGI("on live stream_fun");
@@ -752,21 +753,32 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
     }
     res->stream_len += len;
     on_download_fun(buf, len);
-    on_download_h264(buf, len);
+//    on_download_h264(buf, len);
     //fixme 阻塞
 //    pthread_mutex_lock(&res->lock_play);
-
-//    int num = 12;
-//    while (num > 0) {
-//        if (res==NULL)return;
-//        if (res->is_exit == 1)return;
-//        int ret = hwplay_input_data(res->play_handle, buf, len);
+    if(stream_type == 2)return;
+    int num = 1;
+    while (num > 0) {
+        if (res==NULL)return;
+        if (res->is_exit == 1)return;
+        int ret = hwplay_input_data(res->play_handle, buf, len);
 //        LOGE("input data  ret=%d",ret);
-//        if (ret==1)break;
-////        LOGE("input data  ret=%d",ret);
-//        num--;
+        int buf_len=0;
+        int re_len = 0;
+        hwplay_get_stream_buf_len(res->play_handle,&buf_len);
+        hwplay_get_stream_buf_remain(res->play_handle,&re_len);
+
+        LOGE("input data  ret=%d   buf_len=%d   re_len=%d",ret,buf_len,re_len);
+        if (ret==1) {
+            break;
+        }else{
+
+        }
+//
+        num--;
 //        usleep(40000);
-//    }
+        usleep(40000);
+    }
 
 //    pthread_mutex_unlock(&res->lock_play);
     //	LOGI("on live stream fun len=%d",len);
@@ -775,8 +787,8 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 
 
 
-    int ret = hwplay_input_data(res->play_handle, buf, len);
-    LOGE("input data  ret=%d",ret);
+//    int ret = hwplay_input_data(res->play_handle, buf, len);
+//    LOGE("input data  ret=%d",ret);
 
 }
 
@@ -820,23 +832,23 @@ static void on_yuv_callback(PLAY_HANDLE handle,
                             int height,
                             unsigned long long time,
                             long user){
+//    return;
     if(res==NULL)return;
     if(res->is_exit)return;
 //    if (!user)return;
 
 //    int frameNum = 0;
 //    hwplay_get_framenum_in_buf(handle,&frameNum);
-////    gettimeofday(&cur_t,NULL);
-////    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
-////    LOGI("  -- %ld       frameNum=%d\n",timeuse,frameNum);
-////    last_t = cur_t;
-////    LOGI("do yv12 gl display    width=%d   height=%d    user=%d",width,height,user);
+//    gettimeofday(&cur_t,NULL);
+//    long timeuse = 1000000 *(cur_t.tv_sec - last_t.tv_sec) + cur_t.tv_usec - last_t.tv_usec;
+//    LOGI("  -- %ld       frameNum=%d\n",timeuse,frameNum);
+//    last_t = cur_t;
+//    LOGI("do yv12 gl display    width=%d   height=%d    user=%d",width,height,user);
 //    if(frameNum >15){
 //        hwplay_set_speed(handle,4.0);
 //    }else if(frameNum <12){
 //        hwplay_set_speed(handle,1.0);
 //    }
-
 
     yv12gl_display(y,u,v,width,height,time);
 //    LOGI("do yv12 gl display  ok");
@@ -850,7 +862,7 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
 //    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
 //    int ret = hwplay_is_pause(handle);
 //    LOGE("on source callback is pause=%d\n",ret);
-
+//    return;
     if (res!=NULL){
         if (res->is_exit){
             LOGE("on source callback is  exit return");
@@ -865,11 +877,12 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
             res->firstTimestamp = timestamp;
         }
         res->timestamp = timestamp;
-
     }
+
+//    LOGI("timestamp=%d",timestamp);
 //    LOGI("on souce callback  timestamp=%d",timestamp);
     //download
-
+    return;
 
     if(type == 0){//音频
 
@@ -1248,7 +1261,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     } else {
         media_head.vdec_code = VDEC_H264;//默认 未加密 h264 用于 ap
     }
-
+//    media_head.vdec_code = VDEC_H264;//未加密 用于 ap///fixme
     if(media_head.media_fourcc!=HW_MEDIA_TAG){
         memset(&media_head,0,sizeof(media_head));
         media_head.media_fourcc = HW_MEDIA_TAG;
@@ -1288,7 +1301,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     hwplay_set_max_framenum_in_buf(ph,5);
 
     LOGE("open stream ph=%d    isPlayback=%d",ph,isPlayBack);
-    hwplay_open_sound(ph);
+//    hwplay_open_sound(ph);
     hwplay_register_source_data_callback(ph,on_source_callback,0);//user data==0   1 isPlayBack
     hwplay_register_yuv_callback_ex(ph, on_yuv_callback, 0);
 //    if(!isPlayBack) {

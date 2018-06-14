@@ -127,6 +127,10 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     val mPlayListTitleBtnRemoteFile = Action {
         if(isFastClick())return@Action
+        CtrlAction.setPlayReview(mContext)
+        //play view
+        ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
+        ModelMgr.getPlayViewModelInstance(mContext).change2AP()
         when(mShowCode){
             SHOW_NONE->{
                 mShowCode = SHOW_REMOTE_FILE
