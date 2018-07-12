@@ -25,6 +25,7 @@
         android:theme="@style/MyAppTheme"
         android:debuggable="false"
         tools:ignore = "HardcodedDebugMode"
+        android:hardwareAccelerated="true"
         >
         <!--android:screenOrientation="landscape"-->
         <activity android:name="com.inz.activity.MainActivity"

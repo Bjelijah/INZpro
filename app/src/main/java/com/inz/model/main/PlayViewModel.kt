@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.Toast
 import com.howellsdk.api.ApiManager
 import com.howellsdk.api.HWPlayApi
@@ -13,6 +15,7 @@ import com.howellsdk.utils.RxUtil
 import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
 import com.inz.action.CtrlAction
+import com.inz.activity.view.PlayGLTextureView
 import com.inz.bean.BaseBean
 import com.inz.bean.RemoteBean
 import com.inz.inzpro.BaseViewModel
@@ -367,14 +370,21 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             Log.e("123","onDoubleTap        nowPlayState=$nowPlayState")
 //            CtrlAction.setFullOrNot(mContext)
             CtrlAction.setViewFullOrNot(mContext,nowPlayState)
+
+//            var scal = ScaleAnimation(1.0f,4.0f / 3.0f,1.0f,10f/9f,Animation.RELATIVE_TO_SELF,0f,
+//                    Animation.RELATIVE_TO_SELF,0f)
+//            scal.duration = 100
+//            scal.fillAfter = true
+//            mv?.startAnimation(scal)
             return super.onDoubleTap(e)
         }
         override fun onDown(e: MotionEvent?): Boolean {
             return true
         }
     })
-
+    var mv:View?=null
     fun onGlTouch(v:View,event:MotionEvent):Boolean{
+        mv = v
         return mGestureDetector.onTouchEvent(event)
     }
     val mProcessVisibility      = ObservableField<Int>(View.VISIBLE)
@@ -391,8 +401,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun setFullScreen(b: Boolean,isShowReplayCtrl :Boolean) {
         if (b){
             Log.i("123","PlayViewModel set full")
-            if (isShowReplayCtrl)mReplayCtrlVisibility.set(View.VISIBLE)
-            else mReplayCtrlVisibility.set(View.GONE)
+            mReplayCtrlVisibility.set(if (isShowReplayCtrl)View.VISIBLE else View.GONE)
             mIsFull = true
             mPlayViewFull.set(true)
             //

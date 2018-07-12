@@ -198,6 +198,7 @@ void yv12gl_display(const unsigned char * y, const unsigned char *u,const unsign
             free(g_yuv_display->v);
             g_yuv_display->v = NULL;
         }
+
         g_yuv_display->y = (char *)realloc(g_yuv_display->y,width*height);
         g_yuv_display->u = (char *)realloc(g_yuv_display->u,width*height/4);
         g_yuv_display->v = (char *)realloc(g_yuv_display->v,width*height/4);

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -167,24 +168,62 @@ object BinderHelper {
         v.setImageResource(resId)
     }
 
-    @BindingAdapter("visible_action_down")
+    @BindingAdapter("visible_action_down","duration_action_down",requireAll = true)
     @JvmStatic
-    fun setVisibleActionDown(v:View,bShow:Boolean){
+    fun setVisibleActionDown(v:View,bShow:Boolean,va:Long){
         var action :TranslateAnimation?=null
         if(bShow){
             action = TranslateAnimation(Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,0.0f,
                     Animation.RELATIVE_TO_SELF,1.0f,Animation.RELATIVE_TO_SELF,0.0f)
-            action.duration = 500
+            action.duration = va
             v.startAnimation(action)
             v.visibility = View.VISIBLE
         }else{
             action = TranslateAnimation(Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,0.0f,
                     Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,1.0f)
-            action.duration = 500
+            action.duration = va
             v.startAnimation(action)
             v.visibility = View.GONE
         }
 
     }
+
+    @BindingAdapter( "visible_action_right","duration_action_right",requireAll = true)
+    @JvmStatic
+    fun setVisibleActionRight(v:View,bShow:Boolean,va:Long){
+        Log.i("123","va=$va")
+        var action :TranslateAnimation?=null
+        if(bShow){
+            action = TranslateAnimation(Animation.RELATIVE_TO_SELF,1.0f,Animation.RELATIVE_TO_SELF,0.0f,
+                    Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,0.0f)
+            action.duration = va
+            v.startAnimation(action)
+            v.visibility = View.VISIBLE
+        }else{
+            action = TranslateAnimation(Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,1.0f,
+                    Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,0.0f)
+            action.duration = va
+            v.startAnimation(action)
+            v.visibility = View.GONE
+        }
+
+    }
+
+    @BindingAdapter("visible_action_big","duration_action_big",requireAll = false)
+    @JvmStatic
+    fun setVisibleActionBig(v:View,bShow:Boolean,va:Long){
+        var action:ScaleAnimation?=null
+        if (bShow){
+            action = ScaleAnimation(0f,1f,0f,1f,0f,0f)
+            action.duration = va
+            v.startAnimation(action)
+        }else{
+            action = ScaleAnimation(1f,0f,1f,0f,0f,0f)
+            action.duration = va
+            v.startAnimation(action)
+        }
+    }
+
+
 
 }

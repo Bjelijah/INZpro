@@ -30,15 +30,20 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
      fun setFullScreen(b: Boolean,isShowReplayCtrl:Boolean) {
         if(b){
             Log.i("123","main view model set full")
-            mCtrlVisibility.set(View.GONE)//主控按钮
-            mReplayListVisibility.set(View.GONE)//列表
+//            mCtrlVisibility.set(View.GONE)//主控按钮
+            mCtrlVisibilityShow.set(false)
+            mViewVisibilityShow.set(true)
+//            mReplayListVisibility.set(View.GONE)//列表
+
             mReplayCtrlVisibility.set(View.GONE)
 //            mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
 //            mPlayViewHeight.set(ViewGroup.LayoutParams.MATCH_PARENT)
         }else{
             Log.i("123","main view model set small  isShow=$isShowReplayCtrl")
-            mReplayListVisibility.set(View.VISIBLE)
-            mCtrlVisibility.set(View.VISIBLE)
+//            mReplayListVisibility.set(View.VISIBLE)
+//            mCtrlVisibility.set(View.VISIBLE)
+            mCtrlVisibilityShow.set(true)
+            mViewVisibilityShow.set(false)
             mReplayCtrlVisibility.set(if (isShowReplayCtrl)View.VISIBLE else View.GONE)
 //            mPlayViewWidth.set(0)
 //            mPlayViewHeight.set(ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -76,9 +81,9 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     val mRecordText           = ObservableField<String>(mContext.getString(R.string.ctrl_record))
 
 
+    val mCtrlVisibilityShow   = ObservableField<Boolean>(true)
 
-
-
+    val mViewVisibilityShow   = ObservableField<Boolean>(false)
 
 
 

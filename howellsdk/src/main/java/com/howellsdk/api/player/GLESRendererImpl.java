@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -26,8 +27,6 @@ import java.nio.FloatBuffer;
 public class GLESRendererImpl implements IGLESRenderer {
     private static final String TAG = "123";
     private Context mContext;
-
-
 
 //    @Override
 //    public void onSurfaceCreated() {
@@ -46,14 +45,18 @@ public class GLESRendererImpl implements IGLESRenderer {
 //
 //    }
 
+
+
     @Override
     public void onResume() {
         // do something
+        Log.i("123","glesRender on resume");
     }
 
     @Override
     public void onPause() {
         // do something
+        Log.i("123","glesRender on onPause");
     }
 
 //    @Override
@@ -66,6 +69,7 @@ public class GLESRendererImpl implements IGLESRenderer {
     @Override
     public void onDestroy() {
         // do something
+        Log.i("123","glesRender on destroy");
     }
 
 
@@ -184,7 +188,7 @@ public class GLESRendererImpl implements IGLESRenderer {
         }
     }
 
-    private boolean doOnce = true;
+    private boolean doOnce = false;
     private int frameNum = 0;
 
     @Override
@@ -192,6 +196,7 @@ public class GLESRendererImpl implements IGLESRenderer {
 
         GLES20.glClearColor(0f,0f,0f,1f);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+
         JniUtil.YUVLock();
         for (int i = 0; i < 3; ++i) {
 
@@ -248,13 +253,15 @@ public class GLESRendererImpl implements IGLESRenderer {
     @Override
     public void onSurfaceChanged( int width, int height) {
 
-        Log.i("123","on surface changed "+width+" "+height);
+        Log.i("123","on surface changed w="+width+"  h="+height);
         if (height>width) {
             int new_h=width*9/16;
             GLES20.glViewport(0, (height-new_h)/2, width, new_h);
         }else {
             GLES20.glViewport(0, 0, width, height);
+//            GLES20.glViewport(0, 0, 1920, 1440);
         }
+
     }
 
 

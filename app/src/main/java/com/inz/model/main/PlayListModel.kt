@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.PopupWindow
 import android.widget.Toast
@@ -314,7 +315,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
             }
             ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
             ModelMgr.getListItemModelInstance(mContext).mBean = b
-            mFunPop?.showAsDropDown(v)
+            mFunPop?.showAsDropDown(v,0,-500,Gravity.BOTTOM)
+            var h =mFunPop?.height
+            Log.i("123","pop h=$h")
         }
         picAdapter.setWidth(width)
         rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)

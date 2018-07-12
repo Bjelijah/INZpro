@@ -18,4 +18,7 @@ class PlayGLTextureView(private val mContext: Context, attrs: AttributeSet) : Zo
         setRenderer(mRenderer)
         setRenderMode(GLESTextureView.RENDERMODE_WHEN_DIRTY)
     }
+
+
+
 }

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.PixelFormat
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
@@ -24,7 +25,7 @@ class MainActivity:BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        window.setFormat(PixelFormat.TRANSLUCENT)
     }
 
 

@@ -32,10 +32,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="9"
-
                     layout="@layout/layout_view"
                     app:vm = "@{vm}"
+                    app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
+                    app:duration_action_down="@{300}"
+
                     />
+                <!--app:vm = "@{vm}"-->
+                <!--app:visible_action_big="@{true}"-->
+                <!--app:duration_action_big="@{300}"-->
+
+                <!--app:visible_action_big="@{vm.mViewVisibilityShow}"-->
+                <!--app:duration_action_big="@{300}"-->
+
 
                 <include
                     android:id="@+id/layout_ctrl"
@@ -45,6 +54,9 @@
                     android:layout_alignParentBottom="true"
                     layout="@layout/layout_ctrl"
                     android:visibility="@{vm.MCtrlVisibility}"
+
+                    app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
+                    app:duration_action_down="@{300}"
 
                     />
 
@@ -62,6 +74,8 @@
                 android:layout_weight="1"
                 layout="@layout/layout_list"
                 android:visibility="@{vm.mReplayListVisibility}"
+                app:visible_action_right = "@{vm.MCtrlVisibilityShow}"
+                app:duration_action_right="@{300}"
                 />
 
 
