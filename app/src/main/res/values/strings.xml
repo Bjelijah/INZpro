@@ -4,14 +4,15 @@
     <string name="app_name">INZpro</string>
     <string name="ctrl_back">返回</string>
     <string name="ctrl_replay">回放</string>
-    <string name="ctrl_alarm">入侵\n报警</string>
+    <string name="ctrl_alarm">入侵报警</string>
     <string name="ctrl_record">录像</string>
     <string name="ctrl_record_stop">停止录像</string>
     <string name="ctrl_catch">拍照</string>
 
-    <string name="play_list_title_record">本机录像</string>
-    <string name="play_list_title_remote">主机录像</string>
-    <string name="play_list_title_picture">本机照片</string>
+    <string name="play_list_title_record">录像</string>
+    <string name="play_list_title_remote">主视频</string>
+    <string name="play_list_title_subview">副视频</string>
+    <string name="play_list_title_picture">照片</string>
 
     <string name="catchPicTo">图片已保存到</string>
     <string name="catchPicError">图片保存失败！！</string>

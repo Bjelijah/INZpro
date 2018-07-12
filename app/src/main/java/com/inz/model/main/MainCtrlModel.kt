@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.storage.StorageManager
 import android.support.annotation.RequiresApi
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.inz.action.Config
 import com.inz.action.CtrlAction
@@ -40,7 +41,7 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     val mRecordText           = ObservableField<String>(mContext.getString(R.string.ctrl_record))
     val mRecordTextColor      = ObservableField<Int>(mContext.getColor(R.color.black))
     val mAlarmTextColor       = ObservableField<Int>(mContext.getColor(R.color.black))
-
+    val mCatchBtnVisibility    = ObservableField<Int>(View.INVISIBLE)
     val onClickCtrlAlarm       = Action {
         if (mIsAlarming){
             mIsAlarming = false
@@ -84,9 +85,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe {
                     ModelMgr.getApPlayerInstance().catchPic()
-                })
+                }
 
 
     }
@@ -110,7 +111,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         }
     }
 
-
+    fun setIsPlayReView(b:Boolean){
+        mCatchBtnVisibility.set(if(b)View.INVISIBLE else View.VISIBLE)
+    }
 
 
 }

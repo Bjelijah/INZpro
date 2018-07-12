@@ -127,7 +127,7 @@ public class ApFactory {
                 Log.i("123","is not ready we ready it");
             }
             JniUtil.netSetPlayBackTime(new ApTimeBean(begTime,0),new ApTimeBean(endTime,0));
-            Log.i("123","ap Factory play back set play back time ");
+            Log.i("123","ap Factory play back set play back time isSub="+isSub);
             JniUtil.netReadyPlay(isCrypto,1,slot,isSub?1:0);
             super.playback(isSub,begTime,endTime);
         }

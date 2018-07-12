@@ -768,7 +768,7 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
         hwplay_get_stream_buf_len(res->play_handle,&buf_len);
         hwplay_get_stream_buf_remain(res->play_handle,&re_len);
 
-        LOGE("input data  ret=%d   buf_len=%d   re_len=%d",ret,buf_len,re_len);
+//        LOGE("input data  ret=%d   buf_len=%d   re_len=%d",ret,buf_len,re_len);
         if (ret==1) {
             break;
         }else{

@@ -42,11 +42,11 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     var mReplaySrc   = ObservableField<Int>(R.drawable.replay_ctrl_pause)
     val mReplayBeg   = ObservableField<String>("00:00:00")
     val mReplayEnd   = ObservableField<String>("00:00:00")
-    val mReplayName  = ObservableField<String>("H.264")
+    val mReplayName  = ObservableField<String>("H264")
     val mReplaySpeed = ObservableField<String>("0Kbps")
     val mProcess     = ObservableField<Int>(0)
     val mProcessMax  = ObservableField<Int>(0)
-    val mVisibility  = ObservableField<Int>(View.INVISIBLE)
+    val mVisibility  = ObservableField<Int>(View.GONE)
 
     val onClickReplaySound = View.OnClickListener { v ->
         DebugLog.LogE("onClickReplaySound   "+mSoundVol+"  "+mSoundVol?.isShowing)
@@ -56,11 +56,11 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
             mSoundVol = null
             return@OnClickListener
         }
-        mSoundVol = PopWindowView.generate(mContext,{
+        mSoundVol = PopWindowView.generate(mContext) {
             mLayoutId = R.layout.view_sound_vol
             mViewModel = ModelMgr.getSoundVolModelInstance(mContext)
             build()
-        })
+        }
         DebugLog.LogI("before isshow "+mSoundVol?.isShowing)
         var h = mContext.resources.getDimension(R.dimen.sound_vol_height) + v.height
         mSoundVol?.showAsDropDown(v,0,-h.toInt())
@@ -78,7 +78,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val onClickReplaySkipNext     = Action { pauseView();ModelMgr.getPlayViewModelInstance(mContext).onPlayNextClick() }
     val onClickReplayFastForward  = Action { if(isFastClick())return@Action;ModelMgr.getPlayViewModelInstance(mContext).onFastClick() }
     val onClickReplayCatch        = Action { if(isFastClick())return@Action;ModelMgr.getApPlayerInstance().catchPic() }
-    val onClickReplayZoom         = Action { if(isFastClick())return@Action;CtrlAction.setFullOrNot(mContext) }
+    val onClickReplayZoom         = Action { CtrlAction.setViewFullOrNot(mContext,ModelMgr.getPlayViewModelInstance(mContext).nowPlayState) }
 
     val onProgressChanged         = SeekBarBindingAdapter.OnProgressChanged{
         seekBar, progress, fromUser ->
@@ -164,7 +164,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
     fun setIsPlayReView(b:Boolean){
-        mVisibility.set(if(b)View.INVISIBLE else View.VISIBLE)
+        mVisibility.set(if(b)View.GONE else View.VISIBLE)
     }
 
     private fun stopClick(){

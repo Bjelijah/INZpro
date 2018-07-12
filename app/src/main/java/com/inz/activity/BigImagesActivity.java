@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -174,11 +177,11 @@ public class BigImagesActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onViewTap(View view, float x, float y) {
         if(isShown){
-            mToolbar.setVisibility(View.GONE);
+//            mToolbar.setVisibility(View.GONE);
             bottom.setVisibility(View.GONE);
             isShown = false;
         }else{
-            mToolbar.setVisibility(View.VISIBLE);
+//            mToolbar.setVisibility(View.VISIBLE);
             bottom.setVisibility(View.VISIBLE);
             isShown = true;
         }
@@ -236,6 +239,23 @@ public class BigImagesActivity extends AppCompatActivity implements View.OnClick
             System.out.println("最后修改时间："+foo.format(d));
             System.out.println("最后修改时间："+new File(mList.get(position)).lastModified());
 //            Log.i("123", "view:"+position);
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Bitmap bmp = BitmapFactory.decodeFile(mList.get(position),options);
+            int h = options.outHeight;
+            int w = options.outWidth;
+            Log.e("123","h="+h+"  w="+w);
+            if (h*16 == w*9){
+                Log.i("123","16:9");
+                scale = true;
+            }else {
+                Log.i("123","else  4:3");
+                scale = false;
+            }
+
+
+
             try {
                 if (scale) {
 //                Log.e("123", "scale  view:"+position+"file name:"+mList.get(position));
@@ -264,6 +284,12 @@ public class BigImagesActivity extends AppCompatActivity implements View.OnClick
             photoView.setTag(position);
             return photoView;
         }
+
+
+
+
+
+
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);

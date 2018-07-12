@@ -7,7 +7,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import com.howell.jni.JniUtil
 import com.howellsdk.api.ApiManager
 import com.howellsdk.api.HWPlayApi
 import com.howellsdk.utils.RxUtil
@@ -16,7 +15,6 @@ import com.inz.action.Config
 import com.inz.action.CtrlAction
 import com.inz.bean.BaseBean
 import com.inz.bean.RemoteBean
-import com.inz.bean.VideoBean
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
@@ -25,7 +23,6 @@ import com.inz.model.player.BasePlayer
 import com.inz.utils.FileUtil
 import com.inz.utils.MessageHelp
 import com.inz.utils.Utils
-import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -61,15 +58,18 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mContext = c
     }
     fun initApPlay(){
+
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init
                     Log.i("123","init ap  init = $isSuccess")
                     if (isSuccess) playView()
-                    nowPlayState = 0
+                    nowPlayState = CtrlAction.PLAY_MODE_SUB_VIEW
                 },{
                     //deinit
                 },{ //play
-                    nowPlayState = 0
+
+                    nowPlayState = CtrlAction.PLAY_MODE_SUB_VIEW
+                    initInfoAp()
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().aPcamService)
                 },{//stop
@@ -89,15 +89,16 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun initRemotePlay(beg:String,end:String){
+
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({//init
                     if(it)playBack(beg,end)
-                    nowPlayState = 2
+                    nowPlayState = CtrlAction.PLAY_MODE_REMOTE_REPLAY
                     mRemoteBeg = beg
                     mRemoteEnd = end
                 },{//deinit
                 },{//play
-                    nowPlayState = 2
+                    nowPlayState = CtrlAction.PLAY_MODE_REMOTE_REPLAY
                     Log.i("123","play ok")
                     initInfoRemote(beg,end)
                     stopTimeTask()
@@ -121,13 +122,15 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun initLocalPlay(){
+
+
         mPlayer = ModelMgr.getLoaclPlayerInstance()
                 .registPlayStateListener({
-                    nowPlayState = 1
+                    nowPlayState = CtrlAction.PLAY_MODE_LOCAL_REPLAY
                 },{},{
                     //init seekbar
-                    nowPlayState = 1
-                    initInfo()
+                    nowPlayState = CtrlAction.PLAY_MODE_LOCAL_REPLAY
+                    initInfoLocal()
                     stopTimeTask()
                     startTimeTask(ApiManager.getInstance().localService)
                     mPlaySpeedIndex = 2
@@ -139,7 +142,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun initInfoRemote(beg:String,end:String){
-        if (nowPlayState != 2)return
+        if (nowPlayState != CtrlAction.PLAY_MODE_REMOTE_REPLAY)return
+        ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(true)
+        showReplayCtrl(false)
         RxUtil.doRxTask(object :RxUtil.CommonTask<Void>(){
             var mTotaltime = 0L
 
@@ -165,6 +170,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
             override fun doInUIThread() {
                 Log.i("123","  total=$mTotaltime     set max totaltime=${mTotaltime.toInt()}")
+
                 ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
                 ModelMgr.getReplayCtrlModelInstance(mContext).setTotalMsec(mTotaltime)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotaltime.toInt())
@@ -177,8 +183,15 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         })
     }
 
-    fun initInfo(){
-        if (nowPlayState != 1)return
+    fun initInfoAp(){
+        ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
+        showReplayCtrl(false)
+    }
+
+    fun initInfoLocal(){
+        if (nowPlayState != CtrlAction.PLAY_MODE_LOCAL_REPLAY)return
+        ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
+        showReplayCtrl(true)
         RxUtil.doRxTask(object :RxUtil.CommonTask<Long>(1000){
 
             var mTotalFrame =0
@@ -202,6 +215,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
             override fun doInUIThread() {
                 Log.i("123","after sleep")
+
                 ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
                 ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotalFrame)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
@@ -230,9 +244,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
         RxUtil.doInIOTthread(object :RxUtil.RxSimpleTask<Void>(){
             override fun doTask() {
-                if(nowPlayState==1) {
+                if(nowPlayState==CtrlAction.PLAY_MODE_LOCAL_REPLAY) {
                     mPlayer?.setPos(pos)
-                }else if(nowPlayState == 2){
+                }else if(nowPlayState == CtrlAction.PLAY_MODE_REMOTE_REPLAY){
                     Log.i("123","set 2 LocalPos=$progress")
                     mRemoteOffset = progress
                     var setBegDate = Date(mRemoteBegTime + mRemoteOffset)
@@ -263,11 +277,11 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun playView(){
-        mPlayer?.play(Config.CAM_IS_SUB)
+        mPlayer?.play(true)//play view sub
     }
 
     fun playBack(beg:String,end:String){
-        mPlayer?.playback(Config.CAM_IS_SUB,beg,end)
+        mPlayer?.playback(false,beg,end)// remote main
     }
 
     fun reLinkPlayView(){
@@ -305,16 +319,16 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun change2AP(){
-        if (nowPlayState==0){Log.e("123","change 2 ap now is playview state=0 return");return}
+        if (nowPlayState==CtrlAction.PLAY_MODE_SUB_VIEW){Log.e("123","change 2 ap now is playview state=0 return");return}
         mProcessVisibility.set(View.VISIBLE)
         Log.i("123","chande2AP")
         stopNewTask()
         stopTimeTask()
-        ThreadUtil.cachedThreadStart({
+        ThreadUtil.cachedThreadStart {
             stopView()
             Thread.sleep(500)
             initApPlay()
-        })
+        }
     }
 
     fun showRecord(b:Boolean){
@@ -350,8 +364,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             return super.onSingleTapUp(e)
         }
         override fun onDoubleTap(e: MotionEvent?): Boolean {
-            Log.e("123","onDoubleTap")
-            CtrlAction.setFullOrNot(mContext)
+            Log.e("123","onDoubleTap        nowPlayState=$nowPlayState")
+//            CtrlAction.setFullOrNot(mContext)
+            CtrlAction.setViewFullOrNot(mContext,nowPlayState)
             return super.onDoubleTap(e)
         }
         override fun onDown(e: MotionEvent?): Boolean {
@@ -363,21 +378,26 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         return mGestureDetector.onTouchEvent(event)
     }
     val mProcessVisibility      = ObservableField<Int>(View.VISIBLE)
-    val mReplayCtrlVisibility   = ObservableField<Int>(View.GONE)
+    val mReplayCtrlVisibility   = ObservableField<Int>(View.GONE)//视频内控制条
     val mRecordVisibility       = ObservableField<Int>(View.GONE)
     val mPlayViewFull           = ObservableField<Boolean>(false)
     val mRecordTimeText         = ObservableField<String>("00:00")
 
-    fun setFullScreen(b: Boolean) {
+    fun showReplayCtrl(b:Boolean){
+        mReplayCtrlVisibility.set(if(b) View.VISIBLE else View.GONE)
+    }
+
+
+    fun setFullScreen(b: Boolean,isShowReplayCtrl :Boolean) {
         if (b){
             Log.i("123","PlayViewModel set full")
-            if (mIsPlayback)mReplayCtrlVisibility.set(View.VISIBLE)
+            if (isShowReplayCtrl)mReplayCtrlVisibility.set(View.VISIBLE)
             else mReplayCtrlVisibility.set(View.GONE)
             mIsFull = true
             mPlayViewFull.set(true)
             //
         }else{
-            mReplayCtrlVisibility.set(View.GONE)
+            mReplayCtrlVisibility.set(if (isShowReplayCtrl)View.VISIBLE else View.GONE)
             mIsFull = false
             mPlayViewFull.set(false)
         }
@@ -420,7 +440,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun onScheduled(curFrame:Int,curTime:String){
         RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Boolean>(){
             override fun doTask() {
-                if (nowPlayState==1){
+                if (nowPlayState==CtrlAction.PLAY_MODE_LOCAL_REPLAY){
                     set2SeekFrame(curFrame)
                     setCurTime(curTime)
                 }
@@ -434,7 +454,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         if (tPos>ModelMgr.getReplayCtrlModelInstance(mContext).getProcessMax()) tPos = 0
         RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Boolean>(){
             override fun doTask() {
-                if(nowPlayState==2) {
+                if(nowPlayState==CtrlAction.PLAY_MODE_REMOTE_REPLAY) {
                     var p = mRemoteOffset+tPos
                     set2SeekFrame(p.toInt())
                     setCurTime(Utils.formatMsec(p))
@@ -460,7 +480,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     bWait = true
                     if (!mIsPlayback) {
                         reLinkPlayView()
-                    }else if(nowPlayState==2 && mPlayer?.isPause()==false){
+                    }else if(nowPlayState==CtrlAction.PLAY_MODE_REMOTE_REPLAY && mPlayer?.isPause()==false){
                         reLinkRemoteView()
                     }
                     mWaiteNum = 0
@@ -481,10 +501,10 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun setScheduledFlag(flag:Boolean,delay:Int){
-        ThreadUtil.cachedThreadStart({
+        ThreadUtil.cachedThreadStart {
             Thread.sleep(delay.toLong())
             mScheduledFlag = flag
-        })
+        }
     }
 
     fun newTimeTask(server:HWPlayApi){
@@ -493,8 +513,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             //            Log.i("123","new  scheduled task")
             if (mScheduledFlag){
                 when (nowPlayState){
-                    1-> onScheduled(server.curFrame, Utils.formatMsec(server.playedMsec.toLong()))
-                    2-> onScheduled(server.firstTimestamp,server.timestamp)
+                    CtrlAction.PLAY_MODE_LOCAL_REPLAY -> onScheduled(server.curFrame, Utils.formatMsec(server.playedMsec.toLong()))
+                    CtrlAction.PLAY_MODE_REMOTE_REPLAY-> onScheduled(server.firstTimestamp,server.timestamp)
                 }
             }
         },
@@ -515,7 +535,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun onPlayClick(){
-        if(nowPlayState!=2) {
+        if(nowPlayState!=CtrlAction.PLAY_MODE_REMOTE_REPLAY) {
             playView()
         }else{
             playBack(mRemoteBeg,mRemoteEnd)
@@ -523,7 +543,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun onPauseClick(){
-        if (nowPlayState!=2) {
+        if (nowPlayState!=CtrlAction.PLAY_MODE_REMOTE_REPLAY) {
             pauseView()
         }else{
             remotePause()

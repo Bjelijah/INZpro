@@ -17,18 +17,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
        >
-        <Button
-            android:id="@+id/ctrl_btn_alarm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/ctrl_alarm"
-            android:textColor="@{vm.MAlarmTextColor}"
-            android:textSize="@dimen/main_ctrl_text_size_small"
-            android:layout_gravity="center_vertical"
-            style="@style/MyCtrlButton"
-            android:onClick="@{vm.onClickCtrlAlarm}"
-            android:visibility="gone"/>
+
 
         <android.widget.Space
             android:layout_width="0dp"
@@ -50,6 +39,17 @@
 
 
         <Button
+            android:id="@+id/ctrl_btn_catch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/ctrl_catch"
+            style="@style/MyCtrlButton"
+            android:layout_gravity="center_vertical"
+            android:onClick="@{vm.onClickCtrlCatch}"
+            android:visibility="@{vm.MCatchBtnVisibility}" />
+
+        <Button
             android:id="@+id/ctrl_btn_record"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -62,14 +62,17 @@
             />
 
         <Button
-            android:id="@+id/ctrl_btn_catch"
+            android:id="@+id/ctrl_btn_alarm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/ctrl_catch"
-            style="@style/MyCtrlButton"
+            android:text="@string/ctrl_alarm"
+            android:textColor="@{vm.MAlarmTextColor}"
+            android:textSize="@dimen/main_ctrl_text_size_small"
             android:layout_gravity="center_vertical"
-            android:onClick="@{vm.onClickCtrlCatch}"/>
+            style="@style/MyCtrlButton"
+            android:onClick="@{vm.onClickCtrlAlarm}"
+            android:visibility="visible"/>
 
     </LinearLayout>
 

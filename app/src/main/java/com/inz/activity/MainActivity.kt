@@ -7,9 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.view.WindowManager
+import android.widget.LinearLayout
 import com.inz.inzpro.R
 import com.inz.inzpro.BaseViewModel
 import com.inz.model.ModelMgr
@@ -19,6 +21,11 @@ class MainActivity:BaseActivity() {
     val REQUEST_EXTERNAL_STORAGE = 1
     var PERMISSIONS_STORAGE =  arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
 
     override fun getLayout(): Int  = R.layout.activity_main

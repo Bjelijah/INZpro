@@ -6,7 +6,8 @@
     android:paddingLeft="@dimen/item_picture_padding"
     android:paddingRight="@dimen/item_picture_padding"
     android:paddingTop="@dimen/item_picture_padding_height"
-    android:paddingBottom="@dimen/item_picture_padding_height">
+    android:paddingBottom="@dimen/item_picture_padding_height"
+   >
 
 
     <FrameLayout
@@ -15,7 +16,8 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
             <ImageView
                 android:id="@+id/item_picture_iv"

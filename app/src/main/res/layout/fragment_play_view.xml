@@ -10,10 +10,11 @@
     </data>
     <!--app:widthHeightByRatio="@{vm.MPlayViewWidth}"-->
     <!--app:widthHeightRatio="@{1.7777}"-->
+    <!--app:adjust_layout="@{vm.MPlayViewFull}"-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:adjust_layout="@{vm.MPlayViewFull}"
+
         android:background="@color/main_bk_dark"
 
         >
@@ -27,12 +28,13 @@
 
 
         <!--android:visibility="@{vm.mProcessVisibility}"-->
+        <!--style="?android:attr/progressBarStyleLarge"-->
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="@{vm.MProcessVisibility}"
-            style="?android:attr/progressBarStyleLarge"
+            style="?android:attr/progressBarStyle"
             />
 
         <!--android:alpha="@{vm.MReplayCtrlAlpha}"-->

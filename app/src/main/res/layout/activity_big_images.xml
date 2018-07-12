@@ -6,17 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/main_bk"
     >
-
+    <!--android:layout_marginTop="@dimen/big_image_toolbar_height"-->
     <com.inz.activity.view.HackyViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionName="myImage"
-        android:layout_marginTop="@dimen/big_image_toolbar_height"/>
-
+        android:layout_marginTop="?attr/actionBarSize"/>
+    <!--android:theme="@style/MyToolbar"-->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="@dimen/abc_action_bar_default_height_material"
         android:theme="@style/MyToolbar"
         >
 
@@ -70,7 +71,8 @@
                 android:layout_marginRight="10dip"
                 android:background="#00000000"
                 android:src="@mipmap/icon_scale_16_9"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                />
 
             <ImageButton
                 android:id="@+id/ib_share"

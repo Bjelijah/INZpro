@@ -62,9 +62,24 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     var activity:Activity?=null
     var mCmd = CMD_SHARE
     private var mLastClickTime = 0L
-    fun setContext(c:Context){
-        mContext = c
-    }
+
+
+    val mShowRecordFile              = ObservableField<Boolean>(false)
+    val mShowRemoteFile              = ObservableField<Boolean>(false)
+    val mShowPictureFile             = ObservableField<Boolean>(false)
+    val mRecordListVisibility        = ObservableField<Int>(View.GONE)
+    val mRemoteListVisibility        = ObservableField<Int>(View.GONE)
+    val mPictureListVisibility       = ObservableField<Int>(View.GONE)
+    val mUpdatePictureList           = ObservableField<Boolean>(false)
+    val mUpdatePictureCmd            = ObservableField<Boolean>(false)
+    val mUpdateVideoList             = ObservableField<Boolean>(false)
+    val mUpdateRemoteList            = ObservableField<Boolean>(false)
+    val mCmdBtnVisibility            = ObservableField<Boolean>(false)
+    val mCmdBtnText                  = ObservableField<String>(mContext.getString(R.string.share_share))
+
+
+
+
 
 
     override fun onCreate() {
@@ -75,6 +90,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     }
 
 
+    fun setContext(c:Context){
+        mContext = c
+    }
 
     val mPlayListTitleBtnRecordFile = Action {
         Log.i("123","on record file click")
@@ -166,6 +184,13 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    val mPlayListTitleBtnSubView = Action {
+        if(isFastClick())return@Action
+        CtrlAction.setPlayReview(mContext)
+        //play view
+        ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
+        ModelMgr.getPlayViewModelInstance(mContext).change2AP()
+    }
 
     val mPlayListTitleBtnPictureFile = Action {
         Log.i("123","on picture file click")
@@ -209,20 +234,6 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     }
 
-
-
-    val mShowRecordFile              = ObservableField<Boolean>(false)
-    val mShowRemoteFile              = ObservableField<Boolean>(false)
-    val mShowPictureFile             = ObservableField<Boolean>(false)
-    val mRecordListVisibility        = ObservableField<Int>(View.GONE)
-    val mRemoteListVisibility        = ObservableField<Int>(View.GONE)
-    val mPictureListVisibility       = ObservableField<Int>(View.GONE)
-    val mUpdatePictureList           = ObservableField<Boolean>(false)
-    val mUpdatePictureCmd            = ObservableField<Boolean>(false)
-    val mUpdateVideoList             = ObservableField<Boolean>(false)
-    val mUpdateRemoteList            = ObservableField<Boolean>(false)
-    val mCmdBtnVisibility            = ObservableField<Boolean>(false)
-    val mCmdBtnText                  = ObservableField<String>(mContext.getString(R.string.share_share))
 
 
     val onCmdClick            = Action {
@@ -294,17 +305,17 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 //                mContext.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
             activity!!.startActivityForResult(intent,0,ActivityOptions.makeSceneTransitionAnimation(activity!!,v,"myImage").toBundle())
 
-        },{ v, pos, b ->
+        }) { v, pos, b ->
             Log.i("123","on item long click pos=$pos     path=${b.path}")
-            mFunPop = PopWindowView.generate(mContext,{
+            mFunPop = PopWindowView.generate(mContext) {
                 mLayoutId = R.layout.view_list_fun
                 mViewModel = ModelMgr.getListItemModelInstance(mContext)
                 build()
-            })
+            }
             ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
             ModelMgr.getListItemModelInstance(mContext).mBean = b
             mFunPop?.showAsDropDown(v)
-        })
+        }
         picAdapter.setWidth(width)
         rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv.adapter = picAdapter
@@ -360,7 +371,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         var vidAdapter = MyVideoAdapter(mContext,{b, pos ->
             if (isFastClick())return@MyVideoAdapter
             CtrlAction.setPlayPlayback(mContext)
-            ThreadUtil.cachedThreadStart({
+            ThreadUtil.cachedThreadStart {
                 ModelMgr.getMainCtrlModelInstance(mContext).stopRecording()
                 ModelMgr.getPlayViewModelInstance(mContext).stopView()
                 Thread.sleep(500)
@@ -368,17 +379,17 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 ModelMgr.getPlayViewModelInstance(mContext).setUrl(b.path)
                 ModelMgr.getPlayViewModelInstance(mContext).setVideoPlayCurIndex(pos)
                 ModelMgr.getPlayViewModelInstance(mContext).playView()
-            })
-        },{v, b, _ ->
-            mFunPop = PopWindowView.generate(mContext,{
+            }
+        }) { v, b, _ ->
+            mFunPop = PopWindowView.generate(mContext) {
                 mLayoutId = R.layout.view_list_fun
                 mViewModel = ModelMgr.getListItemModelInstance(mContext)
                 build()
-            })
+            }
             ModelMgr.getListItemModelInstance(mContext).mPop  = mFunPop
             ModelMgr.getListItemModelInstance(mContext).mBean = b
             mFunPop?.showAsDropDown(v)
-        })
+        }
 
         v.layoutManager = LinearLayoutManager(mContext)
         v.adapter = vidAdapter
@@ -429,6 +440,8 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 ModelMgr.getPlayViewModelInstance(mContext).stopView()
                 Thread.sleep(500)
                 ModelMgr.getPlayViewModelInstance(mContext).initRemotePlay(b.beg,b.end)
+                //show
+
                 ModelMgr.getPlayViewModelInstance(mContext).setRemotePlayCurIndex(pos) }
 
 

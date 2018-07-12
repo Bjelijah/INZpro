@@ -65,7 +65,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+        >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -75,6 +76,7 @@
                 android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+
                 >
 
                 <!--android:src="@drawable/ic_volume_white"-->
@@ -91,9 +93,9 @@
                     android:text="@{vm.MReplayName}"
                     android:textColor="@color/white_highlight"
                     android:textSize="@dimen/replay_ctrl_text_size"
-                    android:layout_marginLeft="@dimen/replay_ctrl_text_margin"
-                    />
 
+                    />
+                <!--android:layout_marginLeft="@dimen/replay_ctrl_text_margin"-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -182,6 +184,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+
                 >
                 <ImageView
                     android:layout_width="wrap_content"

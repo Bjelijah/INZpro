@@ -147,6 +147,7 @@ class ApPlayer :BasePlayer(){
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    Log.i("123", "play back isSub=$isSub")
                     mIsSub = isSub
                     ApiManager.getInstance().aPcamService.playback(isSub,beg,end)
                     sendPlayResult(it)

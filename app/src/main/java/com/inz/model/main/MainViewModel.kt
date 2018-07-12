@@ -27,16 +27,19 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
         mContext = c
     }
 
-     fun setFullScreen(b: Boolean) {
+     fun setFullScreen(b: Boolean,isShowReplayCtrl:Boolean) {
         if(b){
             Log.i("123","main view model set full")
-            mCtrlVisibility.set(View.GONE)
-            mReplayListVisibility.set(View.GONE)
+            mCtrlVisibility.set(View.GONE)//主控按钮
+            mReplayListVisibility.set(View.GONE)//列表
+            mReplayCtrlVisibility.set(View.GONE)
 //            mPlayViewWidth.set(ViewGroup.LayoutParams.MATCH_PARENT)
 //            mPlayViewHeight.set(ViewGroup.LayoutParams.MATCH_PARENT)
         }else{
+            Log.i("123","main view model set small  isShow=$isShowReplayCtrl")
             mReplayListVisibility.set(View.VISIBLE)
             mCtrlVisibility.set(View.VISIBLE)
+            mReplayCtrlVisibility.set(if (isShowReplayCtrl)View.VISIBLE else View.GONE)
 //            mPlayViewWidth.set(0)
 //            mPlayViewHeight.set(ViewGroup.LayoutParams.WRAP_CONTENT)
         }
@@ -44,6 +47,11 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
 
     fun setIsPlayReview(b:Boolean){
         mIsPlayBack = !b
+
+    }
+
+    fun showReplayCtrl(b:Boolean){
+        mReplayCtrlVisibility.set(if (b)View.VISIBLE else View.GONE)
     }
 
     override fun onCreate() {
@@ -51,6 +59,8 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
         FileUtil.initFileDir(mContext)
         ApiManager.getInstance().setJNILogEnable(true)
         //permission
+
+
 
     }
 
@@ -62,7 +72,7 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
 
     val mCtrlVisibility       = ObservableField<Int>(View.VISIBLE)
     val mReplayListVisibility = ObservableField<Int>(View.VISIBLE)
-
+    val mReplayCtrlVisibility = ObservableField<Int>(View.GONE)
     val mRecordText           = ObservableField<String>(mContext.getString(R.string.ctrl_record))
 
 

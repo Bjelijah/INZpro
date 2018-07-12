@@ -39,10 +39,9 @@
     </style>
 
 
-
     <style name="MyToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="colorControlNormal">@color/white_highlight</item>
-        <item name="android:actionBarSize">@dimen/big_image_toolbar_height</item>
+        <!--<item name="android:actionBarSize">@dimen/big_image_toolbar_height</item>-->
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white</item>
     </style>
 
