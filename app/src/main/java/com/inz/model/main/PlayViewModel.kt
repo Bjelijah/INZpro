@@ -84,7 +84,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     }
                     else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
                 },{files->//todo 远程回放列表
-                    Log.i("123","on mVideoSource Arr  upDateRemoteListState")
+//                    Log.i("123","on mVideoSource Arr  upDateRemoteListState")
                     mVideoSourceArr = files
                     mVideoIndex = 0
                     ModelMgr.getPlayListModelInstance(mContext).onUpDateRemoteListState(files as ArrayList<RemoteBean>)

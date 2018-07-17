@@ -427,7 +427,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     }
 
     fun upDateVideoListState(){
-        Log.i("123","update picture list state")
+//        Log.i("123","update picture list state")
         mUpdateVideoList.set(true)
     }
 
@@ -462,7 +462,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     fun updataRemoteList(v:RecyclerView){
         //远程获取
-        Log.i("123","upDataRemoteList    set false   mRemoteList=$mRemoteList")
+//        Log.i("123","upDataRemoteList    set false   mRemoteList=$mRemoteList")
         (v.adapter as MyRemoteAdapter).setData(mRemoteList)
         mUpdateRemoteList.set(false)
     }
@@ -475,7 +475,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     }
 
     fun onUpDateRemoteListState(f:ArrayList<RemoteBean>){
-        Log.i("123","onUpdateRemoteList state  set true")
+//        Log.i("123","onUpdateRemoteList state  set true")
         mRemoteList = f
         mUpdateRemoteList.set(true)
     }
