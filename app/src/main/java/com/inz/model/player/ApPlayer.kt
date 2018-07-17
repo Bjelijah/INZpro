@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit
 class ApPlayer :BasePlayer(){
     var mIsAlarmEnable = false
     var mIsSub = false
+    var mAlarmToast:Toast ?= null
     @Volatile private var mIsReLinking   = false
     override fun pause(): BasePlayer {
         ApiManager.getInstance().aPcamService
@@ -61,15 +62,18 @@ class ApPlayer :BasePlayer(){
                             object :HWPlayApi.IAPCamCB{
                                 override fun onRecordFileList(files: ArrayList<ReplayFile>?) {
                                     val l = ArrayList<BaseBean>()
+                                    Log.i("123","size=${files?.size}    l=$files")
 //                                    Log.i("123","files=$files")
                                     files?.forEach {it ->
-                                        var begStr = String.format("%04d-%02d-%02d %02d:%02d:%02d",
-                                                it.begYear,it.begMonth,it.begDay,it.begHour,it.begMin,it.begSec)
+                                        try {
+                                            var begStr = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+                                                    it.begYear, it.begMonth, it.begDay, it.begHour, it.begMin, it.begSec)
 
-                                        var endStr = String.format("%04d-%02d-%02d %02d:%02d:%02d",
-                                                it.endYear,it.endMonth,it.endDay,it.endHour,it.endMin,it.endSec)
-                                        var name = begStr
-                                        l.add(RemoteBean(name,begStr,endStr))
+                                            var endStr = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+                                                    it.endYear, it.endMonth, it.endDay, it.endHour, it.endMin, it.endSec)
+                                            var name = begStr
+                                            l.add(RemoteBean(name, begStr, endStr))
+                                        }catch (e:Exception){e.printStackTrace()}
                                     }
                                     sendRecordFileListResult(l)
                                 }
@@ -84,12 +88,14 @@ class ApPlayer :BasePlayer(){
                                     r.play()
 
                                     Observable.timer(1,TimeUnit.SECONDS)
-                                            .subscribe({r.stop()})
-                                    RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Void>(){
-                                        override fun doTask() {
-                                            Toast.makeText(ModelMgr.mContext,ModelMgr.mContext?.getString(R.string.alarm_msg_text)?:"收到报警！",Toast.LENGTH_SHORT).show()
-                                        }
-                                    })
+                                            .subscribe {r.stop()}
+//                                    RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Void>(){
+//                                        override fun doTask() {
+//                                            mAlarmToast?.cancel()
+//                                            mAlarmToast = Toast.makeText(ModelMgr.mContext,ModelMgr.mContext?.getString(R.string.alarm_msg_text)?:"收到报警！",Toast.LENGTH_SHORT)
+//                                            mAlarmToast?.show()
+//                                        }
+//                                    })
 
 
                                 }
@@ -104,6 +110,7 @@ class ApPlayer :BasePlayer(){
                     sendInitResult(isSuccess)
 
                 },{e-> e.printStackTrace()
+
                 })
         return this
     }
@@ -169,6 +176,7 @@ class ApPlayer :BasePlayer(){
 //            }
 //            if (mIsAlarmEnable)JniUtil.netRegistAlarm()
 //            ApiManager.getInstance().aPcamService.play(mIsSub)
+            ApiManager.getInstance().aPcamService.setUri(Config.CAM_IP)
             ApiManager.getInstance().aPcamService.reLink(mIsSub,"","")
             if (mIsAlarmEnable)JniUtil.netRegistAlarm()
 

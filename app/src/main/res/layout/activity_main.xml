@@ -2,20 +2,22 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     >
     <data>
         <variable
             name="vm"
             type="com.inz.model.main.MainViewModel"/>
     </data>
-
+    <!--main_bk_light-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:background="@color/main_bk_light"
-
+            android:clipChildren="false"
+            android:clipToPadding="false"
             >
             <!--app:vm="@{vm}"-->
 
@@ -25,7 +27,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:orientation="vertical"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 >
+                <!--app:vm = "@{vm}"-->
+
+                <android.support.v4.widget.Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp" />
 
                 <include
                     android:id="@+id/layout_view"
@@ -34,9 +43,8 @@
                     android:layout_weight="9"
                     layout="@layout/layout_view"
                     app:vm = "@{vm}"
-                    app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
-                    app:duration_action_down="@{300}"
-
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     />
                 <!--app:vm = "@{vm}"-->
                 <!--app:visible_action_big="@{true}"-->
@@ -53,13 +61,13 @@
                     android:layout_weight="1"
                     android:layout_alignParentBottom="true"
                     layout="@layout/layout_ctrl"
-                    android:visibility="@{vm.MCtrlVisibility}"
-
-                    app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
-                    app:duration_action_down="@{300}"
-
+                android:visibility="@{vm.MCtrlVisibility}"
+                app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
+                app:duration_action_down="@{300}"
                     />
-
+                <!--android:visibility="@{vm.MCtrlVisibility}"-->
+                <!--app:visible_action_down = "@{vm.MCtrlVisibilityShow}"-->
+                <!--app:duration_action_down="@{300}"-->
 
 
                 <!--app:layout_width="@{vm.MPlayViewWidth}"-->
@@ -73,11 +81,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 layout="@layout/layout_list"
-                android:visibility="@{vm.mReplayListVisibility}"
-                app:visible_action_right = "@{vm.MCtrlVisibilityShow}"
-                app:duration_action_right="@{300}"
+            android:visibility="@{vm.mReplayListVisibility}"
+            app:visible_action_right = "@{vm.MCtrlVisibilityShow}"
+            app:duration_action_right="@{300}"
                 />
-
+            <!--android:visibility="@{vm.mReplayListVisibility}"-->
+            <!--app:visible_action_right = "@{vm.MCtrlVisibilityShow}"-->
+            <!--app:duration_action_right="@{300}"-->
 
         </LinearLayout>
 </layout>

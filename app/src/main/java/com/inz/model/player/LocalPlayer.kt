@@ -104,7 +104,7 @@ class LocalPlayer :BasePlayer() {
     override fun getCurFrame(): Int = ApiManager.getInstance().localService.curFrame
 
     override fun setCurFrame(curFrame: Int) {
-        ApiManager.getInstance().localService.clearStreamBuf()
+//        ApiManager.getInstance().localService.clearStreamBuf()
         ApiManager.getInstance().localService.curFrame = curFrame
     }
 

@@ -47,6 +47,7 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
     val mProcess     = ObservableField<Int>(0)
     val mProcessMax  = ObservableField<Int>(0)
     val mVisibility  = ObservableField<Int>(View.GONE)
+    val mCatchVisibility = ObservableField<Int>(View.INVISIBLE)
 
     val onClickReplaySound = View.OnClickListener { v ->
         DebugLog.LogE("onClickReplaySound   "+mSoundVol+"  "+mSoundVol?.isShowing)
@@ -107,14 +108,19 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
 //        ModelMgr.getPlayViewModelInstance(mContext).set2LocalFrame(sb.progress)
         ModelMgr.getPlayViewModelInstance(mContext).pause()
         var pos =if (sb.max!=0)sb.progress *100 / sb.max else 0
-        Log.e("123","set pos pos=$pos")
+        Log.e("123","set pos pos=$pos     progress=${sb.progress}   max=${sb.max} ")
         ModelMgr.getPlayViewModelInstance(mContext).set2LocalPos(pos,sb.progress)
         ModelMgr.getPlayViewModelInstance(mContext).setScheduledFlag(true,400)
 
         mIsUser = false
     }
 
-
+    fun getPos():Int{
+        var p:Int = mProcess.get()?:0
+        var m:Int = mProcessMax.get()?:1
+        var ret = p *100/m
+        return if(ret>100) 100 else ret
+    }
 
 
     fun initUi(){
@@ -215,5 +221,9 @@ class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
         }
         mLastClickTime = curClickTime
         return flag
+    }
+
+    fun setIsCatchShow(b:Boolean){
+        mCatchVisibility.set(if (b) View.VISIBLE else View.INVISIBLE)
     }
 }

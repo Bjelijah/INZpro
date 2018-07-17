@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:visibility="@{vm.MReplayCtrlVisibility}"
             android:layout_gravity="bottom"
-            android:alpha="0.3"
+            android:alpha="0.5"
             >
             <fragment
                 android:id="@+id/fragment_replay_ctrl"

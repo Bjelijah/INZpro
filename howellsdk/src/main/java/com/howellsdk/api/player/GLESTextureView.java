@@ -89,7 +89,8 @@ public class GLESTextureView extends TextureView implements TextureView.SurfaceT
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        Log.i("123","onTextureSizeChanged");
+
+        Log.i("123","onTextureSizeChanged   width="+width+"   height="+height);
         mGLThread.onSurfaceChanged(width, height);
     }
 

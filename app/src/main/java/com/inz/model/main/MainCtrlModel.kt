@@ -112,8 +112,10 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
     fun setIsPlayReView(b:Boolean){
-        mCatchBtnVisibility.set(if(b)View.INVISIBLE else View.VISIBLE)
+//        mCatchBtnVisibility.set(if(b)View.INVISIBLE else View.VISIBLE)
     }
-
+    fun setIsShowCatch(b:Boolean){
+        mCatchBtnVisibility.set(if(b)View.VISIBLE else View.INVISIBLE)
+    }
 
 }

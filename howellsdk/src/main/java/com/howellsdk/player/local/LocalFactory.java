@@ -123,6 +123,7 @@ public class LocalFactory {
 
         @Override
         public void setPos(int pos) {
+            Log.i("123","setpos "+pos);
             JniUtil.setPos(pos);
         }
 

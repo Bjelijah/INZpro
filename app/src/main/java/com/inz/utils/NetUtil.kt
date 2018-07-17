@@ -3,8 +3,11 @@ package com.inz.utils
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
 import android.util.Log
+import java.net.InetAddress
+import java.net.NetworkInterface
 
 object NetUtil {
 
@@ -69,5 +72,40 @@ object NetUtil {
         }
         return false
     }
+
+    private fun int2Ip(ipAddress:Int):String =
+         "${ipAddress and 0xFF}.${ipAddress shr 8 and 0xFF}" +
+         ".${ipAddress shr 16 and 0xFF}.${ipAddress shr 24 and 0xFF}"
+
+    private fun getIpAddress():String{
+        var netWorkInterface : NetworkInterface ?= null
+        var inetAddress:InetAddress ?= null
+        var en  = NetworkInterface.getNetworkInterfaces()
+        while (en.hasMoreElements()){
+            netWorkInterface = en.nextElement()
+            var enumIpAddr = netWorkInterface.inetAddresses
+            while (enumIpAddr.hasMoreElements()){
+                inetAddress = enumIpAddr.nextElement()
+                if (!inetAddress.isLoopbackAddress && !inetAddress.isLinkLocalAddress){
+                    return inetAddress.hostAddress
+                }
+            }
+        }
+        return ""
+    }
+
+
+    fun getIpAddress(c:Context):String{
+        val wifiManager = c.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        return if (wifiManager.isWifiEnabled){
+            val wifiInfo = wifiManager.connectionInfo
+            val ipAddress = wifiInfo.ipAddress
+            Log.i("123","ipAddress=$ipAddress")
+            int2Ip(ipAddress)
+        }else{
+            getIpAddress()
+        }
+    }
+
 
 }

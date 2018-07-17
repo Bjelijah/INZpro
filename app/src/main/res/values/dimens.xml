@@ -16,11 +16,12 @@
 
 
     <!-- layout_replay_ctrl -->
-    <dimen name="replay_ctrl_padding">7dp</dimen>
+    <dimen name="replay_ctrl_padding">5dp</dimen>
     <dimen name="replay_ctrl_padding_height">7dp</dimen>
     <dimen name="replay_ctrl_text_margin">5dp</dimen>
     <dimen name="replay_ctrl_fun_margin">12dp</dimen>
     <dimen name="replay_ctrl_text_size">16sp</dimen>
+    <dimen name="replay_ctrl_text_info_size">14sp</dimen>
     <dimen name="replay_ctrl_seekbar_padding_vertical">5dp</dimen>
     <dimen name="replay_ctrl_seekbar_padding_horizontal">9dp</dimen>
     <dimen name="replay_ctrl_seekbar_margin">0dp</dimen>

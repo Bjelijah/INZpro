@@ -84,6 +84,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     }
                     else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
                 },{files->//todo 远程回放列表
+                    Log.i("123","on mVideoSource Arr  upDateRemoteListState")
                     mVideoSourceArr = files
                     mVideoIndex = 0
                     ModelMgr.getPlayListModelInstance(mContext).onUpDateRemoteListState(files as ArrayList<RemoteBean>)
@@ -108,6 +109,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     startTimeTask(ApiManager.getInstance().aPcamService)
                     mPlaySpeedIndex = 2
                 },{//stop
+                    Log.i("123","init remote we get stop")
                     stopNewTask()
                     stopTimeTask()
                 },{b->//catchPicture
@@ -135,6 +137,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     nowPlayState = CtrlAction.PLAY_MODE_LOCAL_REPLAY
                     initInfoLocal()
                     stopTimeTask()
+                    Log.e("123","init local play startTimeTask")
                     startTimeTask(ApiManager.getInstance().localService)
                     mPlaySpeedIndex = 2
                 },{
@@ -179,6 +182,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotaltime.toInt())
                 ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setEndTime(mEndTime)
+                ModelMgr.getReplayCtrlModelInstance(mContext).setIsCatchShow(true)
                 stopNewTask()
                 setScheduledFlag(true,0)
                 newTimeTask(ApiManager.getInstance().aPcamService)
@@ -194,6 +198,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun initInfoLocal(){
         if (nowPlayState != CtrlAction.PLAY_MODE_LOCAL_REPLAY)return
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
+        ModelMgr.getReplayCtrlModelInstance(mContext).setIsCatchShow(false)
         showReplayCtrl(true)
         RxUtil.doRxTask(object :RxUtil.CommonTask<Long>(1000){
 
@@ -204,6 +209,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 Log.i("123","~~~~~~~~~start sleep")
                 Thread.sleep(t)
                 mTotalFrame = mPlayer?.getTotalFrame()?:100
+                Log.i("123","totalFrame=$mTotalFrame")
                 mName = when(Config.CAM_Crypto){
                     0->"H264"
                     1->"H265"
@@ -223,6 +229,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 ModelMgr.getReplayCtrlModelInstance(mContext).setSBMax(mTotalFrame)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setName(mName)
                 ModelMgr.getReplayCtrlModelInstance(mContext).setEndTime(mEndTime)
+
                 stopNewTask()
                 setScheduledFlag(true,0)
                 newTimeTask(ApiManager.getInstance().localService)
@@ -244,11 +251,12 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun set2LocalPos(pos:Int,progress:Int){
-
         RxUtil.doInIOTthread(object :RxUtil.RxSimpleTask<Void>(){
             override fun doTask() {
                 if(nowPlayState==CtrlAction.PLAY_MODE_LOCAL_REPLAY) {
+                    Log.i("123","set  localpos=$pos  setCurFrame=$progress")
                     mPlayer?.setPos(pos)
+//                    mPlayer?.setCurFrame(progress)
                 }else if(nowPlayState == CtrlAction.PLAY_MODE_REMOTE_REPLAY){
                     Log.i("123","set 2 LocalPos=$progress")
                     mRemoteOffset = progress
@@ -305,7 +313,11 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             mPlayer?.pause()
         }else{
             mPlayer?.pause()
+
+//            mPlayer?.stop()
+
             reLinkRemoteView()
+//            newTimeTask(ApiManager.getInstance().aPcamService)
         }
     }
 
@@ -350,7 +362,8 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
 
         mPlayer?.unregistPlayStateListener()
         mPlayer?.stop()
-
+        stopTimeTask()//case we unregistListener
+        stopNewTask()
     }
 
     val mGestureDetector = GestureDetector(mContext,object :GestureDetector.SimpleOnGestureListener(){
@@ -480,6 +493,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         ThreadUtil.scheduledSingleThreadStart({
             var bWait = true
             var streamLen = server.streamLen
+
             if(streamLen!=0){
                 bWait = false
                 mWaiteNum = 0
@@ -489,8 +503,14 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                     bWait = true
                     if (!mIsPlayback) {
                         reLinkPlayView()
-                    }else if(nowPlayState==CtrlAction.PLAY_MODE_REMOTE_REPLAY && mPlayer?.isPause()==false){
+                    }else if(nowPlayState==CtrlAction.PLAY_MODE_REMOTE_REPLAY && mPlayer?.isPause()==false
+                            && ModelMgr.getReplayCtrlModelInstance(mContext).getPos()<100){//play pos
+                        Log.i("123","reLinkRemoteView")
                         reLinkRemoteView()
+                    }else if(nowPlayState==CtrlAction.PLAY_MODE_REMOTE_REPLAY && mPlayer?.isPause()==false
+                            &&ModelMgr.getReplayCtrlModelInstance(mContext).getPos()>=100){
+                        Log.i("123","pos>100 stopview   ")
+                        stopTimeTask()
                     }
                     mWaiteNum = 0
                 }
@@ -519,7 +539,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun newTimeTask(server:HWPlayApi){
         Log.i("123","new time task")
         ThreadUtil.scheduledThreadStart({
-            //            Log.i("123","new  scheduled task")
+//                        Log.i("123","new  scheduled task running flag=$mScheduledFlag")
             if (mScheduledFlag){
                 when (nowPlayState){
                     CtrlAction.PLAY_MODE_LOCAL_REPLAY -> onScheduled(server.curFrame, Utils.formatMsec(server.playedMsec.toLong()))
@@ -531,6 +551,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
     fun stopNewTask(){
+        Log.e("123","stop new task")
         ThreadUtil.scheduledThreadShutDown()
     }
 

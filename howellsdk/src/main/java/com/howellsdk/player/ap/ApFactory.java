@@ -156,6 +156,12 @@ public class ApFactory {
         }
 
         @Override
+        public void setUri(String uri) {
+            super.setUri(uri);
+            ip = uri;
+        }
+
+        @Override
         public void reLink(boolean isSub, @Nullable String begTime, @Nullable String endTime) {
             //stop
             Log.i("123","reLink");

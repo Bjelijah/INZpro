@@ -214,11 +214,13 @@ object BinderHelper {
     fun setVisibleActionBig(v:View,bShow:Boolean,va:Long){
         var action:ScaleAnimation?=null
         if (bShow){
-            action = ScaleAnimation(0f,1f,0f,1f,0f,0f)
+            Log.i("123","show big")
+            action = ScaleAnimation(1f,4/3f,1f,10/9f,0f,0f)
             action.duration = va
             v.startAnimation(action)
         }else{
-            action = ScaleAnimation(1f,0f,1f,0f,0f,0f)
+            Log.i("123","show small")
+            action = ScaleAnimation(1f,3/4f,1f,9/10f,0f,0f)
             action.duration = va
             v.startAnimation(action)
         }

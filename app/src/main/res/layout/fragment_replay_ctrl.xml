@@ -49,7 +49,8 @@
                 android:textSize="@dimen/replay_ctrl_text_size"
                 android:textColor="@color/white_highlight"
                 android:layout_centerHorizontal="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/replay_ctrl_text_margin"/>
 
             <TextView
                 android:id="@+id/replay_ctrl_end"
@@ -60,6 +61,7 @@
                 android:textColor="@color/white_highlight"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/replay_ctrl_text_margin"
                 />
         </RelativeLayout>
 
@@ -92,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{vm.MReplayName}"
                     android:textColor="@color/white_highlight"
-                    android:textSize="@dimen/replay_ctrl_text_size"
+                    android:textSize="@dimen/replay_ctrl_text_info_size"
 
                     />
                 <!--android:layout_marginLeft="@dimen/replay_ctrl_text_margin"-->
@@ -101,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{vm.MReplaySpeed}"
                     android:textColor="@color/white_highlight"
-                    android:textSize="@dimen/replay_ctrl_text_size"
+                    android:textSize="@dimen/replay_ctrl_text_info_size"
                     android:layout_marginLeft="@dimen/replay_ctrl_text_margin"
                     />
 
@@ -191,7 +193,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/replay_ctrl_catch"
                     android:clickable="true"
-                    android:onClick="@{vm.onClickReplayCatch}"/>
+                    android:onClick="@{vm.onClickReplayCatch}"
+                    android:visibility="@{vm.mCatchVisibility}"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
