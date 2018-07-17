@@ -29,6 +29,7 @@ class GLESTVThread extends Thread {
     private static final String TAG = "GLESTVThread";
     private SurfaceTexture mSurfaceTexture;
     private EGL10 mEgl;
+
     private EGLDisplay mEglDisplay = EGL10.EGL_NO_DISPLAY;// 显示设备
     private EGLSurface mEglSurface = EGL10.EGL_NO_SURFACE;
     private EGLContext mEglContext = EGL10.EGL_NO_CONTEXT;
@@ -53,9 +54,10 @@ class GLESTVThread extends Thread {
         mRenderer.onSurfaceCreated();
         while (mNeedRenderring) {
             mRenderer.onDrawFrame();// 绘制
-            mPendingThreadAider.runPendings();// 执行未执行的，或要执行的事件。（后期可以开放以便模仿GLSurfaceView的queueEvent(Runnable r)）
             // 一帧完成之后，调用eglSwapBuffers(EGLDisplay dpy, EGLContext ctx)来显示
             mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);// 这一句不能少啊，少了就GG了，一片空白
+            mPendingThreadAider.runPendings();// 执行未执行的，或要执行的事件。（后期可以开放以便模仿GLSurfaceView的queueEvent(Runnable r)）
+
             // 1.凡是onPause都要停止，2.如果是onResume的状态，如果是循环刷新则会继续下一次循环，否则会暂停等待调用requestRender()
             if (mIsPaused) {
                 pauseWhile();
