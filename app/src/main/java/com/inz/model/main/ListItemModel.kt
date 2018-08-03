@@ -114,7 +114,7 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
 
     val onClickConvert = Action {
         mPop?.dismiss()
-        ThreadUtil.cachedThreadStart({
+        ThreadUtil.cachedThreadStart {
             var path = mBean?.path
             var hwPath = path!!
             var p = path?.split(".")
@@ -128,7 +128,7 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
 
             JniUtil.hwFile2mp4File(hwPath,mp4Path)
 
-        })
+        }
 
     }
 

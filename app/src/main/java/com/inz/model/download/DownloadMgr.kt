@@ -42,7 +42,7 @@ class DownloadMgr {
     fun stepTask(){
         startFlag = true
         timeTaskStart()
-        task = ThreadUtil.newCachedThreadStart({
+        task = ThreadUtil.newCachedThreadStart {
             while (startFlag){
                 FileUtil.deleteLastFileIfSpaceLimit(FileUtil.FILE_VIDEO_PATH,Config.FILE_DIR_VIDEO_SIZE,Config.FILE_DIR_LIMITE)
                 var path = FileUtil.createNewVideoDirPathName(if(Config.DOWN_WH_STREAM)0 else 1)
@@ -57,7 +57,7 @@ class DownloadMgr {
                 Log.e("123","thread new cached stop download")
                 Thread.sleep(100)
             }
-        })
+        }
     }
 
     fun stepStop(){

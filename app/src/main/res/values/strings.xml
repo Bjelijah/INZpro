@@ -8,6 +8,7 @@
     <string name="ctrl_record">录像</string>
     <string name="ctrl_record_stop">停止录像</string>
     <string name="ctrl_catch">拍照</string>
+    <string name="ctrl_setting">设置</string>
 
     <string name="play_list_title_record">录像</string>
     <string name="play_list_title_remote">高清视频</string>
@@ -40,4 +41,9 @@
 
     <string name="step_next_error">单步进失败！！</string>
     <string name="step_last_error">单步退失败！！</string>
+
+    <string name="setting_title">设置</string>
+    <string name="setting_ssid_name">WIFI名称：</string>
+    <string name="setting_ssid_pwd">WIFI密码：</string>
+    <string name="setting_last_btn">显示上一次</string>
 </resources>

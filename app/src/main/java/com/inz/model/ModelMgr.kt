@@ -18,6 +18,7 @@ object ModelMgr {
     var mDownloadMgr:DownloadMgr            ?=null
     var mListItemModel:ListItemModel        ?=null
     var mMainCtrlModel:MainCtrlModel        ?=null
+    var mSettingModel:SettingModel          ?=null
     fun init(c:Context){
         mContext = c
     }
@@ -100,4 +101,13 @@ object ModelMgr {
         }
         return mMainCtrlModel!!
     }
+    fun getSettingModelInstance(c:Context):SettingModel{
+        if(mSettingModel==null){
+            mSettingModel = SettingModel(c)
+        }else{
+            mSettingModel?.setContext(c)
+        }
+        return mSettingModel!!
+    }
+
 }

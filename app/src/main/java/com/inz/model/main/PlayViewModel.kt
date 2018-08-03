@@ -150,6 +150,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun initInfoRemote(beg:String,end:String){
         if (nowPlayState != CtrlAction.PLAY_MODE_REMOTE_REPLAY)return
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(true)
+        ModelMgr.getMainCtrlModelInstance(mContext).setIsShowRecord(false)
         showReplayCtrl(false)
         RxUtil.doRxTask(object :RxUtil.CommonTask<Void>(){
             var mTotaltime = 0L
@@ -186,12 +187,14 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 stopNewTask()
                 setScheduledFlag(true,0)
                 newTimeTask(ApiManager.getInstance().aPcamService)
+                mProcessVisibility.set(View.GONE)
             }
         })
     }
 
     fun initInfoAp(){
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
+        ModelMgr.getMainCtrlModelInstance(mContext).setIsShowRecord(true)
         showReplayCtrl(false)
     }
 
@@ -199,6 +202,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         if (nowPlayState != CtrlAction.PLAY_MODE_LOCAL_REPLAY)return
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
         ModelMgr.getReplayCtrlModelInstance(mContext).setIsCatchShow(false)
+        ModelMgr.getMainCtrlModelInstance(mContext).setIsShowRecord(false)
         showReplayCtrl(true)
         RxUtil.doRxTask(object :RxUtil.CommonTask<Long>(1000){
 
@@ -233,6 +237,7 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 stopNewTask()
                 setScheduledFlag(true,0)
                 newTimeTask(ApiManager.getInstance().localService)
+                mProcessVisibility.set(View.GONE)
             }
 
         })

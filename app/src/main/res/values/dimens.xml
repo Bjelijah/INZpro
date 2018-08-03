@@ -68,4 +68,7 @@
     <dimen name="play_record_show_margin">10dp</dimen>
     <dimen name="play_record_show_text_size">18sp</dimen>
     <dimen name="play_record_show_text_margin">5dp</dimen>
+    <!-- setting-->
+    <dimen name="setting_padding_vertical">10dp</dimen>
+    <dimen name="setting_padding_horizontal">40dp</dimen>
 </resources>

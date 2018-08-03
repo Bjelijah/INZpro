@@ -1,5 +1,6 @@
 package com.inz.inzpro
 
+import android.app.Dialog
 import android.databinding.BindingAdapter
 import android.databinding.BindingConversion
 import android.databinding.ViewDataBinding
@@ -56,7 +57,7 @@ object BinderHelper {
     @BindingAdapter("onTouchListener")
     @JvmStatic
     fun setOnTouchListener(v:View,b:Boolean){
-        v.setOnTouchListener({
+        v.setOnTouchListener {
             v,event->
             var res = false
             when(v.id){
@@ -65,7 +66,7 @@ object BinderHelper {
                 }
             }
             res
-        })
+        }
     }
 
     @BindingAdapter("layout_width")
