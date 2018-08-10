@@ -71,4 +71,7 @@
     <!-- setting-->
     <dimen name="setting_padding_vertical">10dp</dimen>
     <dimen name="setting_padding_horizontal">40dp</dimen>
+
+    <dimen name="password_text_padding">20dp</dimen>
+
 </resources>

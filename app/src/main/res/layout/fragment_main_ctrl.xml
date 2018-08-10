@@ -17,7 +17,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
        >
-
+        <android.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -28,14 +31,6 @@
             android:onClick="@{vm.onClickSetting}"
             android:visibility="visible"
             />
-
-
-
-        <android.widget.Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"/>
-
 
         <Button
             android:layout_width="0dp"

@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import com.inz.action.Config
 import com.inz.action.CtrlAction
+import com.inz.activity.view.DialogView
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
@@ -55,13 +56,14 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
     val onClickSetting         = Action {
         Log.i("123","on click setting")
-//        mDialog = DialogView.generate(mContext) {
-//            mLayoutId = R.layout.view_dialog_setting
-//            mViewModel = ModelMgr.getSettingModelInstance(mContext)
-//            mTitle = mContext.getString(R.string.setting_title)
-//            build()
-//        }
-//        mDialog?.show()
+
+        mDialog = DialogView.generate(mContext) {
+            mLayoutId = R.layout.view_dialog_password
+            mViewModel = ModelMgr.getSettingModelInstance(mContext)
+            mTitle = mContext.getString(R.string.setting_title)
+            build()
+        }
+        mDialog?.show()
 
 
 

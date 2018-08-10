@@ -24,9 +24,12 @@ class DialogView(val mContext: Context):BaseView() {
         val v = bindView(mContext)
         return AlertDialog.Builder(mContext)
                 .setView(v)
-                .setTitle(mTitle)
+//                .setTitle(mTitle)
                 .setCancelable(true)
-                .setOnDismissListener { unBindView() }
+                .setOnDismissListener {
+                    //cancel
+                    unBindView()
+                }
                 .create()
     }
 

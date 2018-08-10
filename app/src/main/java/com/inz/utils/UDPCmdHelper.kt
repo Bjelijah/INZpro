@@ -31,6 +31,26 @@ object UDPCmdHelper {
     fun getDHCPMask():ByteArray="nvram_get 2860 dhcpMask\n".toByteArray()
     fun setDHCPGateway(ip:String):ByteArray ="nvram_set 2860 dhcpGateway $ip\n".toByteArray()
     fun getDHCPGateway():ByteArray="nvram_get 2860 dhcpGateway\n".toByteArray()
+    fun reboot():ByteArray="reboot\n".toByteArray()
+    fun setWANStatic():ByteArray="nvram_set 2860 wanConnectionMode STATIC\n".toByteArray()
+    fun setWANDHCP():ByteArray="nvram_set 2860 wanConnectionMode DHCP\n".toByteArray()
+    fun getWANMode():ByteArray="nvram_get 2860 wanConnectionMode\n".toByteArray()
+    fun setWANIp(ip:String):ByteArray="nvram_set 2860 wan_ipaddr $ip\n".toByteArray()
+    fun getWANIp():ByteArray="nvram_get 2860 wan_ipaddr\n".toByteArray()
+    fun setWANNetmask(mask:String):ByteArray="nvram_set 2860 wan_netmask $mask\n".toByteArray()
+    fun getWANNetmask():ByteArray="nvram_get 2860 wan_netmask\n".toByteArray()
+    fun setWANGateway(gateway:String):ByteArray="nvram_set 2860 wan_gateway $gateway\n".toByteArray()
+    fun getWANGateway():ByteArray="nvram_get 2860 wan_gateway\n".toByteArray()
+    fun setWANDns(dns:String):ByteArray="nvram_set 2860 wan_primary_dns $dns\n".toByteArray()
+    fun getWANDns():ByteArray="nvram_get 2860 wan_primary_dns\n".toByteArray()
+    fun setWANSecondaryDNS(dns:String):ByteArray="nvram_set 2860 wan_secondary_dns $dns\n".toByteArray()
+    fun getWANSecondaryDNS():ByteArray="nvram_get 2860 wan_secondary_dns\n".toByteArray()
+    fun setPortEnable():ByteArray="nvram_set 2860 PortForwardEnable 1\n".toByteArray()
+    fun setPortDisable():ByteArray="nvram_set 2860 PortForwardEnable 0\n".toByteArray()
+    fun getPortEnable():ByteArray="nvram_get 2860 PortForwardEnable\n".toByteArray()
+    fun getPortRules():ByteArray="nvram_get 2860 PortForwardRules\n".toByteArray()
+
+
 
 
 
