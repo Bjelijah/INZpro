@@ -3,6 +3,7 @@ package com.inz.model
 import android.content.Context
 import com.inz.model.download.DownloadMgr
 import com.inz.model.main.*
+import com.inz.model.net.PtzMgr
 import com.inz.model.player.ApPlayer
 import com.inz.model.player.LocalPlayer
 
@@ -19,6 +20,8 @@ object ModelMgr {
     var mListItemModel:ListItemModel        ?=null
     var mMainCtrlModel:MainCtrlModel        ?=null
     var mSettingModel:SettingModel          ?=null
+    var mPtzCtrlModel:PtzCtrlModel          ?=null
+
     fun init(c:Context){
         mContext = c
     }
@@ -109,5 +112,12 @@ object ModelMgr {
         }
         return mSettingModel!!
     }
-
+    fun getPtzCtrlModelInstance(c:Context):PtzCtrlModel{
+        if(mPtzCtrlModel==null){
+            mPtzCtrlModel=PtzCtrlModel(c)
+        }else{
+            mPtzCtrlModel?.setCOntext(c)
+        }
+        return mPtzCtrlModel!!
+    }
 }

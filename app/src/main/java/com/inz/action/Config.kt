@@ -9,12 +9,16 @@ object Config {
     val AP   = 0x01
     val TURN = 0x02
 
+    val SHOW_REMOTE_CONTROL = true
+
 //
 
     val playType        = AP
 //    val CAM_IP              = "192.168.3.7"
 //    val CAM_IP              = "192.168.18.104"
-    var CAM_IP              = "192.168.1.100"
+//    var CAM_IP              = "192.168.1.100"
+    var CAM_IP              = "192.168.18.156"
+    var CAM_GATEWAY         = "192.168.1.36"
     val CAM_SLOT            = 0
     val CAM_Crypto          = -1   //0:h264  1:h265  2:h264crypto  3:h265crypto    -1:使用获取到的
     val CAM_IS_SUB          = false
@@ -56,9 +60,7 @@ object Config {
                 "8" -> {
                     CAM_IP = "192.168.8.100"
                 }
-                "18" -> {
-                    CAM_IP = "192.168.18.104"
-                }
+
             }
         }
 

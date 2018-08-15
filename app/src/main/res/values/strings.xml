@@ -9,7 +9,7 @@
     <string name="ctrl_record_stop">停止录像</string>
     <string name="ctrl_catch">拍照</string>
     <string name="ctrl_setting">修改密码</string>
-
+    <string name="ctrl_setting_save">确认</string>
     <string name="play_list_title_record">录像</string>
     <string name="play_list_title_remote">高清视频</string>
     <string name="play_list_title_subview">录像视频</string>
@@ -50,5 +50,17 @@
     <string name="password_original">原始密码</string>
     <string name="password_new">新密码</string>
     <string name="password_confirm">确认密码</string>
+    <string name="password_error">密码至少8位，请重新输入!!</string>
+    <string name="password_save_error">保存密码失败,请重试!!</string>
+    <string name="password_save_ok">设置成功，正在重启</string>
 
+    <string name="remote_control_btn">遥控申请</string>
+    <string name="remote_control_btn_fast">转速快</string>
+    <string name="remote_control_btn_normal">转速中</string>
+    <string name="remote_control_btn_slow">转速慢</string>
+    <string name="remote_control_btn_cruise_90">90°巡航</string>
+    <string name="remote_control_btn_cruise_180">180°巡航</string>
+    <string name="remote_control_btn_infrared">红外</string>
+    <string name="remote_control_btn_zoom_in">焦距短</string>
+    <string name="remote_control_btn_zoom_out">焦距长</string>
 </resources>

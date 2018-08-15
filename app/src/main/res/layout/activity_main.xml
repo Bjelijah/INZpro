@@ -11,6 +11,11 @@
     </data>
     <!--main_bk_light-->
 
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -61,9 +66,9 @@
                     android:layout_weight="1"
                     android:layout_alignParentBottom="true"
                     layout="@layout/layout_ctrl"
-                android:visibility="@{vm.MCtrlVisibility}"
-                app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
-                app:duration_action_down="@{300}"
+                    android:visibility="@{vm.MCtrlVisibility}"
+                    app:visible_action_down = "@{vm.MCtrlVisibilityShow}"
+                    app:duration_action_down="@{300}"
                     />
                 <!--android:visibility="@{vm.MCtrlVisibility}"-->
                 <!--app:visible_action_down = "@{vm.MCtrlVisibilityShow}"-->
@@ -75,21 +80,139 @@
 
             </LinearLayout>
 
-            <include
-                android:id="@+id/layout_list"
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                layout="@layout/layout_list"
-            android:visibility="@{vm.mReplayListVisibility}"
-            app:visible_action_right = "@{vm.MCtrlVisibilityShow}"
-            app:duration_action_right="@{300}"
-                />
+                android:orientation="vertical"
+                android:visibility="@{vm.mReplayListVisibility}"
+                app:visible_action_right = "@{vm.MCtrlVisibilityShow}"
+                app:duration_action_right="@{300}"
+                android:background="@drawable/file_border"
+                android:paddingLeft="1dp"
+                >
+
+                <include
+                    android:id="@+id/layout_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    layout="@layout/layout_list"
+                    />
+
+                <include
+                    android:id="@+id/layout_ptz"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    layout="@layout/layout_ptz"
+                    app:vm = "@{vm}"
+                    />
+
+
+
+
+            </LinearLayout>
+
+
             <!--android:visibility="@{vm.mReplayListVisibility}"-->
             <!--app:visible_action_right = "@{vm.MCtrlVisibilityShow}"-->
             <!--app:duration_action_right="@{300}"-->
 
         </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="@dimen/password_ll_width"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/password_ll_padding"
+            android:layout_gravity="center"
+            android:background="@color/main_bk"
+            android:visibility="@{vm.mSavePasswordShow}"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/password_text_width"
+                    android:text="@string/password_original"
+                    android:textColor="@color/black"
+                    android:background="@drawable/ll_border_lefttop"
+                    android:padding="19dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:background="@drawable/ll_border_righttop"
+                    android:padding="@dimen/password_text_padding"
+                    android:text="@{vm.mSavePasswordOriginal}"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/password_text_width"
+                    android:text="@string/password_new"
+                    android:textColor="@color/black"
+                    android:background="@drawable/ll_border_lefttop"
+                    android:padding="19dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/red"
+                    android:background="@drawable/ll_border_righttop"
+                    android:padding="@dimen/password_text_padding"
+                    android:text="@={vm.mSavePasswordNew}"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/password_text_width"
+                    android:text="@string/password_confirm"
+                    android:textColor="@color/black"
+                    android:background="@drawable/ll_border_leftbottom"
+                    android:padding="19dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/red"
+                    android:background="@drawable/ll_border_rightbottom"
+                    android:padding="@dimen/password_text_padding"
+                    android:text="@={vm.mSavePasswordConfirm}"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
+
+
+
+    </FrameLayout>
 </layout>
 
 

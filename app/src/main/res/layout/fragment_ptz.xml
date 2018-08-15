@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.inz.model.main.PtzCtrlModel"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ptz_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true" />
+        <!--android:onClick="@{vm.onClickUp}"-->
+        <LinearLayout
+            android:layout_width="@dimen/ptz_ll_width"
+            android:layout_height="@dimen/ptz_ll_height"
+            android:layout_above="@id/ptz_center"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/ptz_ll_margin"
+            android:background="@drawable/ptz_selector"
+            android:clickable="true"
+            app:onTouchUp="@{vm.onTouchUpUp}"
+            app:onTouchDown="@{vm.onTouchUpDown}"
+
+
+
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:padding="@dimen/ptz_image_padding"
+                android:src="@mipmap/play_up"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/ptz_ll_width"
+            android:layout_height="@dimen/ptz_ll_height"
+            android:layout_below="@id/ptz_center"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/ptz_ll_margin"
+            android:background="@drawable/ptz_selector"
+            android:clickable="true"
+            app:onTouchUp="@{vm.onTouchDownUp}"
+            app:onTouchDown="@{vm.onTouchDownDown}"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:padding="@dimen/ptz_image_padding"
+                android:src="@mipmap/play_down"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/ptz_ll_width"
+            android:layout_height="@dimen/ptz_ll_height"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/ptz_center"
+            android:layout_marginRight="@dimen/ptz_ll_margin"
+            android:background="@drawable/ptz_selector"
+            android:clickable="true"
+            app:onTouchUp="@{vm.onTouchLeftUp}"
+            app:onTouchDown="@{vm.onTouchLeftDown}"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:padding="@dimen/ptz_image_padding"
+                android:src="@mipmap/play_left"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/ptz_ll_width"
+            android:layout_height="@dimen/ptz_ll_height"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/ptz_center"
+            android:layout_marginLeft="@dimen/ptz_ll_margin"
+            android:background="@drawable/ptz_selector"
+            android:clickable="true"
+            app:onTouchUp="@{vm.onTouchRightUp}"
+            app:onTouchDown="@{vm.onTouchRightDown}"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:padding="@dimen/ptz_image_padding"
+                android:src="@mipmap/play_right"
+                />
+
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+
+
+
+</layout>

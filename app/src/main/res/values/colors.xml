@@ -24,4 +24,9 @@
     <color name="main_bk_dark">#212121</color>
     <color name="main_bk_light">#303030</color>
     <color name="main_border">#Ffc107</color>
+
+    <color name="ptz_clicked">#cbaaaaaa</color>
+    <color name="ptz">#50333333</color>
+
+
 </resources>

@@ -15,74 +15,203 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-       >
-        <android.widget.Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/MyCtrlButton"
-            android:text="@string/ctrl_setting"
-            android:layout_gravity="center_vertical"
-            android:onClick="@{vm.onClickSetting}"
-            android:visibility="visible"
-            />
+        android:orientation="vertical">
 
-        <Button
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/MyCtrlButton"
-            android:text="test"
-            android:textColor="@color/black"
-            android:layout_gravity="center_vertical"
-            android:onClick="@{vm.onClickCtrlTest}"
-            android:visibility="gone"
-            />
+            android:orientation="horizontal"
+            android:visibility="@{vm.mShowNormalCtrl}">
+            <!--android:onLongClickListener=""-->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn"
+                android:layout_gravity="center_vertical"
+                android:onLongClickListener="@{vm.onLongClickRemoteCtrl}"
+                android:visibility="@{vm.mShowRemoteControlBtn}"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical|right"
+                >
+                <!--<android.widget.Space-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="4"/>-->
+                <!--android:layout_weight="1"-->
 
 
-        <Button
-            android:id="@+id/ctrl_btn_catch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/ctrl_catch"
-            style="@style/MyCtrlButton"
-            android:layout_gravity="center_vertical"
-            android:onClick="@{vm.onClickCtrlCatch}"
-            android:visibility="@{vm.MCatchBtnVisibility}" />
 
-        <Button
-            android:id="@+id/ctrl_btn_record"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@{vm.MRecordText}"
-            android:textColor="@{vm.MRecordTextColor}"
-            style="@style/MyCtrlButton"
-            android:layout_gravity="center_vertical"
-            android:onClick="@{vm.onClickCtrlRecord}"
-            android:visibility="@{vm.mRecordBtnVisibility}"
-            />
 
-        <Button
-            android:id="@+id/ctrl_btn_alarm"
-            android:layout_width="0dp"
+
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    style="@style/MyCtrlButton"
+                    android:text="@{vm.mSavePasswordText}"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="@{vm.onClickSetting}"
+                    android:visibility="visible"
+                    />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/MyCtrlButton"
+                    android:text="test"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="@{vm.onClickCtrlTest}"
+                    android:visibility="gone"
+                    />
+
+
+                <Button
+                    android:id="@+id/ctrl_btn_catch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ctrl_catch"
+                    style="@style/MyCtrlButton"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="@{vm.onClickCtrlCatch}"
+                    android:visibility="@{vm.MCatchBtnVisibility}" />
+
+                <Button
+                    android:id="@+id/ctrl_btn_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{vm.MRecordText}"
+                    android:textColor="@{vm.MRecordTextColor}"
+                    style="@style/MyCtrlButton"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="@{vm.onClickCtrlRecord}"
+                    android:visibility="@{vm.mRecordBtnVisibility}"
+                    />
+
+                <Button
+                    android:id="@+id/ctrl_btn_alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ctrl_alarm"
+                    android:textColor="@{vm.MAlarmTextColor}"
+                    android:textSize="@dimen/main_ctrl_text_size_small"
+                    android:layout_gravity="center_vertical"
+                    style="@style/MyCtrlButton"
+                    android:onClick="@{vm.onClickCtrlAlarm}"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/ctrl_alarm"
-            android:textColor="@{vm.MAlarmTextColor}"
-            android:textSize="@dimen/main_ctrl_text_size_small"
-            android:layout_gravity="center_vertical"
-            style="@style/MyCtrlButton"
-            android:onClick="@{vm.onClickCtrlAlarm}"
-            android:visibility="visible"/>
+            android:orientation="horizontal"
+            android:visibility="@{vm.mShowRemoteCtrl}">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_fast"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="@{vm.onClickFast}"
+                android:textColor="@{vm.mFastTextColor}"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_normal"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="@{vm.onClickNormal}"
+                android:textColor="@{vm.mNormalTextColor}"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_slow"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="@{vm.onClickSlow}"
+                android:textColor="@{vm.mSlowTextColor}"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_cruise_90"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="@{vm.onClickCruise90}"
+                android:textColor="@{vm.mCruise90TextColor}"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_cruise_180"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="@{vm.onClickCruise180}"
+                android:textColor="@{vm.mCruise180TextColor}"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_infrared"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="@{vm.onClickInfrared}"
+                android:textColor="@{vm.mInfraredTextColor}"
+                />
+            <!--android:onClick="@{vm.onClickZoomIn}"-->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_zoom_in"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+
+                android:textColor="@{vm.mZoomInTextColor}"
+                app:onTouchDown="@{vm.onTouchZoomInDown}"
+                app:onTouchUp="@{vm.onTouchZoomInUp}"
+                />
+            <!--android:onClick="@{vm.onClickZoomOut}"-->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MyCtrlButton"
+                android:text="@string/remote_control_btn_zoom_out"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:textColor="@{vm.mZoomOutTextColor}"
+                app:onTouchDown="@{vm.onTouchZoomOutDown}"
+                app:onTouchUp="@{vm.onTouchZoomOutUp}"
+                />
+
+        </LinearLayout>
+
+
+
 
     </LinearLayout>
+
+
 
 
 

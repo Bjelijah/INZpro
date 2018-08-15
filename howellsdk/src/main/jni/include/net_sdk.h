@@ -758,7 +758,7 @@ BOOL hwnet_set_ptz(USER_HANDLE handle, ptz_cfg_t *cfg);
  * handle:					hwnet_login()返回的句柄
  * ctrl
  * 	--slot					通道号(从0开始)
- * 	--control				0-方向	1-镜头  2-点击放大	3-预置点
+ * 	--control				0-方向	1-镜头  2-点击放大	3-预置点     100-查询ptz状态
  * 	--cmd					当control==0
  * 								7-左上
  * 								8-上
@@ -783,6 +783,10 @@ BOOL hwnet_set_ptz(USER_HANDLE handle, ptz_cfg_t *cfg);
  * 								1-预置点设置
  * 								2-预置点删除
  * 								3-执行预置点
+ * 							当control == 100
+ * 							    1-申请
+ * 							    2-注销
+ * 							    3-查询
  *	--value					当control==1表示速度(0-64),当control==3表示预置点号
  *	--rect					只在control==2时有效，表明点击放大的坐标，范围相对于(704 * 576)
  * return:					1:成功  0:返回

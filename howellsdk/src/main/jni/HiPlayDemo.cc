@@ -107,7 +107,7 @@ struct StreamResource
     unsigned long long file_len;
 };
 static struct StreamResource * res = NULL;
-
+static int g_ptz_speed = 10;
 static int g_debug_enable = 0;
 
 typedef struct {
@@ -1503,6 +1503,21 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_stepLast
     return (int)b?true:false;
 }
 
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netPtzGetSpped
+        (JNIEnv *, jclass){
+    return g_ptz_speed;
+}
+
+
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzSetSpeed
+        (JNIEnv *, jclass, jint speed){
+    g_ptz_speed = speed;
+    return true;
+}
+
+
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzMove
         (JNIEnv *, jclass, jint flag){
     if (res == NULL)return false;
@@ -1510,7 +1525,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzMove
     memset(&ctrl,0,sizeof(ctrl));
     ctrl.slot = 0;
     ctrl.control = 0;
-    ctrl.value = 10;
+    ctrl.value = g_ptz_speed;
     switch (flag){
         case 0:
             ctrl.cmd = 5;
@@ -1540,7 +1555,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzCam
     memset(&ctrl,0,sizeof(ctrl));
     ctrl.slot = 0;
     ctrl.control = 1;
-    ctrl.value = 10;
+    ctrl.value = g_ptz_speed;
     switch (flag){
         case 0:
             ctrl.cmd = 7;//stop
@@ -1570,7 +1585,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzIris
     memset(&ctrl,0,sizeof(ctrl));
     ctrl.slot = 0;
     ctrl.control = 1;
-    ctrl.value = 10;
+    ctrl.value = g_ptz_speed;
     switch (flag){
         case 0:
             ctrl.cmd = 2;
@@ -1583,6 +1598,29 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzIris
     }
     return hwnet_ptz_ctrl(res->user_handle,&ctrl)==1?true: false;
 }
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzGoPreset
+        (JNIEnv *, jclass, jint point){
+    if(res==NULL)return false;
+    ptz_ctrl_t ctrl;
+    memset(&ctrl,0,sizeof(ctrl));
+    ctrl.slot = 0;
+    ctrl.control = 3;
+    ctrl.cmd = 3;
+    ctrl.value = point;
+    return hwnet_ptz_ctrl(res->user_handle,&ctrl)==1?true:false;
+}
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzStateCmd
+        (JNIEnv *, jclass, jint flag){
+    if(res==NULL)return false;
+    ptz_ctrl_t ctrl;
+    memset(&ctrl,0,sizeof(ctrl));
+    ctrl.slot = 0;
+    ctrl.control = 100;
+    ctrl.cmd = flag;
+    return hwnet_ptz_ctrl(res->user_handle,&ctrl)==1?true:false;
+}
+
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListCount
         (JNIEnv *env, jclass, jobject beg, jobject end){

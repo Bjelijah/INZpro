@@ -45,7 +45,11 @@ public interface HWPlayApi {
     boolean stepLast();
     //fun
     boolean getRecordedFiles(String beg,String end,@Nullable Integer nowPage,@Nullable Integer pageSize);
+    int ptzGetSpeed();
+    boolean ptzSetSpeed(int speed);
     boolean ptzControl(PTZ_CMD cmd,int speed,@Nullable Integer presetNo);
+    boolean ptzGoPreset(int point);
+    boolean ptzStateCmd(int flag);//1 reg  2 unreg   3 check
     int getStreamLen();
     long getFirstTimestamp();
     long getTimestamp();

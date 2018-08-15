@@ -222,6 +222,18 @@ public class ApFactory {
         }
 
         @Override
+        public int ptzGetSpeed() {
+            return JniUtil.netPtzGetSpped();
+        }
+
+        @Override
+        public boolean ptzSetSpeed(int speed) {
+            if (speed<0||speed>64)return false;
+            JniUtil.netPtzSetSpeed(speed);
+            return true;
+        }
+
+        @Override
         public boolean ptzControl(PTZ_CMD cmd, int speed, @Nullable Integer presetNo) {
             boolean ret = false;
             switch (cmd){
@@ -267,6 +279,16 @@ public class ApFactory {
                     break;
             }
             return ret;
+        }
+
+        @Override
+        public boolean ptzGoPreset(int point) {
+            return JniUtil.netPtzGoPreset(point);
+        }
+
+        @Override
+        public boolean ptzStateCmd(int flag) {
+            return JniUtil.netPtzStateCmd(flag);
         }
 
         @Override

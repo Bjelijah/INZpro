@@ -21,7 +21,7 @@ abstract class BasePlayer {
     fun registPlayStateListener(o1: (Boolean) -> Unit, o2:(Boolean)->Unit,o3:(Boolean)->Unit,o4:(Boolean)->Unit,o5:(Boolean)->Unit,o6:(ArrayList<BaseBean>)->Unit):BasePlayer{
         mListener = object :PlayStateListener{
 
-            override fun onInit(b: Boolean)     = o1(b)
+                override fun onInit(b: Boolean)     = o1(b)
                 override fun onDeinit(b: Boolean)   = o2(b)
                 override fun onPlay(b: Boolean)     = o3(b)
                 override fun onStop(b: Boolean)     = o4(b)

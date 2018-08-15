@@ -76,9 +76,13 @@ public class JniUtil {
 	public static native boolean stepNext();
 	public static native boolean stepLast();
 	//net ptz
+	public static native int 	netPtzGetSpped();
+	public static native boolean netPtzSetSpeed(int speed);//0-64
 	public static native boolean netPtzMove(int flag);
 	public static native boolean netPtzCam(int flag);//0 1 2 3 4stop tele wide far near
 	public static native boolean netPtzIris(int flag);//0 stop 1 open
+	public static native boolean netPtzGoPreset(int point);
+	public static native boolean netPtzStateCmd(int flag);//1申请 2注销 3查询
 	//net vod
 	public static native int netGetVideoListCount(ApTimeBean beg,ApTimeBean end);//获取总录像文件数
 	public static native int netGetVideoListPageCount(ApTimeBean beg,ApTimeBean end,int pageSize,int curPageNo);//获取分页 总页数 pageSize:单页文件数  curPageNo当前第几页

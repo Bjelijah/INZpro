@@ -15,6 +15,7 @@
     <dimen name="main_ctrl_padding_vertical">15dp</dimen>
 
 
+
     <!-- layout_replay_ctrl -->
     <dimen name="replay_ctrl_padding">5dp</dimen>
     <dimen name="replay_ctrl_padding_height">7dp</dimen>
@@ -72,6 +73,14 @@
     <dimen name="setting_padding_vertical">10dp</dimen>
     <dimen name="setting_padding_horizontal">40dp</dimen>
 
-    <dimen name="password_text_padding">20dp</dimen>
+    <dimen name="password_ll_padding">2dp</dimen>
+    <dimen name="password_ll_width">300dp</dimen>
+    <dimen name="password_text_width">100dp</dimen>
+    <dimen name="password_text_padding">15dp</dimen>
+
+    <dimen name="ptz_ll_width">60dp</dimen>
+    <dimen name="ptz_ll_height">60dp</dimen>
+    <dimen name="ptz_ll_margin">25dp</dimen>
+    <dimen name="ptz_image_padding">8dp</dimen>
 
 </resources>

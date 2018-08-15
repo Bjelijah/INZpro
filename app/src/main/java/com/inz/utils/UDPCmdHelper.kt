@@ -1,6 +1,16 @@
 package com.inz.utils
 
+import android.util.Log
+import com.howellsdk.utils.RxUtil
+import com.howellsdk.utils.ThreadUtil
+import com.inz.action.Config
+import java.io.IOException
+import java.net.*
+
 object UDPCmdHelper {
+
+
+
     fun setSSID(ssid:String):ByteArray = "nvram_set 2860 SSID1 $ssid\n".toByteArray()
     fun getSSID():ByteArray = "nvram_get 2860 SSID1\n".toByteArray()
     fun setAuthMode(authMode:String):ByteArray = "nvram_set 2860 AuthMode $authMode\n".toByteArray()
@@ -50,8 +60,55 @@ object UDPCmdHelper {
     fun getPortEnable():ByteArray="nvram_get 2860 PortForwardEnable\n".toByteArray()
     fun getPortRules():ByteArray="nvram_get 2860 PortForwardRules\n".toByteArray()
 
+    var mSocket:DatagramSocket ?= null
+    var mFinish = false
+    fun init(ip:String,port:Int){
+        mFinish = false
+        mSocket = DatagramSocket(port)
 
+        receMsg()
 
+    }
 
+    fun deInit(){
+        mFinish = true
+        mSocket?.close()
+    }
+
+    private fun receMsg(){
+        var bs = ByteArray(255)
+        ThreadUtil.cachedThreadStart {
+            while (!mFinish){
+                try{
+                    var packet = DatagramPacket(bs,bs.size)
+                    mSocket?.receive(packet)
+                    Log.i("123","rec size= ${packet.length}  data=${String(packet.data,0,packet.length)}")
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+        }
+
+    }
+
+    fun sendMsg(msg:ByteArray,ip:String ,port:Int){
+//        UdpTest.sendTest(msg)
+        Log.i("123"," sendMsg    ip=$ip")
+        Thread(Runnable {
+            try {
+                val socket = DatagramSocket(port)
+                val serverAddress = InetAddress.getByName(ip)
+                val packet = DatagramPacket(msg, msg.size, serverAddress, port)
+                socket.send(packet)
+                socket.close()
+            } catch (e: SocketException) {
+                e.printStackTrace()
+            } catch (e: UnknownHostException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }).start()
+    }
 
 }

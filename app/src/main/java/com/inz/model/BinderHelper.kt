@@ -6,6 +6,7 @@ import android.databinding.BindingConversion
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
@@ -34,6 +35,14 @@ object BinderHelper {
         listener?.run()
     }
 
+    @BindingConversion
+    @JvmStatic
+    fun toOnLongClickListen(listener:Action?) = View.OnLongClickListener {
+        listener?.run()
+        true
+    }
+
+
     @BindingAdapter("widthHeightRatio")
     @JvmStatic
     fun setWidthHeightRatio(v:View,ratio:Double){
@@ -52,6 +61,19 @@ object BinderHelper {
     }
 
 
+
+
+    @BindingAdapter("onTouchUp","onTouchDown",requireAll = true)
+    @JvmStatic
+    fun setOnTouchListener(v:View,up:Action?,down:Action?){
+        v.setOnTouchListener{v,event->
+            when(event.action){
+                MotionEvent.ACTION_DOWN->down?.run()
+                MotionEvent.ACTION_UP->up?.run()
+            }
+            false
+        }
+    }
 
 
     @BindingAdapter("onTouchListener")

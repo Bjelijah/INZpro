@@ -142,7 +142,27 @@ public class HwBasePlay implements HWPlayApi {
     }
 
     @Override
+    public int ptzGetSpeed() {
+        return 0;
+    }
+
+    @Override
+    public boolean ptzSetSpeed(int speed) {
+        return false;
+    }
+
+    @Override
     public boolean ptzControl(PTZ_CMD cmd, int speed, @Nullable Integer presetNo) {
+        return false;
+    }
+
+    @Override
+    public boolean ptzGoPreset(int point) {
+        return false;
+    }
+
+    @Override
+    public boolean ptzStateCmd(int flag) {
         return false;
     }
 

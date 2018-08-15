@@ -393,6 +393,22 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_stepLast
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzGetSpped
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netPtzGetSpped
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzSetSpeed
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzSetSpeed
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    netPtzMove
  * Signature: (I)Z
  */
@@ -413,6 +429,22 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzCam
  * Signature: (I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzIris
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzGoPreset
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzGoPreset
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzStateCmd
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzStateCmd
   (JNIEnv *, jclass, jint);
 
 /*
