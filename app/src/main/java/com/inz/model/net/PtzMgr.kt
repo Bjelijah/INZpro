@@ -267,6 +267,9 @@ class PtzMgr {
                     var res = ApiManager.getInstance().aPcamService.ptzStateCmd(3)
                     RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Void>(){
                         override fun doTask() {
+
+                            Log.i("123","ptz state res=$res")
+
                             onStateRes(res)
                         }
                     })

@@ -63,4 +63,5 @@
     <string name="remote_control_btn_infrared">红外</string>
     <string name="remote_control_btn_zoom_in">焦距短</string>
     <string name="remote_control_btn_zoom_out">焦距长</string>
+    <string name="ptz_state_error">有其他设备登入</string>
 </resources>

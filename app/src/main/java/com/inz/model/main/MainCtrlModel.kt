@@ -162,6 +162,7 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                             mShowRemoteCtrl.set(View.GONE)
                             mShowNormalCtrl.set(View.VISIBLE)
                             ModelMgr.getMainViewModelInstance(mContext).showPtzCtrl(false)
+                            Toast.makeText(mContext,mContext.getString(R.string.ptz_state_error),Toast.LENGTH_SHORT).show()
                         }
                     }
 
