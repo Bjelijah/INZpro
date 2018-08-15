@@ -154,6 +154,17 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                     mShowNormalCtrl.set(View.GONE)
                     mShowRemoteCtrl.set(View.VISIBLE)
                     ModelMgr.getMainViewModelInstance(mContext).showPtzCtrl(true)
+                    //注册并查询状态
+                    PtzMgr.getInstance().ptzStateRegist()
+                    PtzMgr.getInstance().ptzGetStateTaskStart {
+                        if(!it){
+                            PtzMgr.getInstance().ptzGetStateTaskStop()
+                            mShowRemoteCtrl.set(View.GONE)
+                            mShowNormalCtrl.set(View.VISIBLE)
+                            ModelMgr.getMainViewModelInstance(mContext).showPtzCtrl(false)
+                        }
+                    }
+
                 },{it.printStackTrace() })
     }
 

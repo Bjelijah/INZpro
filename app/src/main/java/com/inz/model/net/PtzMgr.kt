@@ -263,13 +263,14 @@ class PtzMgr {
             ThreadUtil.cachedThreadStart {
                 mStateTaskIsStart=true
                 while(mStateTaskEnable){
+                    Thread.sleep(2000)
                     var res = ApiManager.getInstance().aPcamService.ptzStateCmd(3)
                     RxUtil.doInUIThread(object :RxUtil.RxSimpleTask<Void>(){
                         override fun doTask() {
                             onStateRes(res)
                         }
                     })
-                    Thread.sleep(5000)
+                    Thread.sleep(3000)
                 }
                 mStateTaskIsStart=false
             }
