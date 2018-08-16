@@ -154,6 +154,10 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                     mShowNormalCtrl.set(View.GONE)
                     mShowRemoteCtrl.set(View.VISIBLE)
                     ModelMgr.getMainViewModelInstance(mContext).showPtzCtrl(true)
+                    //speed normal
+                    resetSpeedCtrlColor()
+                    mNormalTextColor.set(mContext.getColor(R.color.colorAccent))
+                    PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_NORMAL)
                     //注册并查询状态
                     PtzMgr.getInstance().ptzStateRegist()
                     PtzMgr.getInstance().ptzGetStateTaskStart {
@@ -183,19 +187,19 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     val onClickFast            = Action {
         resetSpeedCtrlColor()
         mFastTextColor.set(mContext.getColor(R.color.colorAccent))
-        PtzMgr.getInstance().ptzSpeed(15)
+        PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_FAST)
     }
 
     val onClickNormal          = Action{
         resetSpeedCtrlColor()
         mNormalTextColor.set(mContext.getColor(R.color.colorAccent))
-        PtzMgr.getInstance().ptzSpeed(10)
+        PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_NORMAL)
     }
 
     val onClickSlow            = Action {
         resetSpeedCtrlColor()
         mSlowTextColor.set(mContext.getColor(R.color.colorAccent))
-        PtzMgr.getInstance().ptzSpeed(5)
+        PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_SLOW)
     }
 
     val onClickCruise90        = Action {
@@ -263,6 +267,7 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
     val onTouchZoomInUp        = Action {
         Log.i("123","on zoom in up")
+        resetZoomCtrlColor()
         PtzMgr.getInstance().ptzZoomStop()
     }
 
@@ -275,6 +280,7 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
     val onTouchZoomOutUp       = Action {
         Log.i("123","on zoom out up")
+        resetZoomCtrlColor()
         PtzMgr.getInstance().ptzZoomStop()
     }
 

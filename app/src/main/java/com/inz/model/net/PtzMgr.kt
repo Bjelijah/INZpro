@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit
 class PtzMgr {
     companion object {
         private var mInstance:PtzMgr ?= null
+        val PTZ_SPEED_FAST                     = 48
+        val PTZ_SPEED_NORMAL                   = 32
+        val PTZ_SPEED_SLOW                     = 16
         fun getInstance():PtzMgr{
             if(mInstance == null){
                 mInstance = PtzMgr()
@@ -23,12 +26,18 @@ class PtzMgr {
         }
     }
     private constructor()
+
     @Volatile var mCruiseIndex             = 0
     @Volatile var mCruiseEnable            = false
     @Volatile var mThreadIsStart           = false
     @Volatile var mPoints:ArrayList<Int>  ?= null
     @Volatile var mStateTaskIsStart        = false
     @Volatile var mStateTaskEnable         = false
+    @Volatile var mPtzMoveEnable           = false
+    @Volatile var mPtzMoveIsStart          = false
+    @Volatile var mPtzZoomEnable           = false
+    @Volatile var mPtzZoomIsStart          = false
+
     fun ptzSpeed(speed:Int){
 
         Observable.create(ObservableOnSubscribe<Boolean> {
@@ -44,6 +53,7 @@ class PtzMgr {
 
     fun ptzUp(){
         ptzStopCruis()
+//        ptzMove(PTZ_CMD.ptz_up)
         Observable.create(ObservableOnSubscribe<Boolean> {
             ApiManager.getInstance().aPcamService.ptzControl(PTZ_CMD.ptz_stop,0,0)
             it.onNext(ApiManager.getInstance().aPcamService
@@ -58,48 +68,22 @@ class PtzMgr {
 
     fun ptzDown(){
         ptzStopCruis()
-        Observable.create(ObservableOnSubscribe<Boolean> {
-            ApiManager.getInstance().aPcamService.ptzControl(PTZ_CMD.ptz_stop,0,0)
-            it.onNext(ApiManager.getInstance().aPcamService
-                    .ptzControl(PTZ_CMD.ptz_down,0,0))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.i("123","ptz down  res=$it")
-                }
+        ptzMove(PTZ_CMD.ptz_down)
     }
 
     fun ptzLeft(){
         ptzStopCruis()
-        Observable.create(ObservableOnSubscribe<Boolean> {
-            ApiManager.getInstance().aPcamService.ptzControl(PTZ_CMD.ptz_stop,0,0)
-            it.onNext(ApiManager.getInstance().aPcamService
-                    .ptzControl(PTZ_CMD.ptz_left,0,0))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.i("123","ptz left  res=$it")
-                }
+        ptzMove(PTZ_CMD.ptz_left)
     }
 
     fun ptzRight(){
         ptzStopCruis()
-        Observable.create(ObservableOnSubscribe<Boolean> {
-            ApiManager.getInstance().aPcamService.ptzControl(PTZ_CMD.ptz_stop,0,0)
-            it.onNext(ApiManager.getInstance().aPcamService
-                    .ptzControl(PTZ_CMD.ptz_right,0,0))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.i("123","ptz right  res=$it")
-                }
+        ptzMove(PTZ_CMD.ptz_right)
     }
 
     fun ptzStop(){
         ptzStopCruis()
+        mPtzMoveEnable = false
         Observable.create(ObservableOnSubscribe<Boolean> {
             it.onNext(ApiManager.getInstance().aPcamService
                     .ptzControl(PTZ_CMD.ptz_stop,0,0))
@@ -108,6 +92,35 @@ class PtzMgr {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     Log.i("123","ptz stop  res=$it")
+                }
+    }
+//    private fun ptzMove( cmd:PTZ_CMD){
+//        mPtzMoveEnable = true
+//        if (!mPtzMoveIsStart){
+//            ThreadUtil.cachedThreadStart {
+//                mPtzMoveIsStart = true
+//                while (mPtzMoveEnable){
+//                    var res = ApiManager.getInstance().aPcamService
+//                            .ptzControl(cmd,0,0)
+//                    Log.i("123","ptz move res=$res")
+//                    Thread.sleep(333)
+//                }
+//                mPtzMoveIsStart = false
+//                ptzStop()
+//            }
+//        }
+//    }
+
+    private fun ptzMove(cmd:PTZ_CMD){
+        Observable.create(ObservableOnSubscribe<Boolean> {
+            ApiManager.getInstance().aPcamService.ptzControl(PTZ_CMD.ptz_stop,0,0)
+            it.onNext(ApiManager.getInstance().aPcamService
+                    .ptzControl(cmd,0,0))
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Log.i("123","ptz up  res=$it")
                 }
     }
 
@@ -136,30 +149,15 @@ class PtzMgr {
     }
 
     fun ptzZoomIn(){
-        Observable.create(ObservableOnSubscribe<Boolean> {
-            it.onNext(ApiManager.getInstance().aPcamService
-                    .ptzControl(PTZ_CMD.ptz_zoomWide,0,0))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.i("123","zoom in  res=$it")
-                }
+        ptzZoom(PTZ_CMD.ptz_zoomWide)
     }
 
     fun ptzZoomOut(){
-        Observable.create(ObservableOnSubscribe<Boolean> {
-            it.onNext(ApiManager.getInstance().aPcamService
-                    .ptzControl(PTZ_CMD.ptz_zoomTele,0,0))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.i("123","zoom out  res=$it")
-                }
+        ptzZoom(PTZ_CMD.ptz_zoomTele)
     }
 
     fun ptzZoomStop(){
+        mPtzZoomEnable = false
         Observable.create(ObservableOnSubscribe<Boolean> {
             it.onNext(ApiManager.getInstance().aPcamService
                     .ptzControl(PTZ_CMD.ptz_zoomStop,0,0))
@@ -168,6 +166,35 @@ class PtzMgr {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     Log.i("123","zoom stop  res=$it")
+                }
+    }
+
+//    fun ptzZoom(cmd:PTZ_CMD){
+//        mPtzZoomEnable = true
+//        if(!mPtzZoomIsStart){
+//            ThreadUtil.cachedThreadStart {
+//                mPtzZoomIsStart = true
+//                while (mPtzZoomEnable){
+//                    var res = ApiManager.getInstance().aPcamService
+//                            .ptzControl(cmd,0,0)
+//                    Log.i("123","ptz zoom res=$res")
+//                    Thread.sleep(333)
+//                }
+//                mPtzZoomIsStart = false
+//                ptzZoomStop()
+//            }
+//        }
+//    }
+
+    fun ptzZoom(cmd:PTZ_CMD){
+                Observable.create(ObservableOnSubscribe<Boolean> {
+            it.onNext(ApiManager.getInstance().aPcamService
+                    .ptzControl(cmd,0,0))
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Log.i("123","zoom out  res=$it")
                 }
     }
 
