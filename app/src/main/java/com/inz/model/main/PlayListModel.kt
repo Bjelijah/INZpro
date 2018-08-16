@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.ObservableField
 import android.net.Uri
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
@@ -77,9 +79,10 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mUpdateRemoteList            = ObservableField<Boolean>(false)
     val mCmdBtnVisibility            = ObservableField<Boolean>(false)
     val mCmdBtnText                  = ObservableField<String>(mContext.getString(R.string.share_share))
+    @RequiresApi(Build.VERSION_CODES.M)
+    val mBtnColor                    = ObservableField<Int>(mContext.getColor(R.color.white_highlight))
 
-
-
+    var  mEnable                     = true
 
 
 
@@ -99,7 +102,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         Log.i("123","on record file click")
         //todo back click
         if (isFastClick())return@Action
-
+        if (!mEnable)return@Action
 
         CtrlAction.setPlayReview(mContext)
         //play view
@@ -146,6 +149,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     val mPlayListTitleBtnRemoteFile = Action {
         if(isFastClick())return@Action
+        if (!mEnable)return@Action
         CtrlAction.setPlayReview(mContext)
         //play view
         ModelMgr.getReplayCtrlModelInstance(mContext).initUi()
@@ -196,6 +200,7 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     val mPlayListTitleBtnPictureFile = Action {
         Log.i("123","on picture file click")
         if (isFastClick())return@Action
+        if (!mEnable)return@Action
         when(mShowCode){
             SHOW_NONE->{
                 mShowCode = SHOW_PICTURE_FILE
@@ -490,4 +495,22 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mLastClickTime = curClickTime
         return flag
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun setBtnEnable(b:Boolean){
+        mEnable = b
+        if(!b){
+            mShowRecordFile.set(false)
+            mShowRemoteFile.set(false)
+            mShowPictureFile.set(false)
+            mRecordListVisibility.set(View.GONE)
+            mRemoteListVisibility.set(View.GONE)
+            mPictureListVisibility.set(View.GONE)
+            mBtnColor.set(mContext.getColor(R.color.main_bk_light_gray))
+
+        }else{
+            mBtnColor.set(mContext.getColor(R.color.white_highlight))
+        }
+    }
+
 }

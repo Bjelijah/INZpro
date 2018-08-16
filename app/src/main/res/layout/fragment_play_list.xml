@@ -32,7 +32,6 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 app:play_list_title_src="@{vm.MShowRecordFile}"
                 android:layout_gravity="center_vertical"
                 />
@@ -40,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/play_list_title_subview"
-                android:textColor="@color/white_highlight"
+                android:textColor="@{vm.mBtnColor}"
                 android:textSize="@dimen/play_list_title_size"
                 android:layout_gravity="center_vertical"/>
 
@@ -79,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/play_list_title_remote"
-                android:textColor="@color/white_highlight"
+                android:textColor="@{vm.mBtnColor}"
                 android:textSize="@dimen/play_list_title_size"
                 android:layout_gravity="center_vertical"/>
 
@@ -138,13 +137,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:play_list_title_src="@{vm.MShowPictureFile}"
+
                 android:layout_gravity="center_vertical"
                 />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/play_list_title_picture"
-                android:textColor="@color/white_highlight"
+                android:textColor="@{vm.mBtnColor}"
                 android:textSize="@dimen/play_list_title_size"
                 android:layout_gravity="center_vertical"/>
 

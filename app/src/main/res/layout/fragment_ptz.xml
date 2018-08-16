@@ -43,6 +43,7 @@
                 android:padding="@dimen/ptz_image_padding"
                 android:src="@mipmap/play_up"
                 />
+            <!--android:padding="@dimen/ptz_image_padding"-->
         </LinearLayout>
 
         <LinearLayout
@@ -64,7 +65,7 @@
                 android:padding="@dimen/ptz_image_padding"
                 android:src="@mipmap/play_down"
                 />
-
+            <!--android:padding="@dimen/ptz_image_padding"-->
         </LinearLayout>
 
         <LinearLayout
@@ -86,7 +87,7 @@
                 android:padding="@dimen/ptz_image_padding"
                 android:src="@mipmap/play_left"
                 />
-
+            <!--android:padding="@dimen/ptz_image_padding"-->
 
         </LinearLayout>
 
@@ -108,7 +109,7 @@
                 android:padding="@dimen/ptz_image_padding"
                 android:src="@mipmap/play_right"
                 />
-
+            <!--android:padding="@dimen/ptz_image_padding"-->
 
         </LinearLayout>
 

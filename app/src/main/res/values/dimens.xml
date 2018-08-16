@@ -75,12 +75,15 @@
 
     <dimen name="password_ll_padding">2dp</dimen>
     <dimen name="password_ll_width">300dp</dimen>
-    <dimen name="password_text_width">100dp</dimen>
+    <dimen name="password_text_width">110dp</dimen>
     <dimen name="password_text_padding">15dp</dimen>
+    <dimen name="password_text_size">18sp</dimen>
+
 
     <dimen name="ptz_ll_width">60dp</dimen>
     <dimen name="ptz_ll_height">60dp</dimen>
     <dimen name="ptz_ll_margin">25dp</dimen>
     <dimen name="ptz_image_padding">8dp</dimen>
+
 
 </resources>

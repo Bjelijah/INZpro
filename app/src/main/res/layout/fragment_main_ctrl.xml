@@ -58,7 +58,7 @@
                     android:text="@{vm.mSavePasswordText}"
                     android:layout_gravity="center_vertical"
                     android:onClick="@{vm.onClickSetting}"
-                    android:visibility="visible"
+                    android:visibility="@{vm.mShowPasswordControlBtn}"
                     />
 
                 <Button

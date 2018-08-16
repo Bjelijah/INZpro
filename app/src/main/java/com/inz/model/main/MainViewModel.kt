@@ -33,11 +33,14 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     var mUdpMgr = UdpMgr.getInstance()
     var mNewPassword:String  ?=null
     var mUdpCmdType = UDP_CMD_NONE
+    var mEnable               = true
+
     fun setContext(c:Context){
         mContext = c
     }
 
      fun setFullScreen(b: Boolean,isShowReplayCtrl:Boolean) {
+        if(!mEnable)return
         if(b){
             Log.i("123","main view model set full")
 //            mCtrlVisibility.set(View.GONE)//主控按钮
@@ -140,6 +143,13 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
             UDP_CMD_NONE->{}
             else->{}
         }
+    }
+
+    fun setFullEnable(b:Boolean){
+        if(!b){
+            setFullScreen(false,false)
+        }
+        mEnable = b
     }
 
     override fun onCreate() {

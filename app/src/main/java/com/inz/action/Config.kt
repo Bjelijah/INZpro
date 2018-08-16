@@ -9,8 +9,8 @@ object Config {
     val AP   = 0x01
     val TURN = 0x02
 
-    val SHOW_REMOTE_CONTROL = true
-
+    val SHOW_REMOTE_CONTROL   = false
+    val SHOW_PASSWORD_CONTROL = true
 //
 
     val playType        = AP

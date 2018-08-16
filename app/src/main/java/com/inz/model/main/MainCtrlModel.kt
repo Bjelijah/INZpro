@@ -50,8 +50,12 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     val mRecordBtnVisibility  = ObservableField<Int>(View.VISIBLE)
     val mSavePasswordText     = ObservableField<String>(mContext.getString(R.string.ctrl_setting))
     val mShowRemoteControlBtn = ObservableField<Int>(if(Config.SHOW_REMOTE_CONTROL)View.VISIBLE else View.INVISIBLE)
+    val mShowPasswordControlBtn = ObservableField<Int>(if(Config.SHOW_PASSWORD_CONTROL)View.VISIBLE else View.INVISIBLE)
+
+
     val mShowNormalCtrl       = ObservableField<Int>(View.VISIBLE)
     val mShowRemoteCtrl       = ObservableField<Int>(View.GONE)
+
     val mFastTextColor        = ObservableField<Int>(mContext.getColor(R.color.black))
     val mNormalTextColor      = ObservableField<Int>(mContext.getColor(R.color.black))
     val mSlowTextColor        = ObservableField<Int>(mContext.getColor(R.color.black))
@@ -158,6 +162,8 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                     resetSpeedCtrlColor()
                     mNormalTextColor.set(mContext.getColor(R.color.colorAccent))
                     PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_NORMAL)
+                    ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(false)
+                    ModelMgr.getMainViewModelInstance(mContext).setFullEnable(false)
                     //注册并查询状态
                     PtzMgr.getInstance().ptzStateRegist()
                     PtzMgr.getInstance().ptzGetStateTaskStart {
@@ -166,6 +172,8 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                             mShowRemoteCtrl.set(View.GONE)
                             mShowNormalCtrl.set(View.VISIBLE)
                             ModelMgr.getMainViewModelInstance(mContext).showPtzCtrl(false)
+                            ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(true)
+                            ModelMgr.getMainViewModelInstance(mContext).setFullEnable(true)
                             Toast.makeText(mContext,mContext.getString(R.string.ptz_state_error),Toast.LENGTH_SHORT).show()
                         }
                     }
