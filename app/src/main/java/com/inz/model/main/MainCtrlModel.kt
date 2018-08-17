@@ -70,9 +70,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     val mZoomOutTextColor     = ObservableField<Int>(mContext.getColor(R.color.black))
 
 
-
-
-
+    /**
+     * 报警按钮
+     */
     val onClickCtrlAlarm       = Action {
 
         if (mIsAlarming){
@@ -86,6 +86,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    /**
+     * 设置密码按钮
+     */
     val onClickSetting         = Action {
         Log.i("123","on click setting")
         if(ModelMgr.getMainViewModelInstance(mContext).savePasswordFun()){
@@ -109,14 +112,11 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 //            mDialog?.show()
 //            mSavePasswordText.set(mContext.getString(R.string.ctrl_setting_save))
 //        }
-
-
-
-
-
-
     }
 
+    /**
+     * 录像按钮
+     */
     val onClickCtrlRecord      = Action{
         if (CtrlAction.isPlayBack){
             Toast.makeText(mContext,mContext.getString(R.string.replay_state_error),Toast.LENGTH_SHORT).show()
@@ -144,6 +144,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
     }
 
+    /**
+     * 抓图按钮
+     */
     val onClickCtrlCatch       = Action {
 
         Observable.create(ObservableOnSubscribe<Boolean> {e->
@@ -160,6 +163,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
     }
 
+    /**
+     * ptz申请按钮
+     */
     val onLongClickRemoteCtrl = Action {
         Log.i("123","on long click")
         Observable.timer(1,TimeUnit.SECONDS)
@@ -198,7 +204,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
 
-
+    /**
+     * 测试按钮
+     */
     @SuppressLint("NewApi")
     val onClickCtrlTest        = Action{
         FileUtil.deleteLastFileIfSpaceLimit(FileUtil.FILE_VIDEO_PATH,Config.FILE_DIR_VIDEO_SIZE,Config.FILE_DIR_LIMITE)
@@ -206,7 +214,7 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
     /**
-     * ptz
+     * ptz 速度 快 按钮
      */
     val onClickFast            = Action {
         resetSpeedCtrlColor()
@@ -214,18 +222,27 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_FAST)
     }
 
+    /**
+     * 速度中
+     */
     val onClickNormal          = Action{
         resetSpeedCtrlColor()
         mNormalTextColor.set(mContext.getColor(R.color.colorAccent))
         PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_NORMAL)
     }
 
+    /**
+     * 速度慢
+     */
     val onClickSlow            = Action {
         resetSpeedCtrlColor()
         mSlowTextColor.set(mContext.getColor(R.color.colorAccent))
         PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_SLOW)
     }
 
+    /**
+     * 90°巡航
+     */
     val onClickCruise90        = Action {
 
         when(mCruise90TextColor.get()){
@@ -241,6 +258,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    /**
+     * 180°巡航
+     */
     val onClickCruise180       = Action {
         when (mCruise180TextColor.get()){
             mContext.getColor(R.color.colorAccent)->{
@@ -257,6 +277,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    /**
+     * 红外按钮
+     */
     val onClickInfrared        = Action {
         when (mInfraredTextColor.get()){
             mContext.getColor(R.color.colorAccent)->{//
@@ -275,12 +298,30 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
     }
 
+    /**
+     * zoom In 按钮
+     * @see com.inz.model.main.MainCtrlModel.onTouchZoomInDown
+     * @see com.inz.model.main.MainCtrlModel.onTouchZoomInUp
+     * @Deprecated 使用onTouch
+     */
     val onClickZoomIn          = Action {
 
     }
+
+    /**
+     * zoom out 按钮
+     * @see com.inz.model.main.MainCtrlModel.onTouchZoomOutDown
+     * @see com.inz.model.main.MainCtrlModel.onTouchZoomOutUp
+     * @Deprecated 使用onTouch
+     */
     val onClickZoomOut         = Action {
 
     }
+
+    /**
+     * zoom in onTouchDown
+     * @see com.inz.model.BinderHelper.setOnTouchListener
+     */
     val onTouchZoomInDown      = Action {
         resetZoomCtrlColor()
         mZoomInTextColor.set(mContext.getColor(R.color.colorAccent))
@@ -289,12 +330,18 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         PtzMgr.getInstance().ptzZoomIn()
     }
 
+    /**
+     * zoom in onTouch up
+     */
     val onTouchZoomInUp        = Action {
         Log.i("123","on zoom in up")
         resetZoomCtrlColor()
         PtzMgr.getInstance().ptzZoomStop()
     }
 
+    /**
+     * zoom out onTouch down
+     */
     val onTouchZoomOutDown     = Action {
         resetZoomCtrlColor()
         mZoomOutTextColor.set(mContext.getColor(R.color.colorAccent))
@@ -302,6 +349,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         PtzMgr.getInstance().ptzZoomOut()
     }
 
+    /**
+     * zoom out onTouch up
+     */
     val onTouchZoomOutUp       = Action {
         Log.i("123","on zoom out up")
         resetZoomCtrlColor()
@@ -309,7 +359,9 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
     }
 
 
-
+    /**
+     * 停止录像
+     */
     fun stopRecording(){
 
         if (mIsRecording){
@@ -322,12 +374,14 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+
     fun setIsPlayReView(b:Boolean){
 //        mCatchBtnVisibility.set(if(b)View.INVISIBLE else View.VISIBLE)
     }
     fun setIsShowCatch(b:Boolean){
         mCatchBtnVisibility.set(if(b)View.VISIBLE else View.GONE)
     }
+
     fun setIsShowRecord(b:Boolean){
         mRecordBtnVisibility.set(if(b)View.VISIBLE else View.GONE)
     }

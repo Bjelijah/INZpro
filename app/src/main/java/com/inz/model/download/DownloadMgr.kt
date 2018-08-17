@@ -22,6 +22,9 @@ class DownloadMgr {
     var time : ScheduledExecutorService?=null
     var mFilePath:String ?=null
     var secNum = 0
+    /**
+     * 手动开始录像
+     */
     fun start(){
         var path = FileUtil.createNewVideoDirPathName(0)
         mFilePath = path
@@ -35,6 +38,9 @@ class DownloadMgr {
         }
     }
 
+    /**
+     * 手动停止录像
+     */
     fun stop(){
         ApiManager.getInstance().apDownLoadServer.stop().close()
         //send msg
@@ -49,6 +55,10 @@ class DownloadMgr {
 
     }
 
+    /**
+     * 顺序录像任务
+     * @param onError 错误回调
+     */
     fun stepTask(onError:()->Unit) {
 
         startFlag = true
@@ -87,6 +97,9 @@ class DownloadMgr {
         }
     }
 
+    /**
+     * 停止顺序录像
+     */
     fun stepStop(){
         if(!startFlag)return
         startFlag = false
@@ -98,6 +111,10 @@ class DownloadMgr {
         Log.e("123","step stop")
     }
 
+    /**
+     * 时间计时器开始
+     * 每隔60s发送信号量 启停录像任务
+     */
     private fun timeTaskStart(){
         secNum = 0
         time = ThreadUtil.newScheduledThreadStart({
@@ -112,6 +129,10 @@ class DownloadMgr {
 
         },0,1,TimeUnit.SECONDS)
     }
+
+    /**
+     * 时间计时器停止
+     */
     private fun timeTaskStop(){
         ThreadUtil.newScheduledThreadShutDown(time)
         secNum = 0

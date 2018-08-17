@@ -63,6 +63,10 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     fun setContext(c:Context){
         mContext = c
     }
+
+    /**
+     * 初始化ap
+     */
     fun initApPlay(){
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init
@@ -94,6 +98,10 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 .init(Config.CAM_Crypto,Config.CAM_IP)
     }
 
+    /**
+     * 初始化ap
+     * @param c 回调
+     */
     fun initApPlay(c:()->Unit){
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init
@@ -126,7 +134,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 .init(Config.CAM_Crypto,Config.CAM_IP)
     }
 
-
+    /**
+     * 初始化远程录像播放
+     */
     fun initRemotePlay(beg:String,end:String){
 
         mPlayer = ModelMgr.getApPlayerInstance()
@@ -161,6 +171,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 .init(Config.CAM_Crypto,Config.CAM_IP)
     }
 
+    /**
+     * 初始化本地录像播放
+     */
     fun initLocalPlay(){
 
 
@@ -182,6 +195,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 .init(Config.CAM_Crypto,"whatever")
     }
 
+    /**
+     * 初始化远程录像界面
+     */
     fun initInfoRemote(beg:String,end:String){
         if (nowPlayState != CtrlAction.PLAY_MODE_REMOTE_REPLAY)return
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(true)
@@ -227,12 +243,18 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         })
     }
 
+    /**
+     * 初始化Ap播放界面
+     */
     fun initInfoAp(){
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
         ModelMgr.getMainCtrlModelInstance(mContext).setIsShowRecord(true)
         showReplayCtrl(false)
     }
 
+    /**
+     * 初始化本地录像界面
+     */
     fun initInfoLocal(){
         if (nowPlayState != CtrlAction.PLAY_MODE_LOCAL_REPLAY)return
         ModelMgr.getMainViewModelInstance(mContext).showReplayCtrl(false)
@@ -278,6 +300,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         })
     }
 
+    /**
+     * 设置到帧
+     */
     fun set2SeekFrame(cur:Int){
         ModelMgr.getReplayCtrlModelInstance(mContext).setSBProgress(cur)
     }
@@ -286,10 +311,16 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.setCurFrame(cur)
     }
 
+    /**
+     * 设置到时间
+     */
     fun setCurTime(cur:String){
         ModelMgr.getReplayCtrlModelInstance(mContext).setBegTime(cur)
     }
 
+    /**
+     * 设置到位置
+     */
     fun set2LocalPos(pos:Int,progress:Int){
         RxUtil.doInIOTthread(object :RxUtil.RxSimpleTask<Void>(){
             override fun doTask() {
@@ -311,7 +342,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
     }
 
 
-
+    /**
+     * 设置速度
+     */
     fun setSpeed(speed:Long){
 //        if (nowPlayState==0)return
 
@@ -319,35 +352,59 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         ModelMgr.getReplayCtrlModelInstance(mContext).setSpeed(FileUtil.fmtSpeed(speed))
     }
 
+    /**
+     * 设置url
+     */
     fun setUrl(url:String){
         mPlayer?.setUrl(url)
     }
 
+    /**
+     * 设置报警
+     */
     fun setAlarm(b:Boolean){
         mPlayer?.setAlarm(b)
     }
 
+    /**
+     * 播放
+     */
     fun playView(){
         mPlayer?.play(true)//play view sub
     }
 
+    /**
+     * 播放录像
+     */
     fun playBack(beg:String,end:String){
         mPlayer?.playback(false,beg,end)// remote main
     }
 
+    /**
+     * 重连视频
+     */
     fun reLinkPlayView(){
         mPlayer?.rePlay()
     }
 
+    /**
+     * 重连远程录像
+     */
     fun reLinkRemoteView(){
         var offset = ApiManager.getInstance().aPcamService.timestamp - ApiManager.getInstance().aPcamService.firstTimestamp+mRemoteOffset
         set2LocalPos(0,offset.toInt())
     }
 
+    /**
+     * 暂停
+     */
     fun pauseView(){
         mPlayer?.pause()
     }
 
+    /**
+     *
+     */
     fun remotePause(){
         if (mPlayer?.isPause()==false){
             mPlayer?.pause()
@@ -373,6 +430,9 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mPlayer?.stop()
     }
 
+    /**
+     * 转换到ap模式
+     */
     fun change2AP(){
         if (nowPlayState==CtrlAction.PLAY_MODE_SUB_VIEW){Log.e("123","change 2 ap now is playview state=0 return");return}
         mProcessVisibility.set(View.VISIBLE)

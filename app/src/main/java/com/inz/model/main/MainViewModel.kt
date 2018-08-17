@@ -42,6 +42,11 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
         mContext = c
     }
 
+    /**
+     * 播放界面全屏
+     * @param b 是否全屏
+     * @param isShowReplayCtrl 是否显示16：9下面的回放控制栏
+     */
      fun setFullScreen(b: Boolean,isShowReplayCtrl:Boolean) {
         if(!mEnable)return
         if(b){
@@ -79,7 +84,10 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
         mPtzVisiblilty.set(if(b)View.VISIBLE else View.GONE)
     }
 
-
+    /**
+     * 保存 发送 密码
+     * @return true显示密码输入框，false隐藏输入框
+     */
     fun savePasswordFun():Boolean{//true 显示view   false隐藏view 保存
         if(mSavePasswordShow.get()==View.GONE){
             //get info
@@ -111,6 +119,10 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
         }
     }
 
+    /**
+     * udp发送消息
+     * @param msg 消息
+     */
     fun sendUdpMsg(msg:ByteArray){
         when(mUdpCmdType){
             UDP_CMD_CHANGE_PWD->{

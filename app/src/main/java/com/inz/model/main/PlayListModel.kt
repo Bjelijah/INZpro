@@ -101,6 +101,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mContext = c
     }
 
+    /**
+     * 本地回放按钮
+     */
     val mPlayListTitleBtnRecordFile = Action {
         Log.i("123","on record file click")
         //todo back click
@@ -150,6 +153,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    /**
+     * 远程录像按钮
+     */
     val mPlayListTitleBtnRemoteFile = Action {
         if(isFastClick())return@Action
         if (!mEnable)return@Action
@@ -192,6 +198,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    /**
+     * ap按钮
+     */
     val mPlayListTitleBtnSubView = Action {
         if(isFastClick())return@Action
         CtrlAction.setPlayReview(mContext)
@@ -200,6 +209,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         ModelMgr.getPlayViewModelInstance(mContext).change2AP()
     }
 
+    /**
+     * 图片按钮
+     */
     val mPlayListTitleBtnPictureFile = Action {
         Log.i("123","on picture file click")
         if (isFastClick())return@Action
@@ -244,7 +256,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
     }
 
 
-
+    /**
+     * 分享 删除 按钮
+     */
     val onCmdClick            = Action {
         if(mUriList.size==0) {
             Toast.makeText(mContext,mContext.getString(R.string.share_no_file_error),Toast.LENGTH_SHORT).show()
@@ -292,11 +306,19 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         }
     }
 
+    /**
+     * 取消按钮
+     */
     val onCmdCancelClick           = Action {
         updatePictureCmdState(false,mCmd)
         mUriList.clear()
     }
 
+    /**
+     * 图片列表初始化
+     * @param rv 控件
+     * @param width 宽
+     */
     fun initPictureList(rv:RecyclerView, width:Int){
         Log.i("123","model  initPictureList")
         var picAdapter = MyPictureAdapter(mContext,{v, pos, b, isChecked ->
@@ -334,6 +356,10 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 //        updatePictureList(rv)
     }
 
+    /**
+     * 图片列表更新
+     * @param v 控件
+     */
     fun updatePictureList(v:RecyclerView){
 
         Observable.create(ObservableOnSubscribe<ArrayList<String>> {it->
@@ -354,18 +380,29 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 },{e->e.printStackTrace()})
     }
 
+    /**
+     * 图片命令更新
+     * @param v 控件
+     * @param bCmdMode true是命令模式 false不是命令模式
+     * 命令模式下显示checkbox
+     */
     fun updatePictureCmd(v:RecyclerView, bCmdMode:Boolean){
         if (v.adapter is MyPictureAdapter) {
             (v.adapter as MyPictureAdapter).setCmdMode(bCmdMode)
         }
     }
 
-
+    /**
+     * 更新图片列表状态 给view层
+     */
     fun updatePictureListState(){
         Log.i("123","update picture list state")
         mUpdatePictureList.set(true)
     }
 
+    /**
+     * 更新图片命令状态
+     */
     fun updatePictureCmdState(b:Boolean,cmd:Int){
         mCmd = cmd
         when (cmd){
@@ -377,7 +414,10 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mUpdatePictureCmd.set(b)
     }
 
-
+    /**
+     * 初始化本地录像列表
+     * @param v 控件
+     */
     fun initVideoList(v:RecyclerView){
         var vidAdapter = MyVideoAdapter(mContext,{b, pos ->
             if (isFastClick())return@MyVideoAdapter
@@ -409,6 +449,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 
     }
 
+    /**
+     * 更新本地录像列表
+     */
     fun updateVideoList(v:RecyclerView){
         Observable.create(ObservableOnSubscribe<ArrayList<String>> {e->
             e.onNext(FileUtil.getVideoDirFile())
@@ -434,11 +477,18 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
                 },{e->e.printStackTrace()})
     }
 
+    /**
+     * 更新状态给view
+     */
     fun upDateVideoListState(){
 //        Log.i("123","update picture list state")
         mUpdateVideoList.set(true)
     }
 
+    /**
+     * 初始化远程录像列表
+     * @param v 控件
+     */
     fun initRemoteList(v:RecyclerView){
         var remoteAdapter = MyRemoteAdapter(mContext,{b, pos ->
             if (isFastClick())return@MyRemoteAdapter
@@ -467,7 +517,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
 //        upDateRemoteListState()//不需要刷新
     }
 
-
+    /**
+     * 更新列表
+     */
     fun updataRemoteList(v:RecyclerView){
         //远程获取
 //        Log.i("123","upDataRemoteList    set false   mRemoteList=$mRemoteList")
@@ -475,6 +527,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         mUpdateRemoteList.set(false)
     }
 
+    /**
+     * 更新状态
+     */
     fun upDateRemoteListState(){
         var now = Utils.getNow()
         var beg = Utils.fromTime(now,-7,Calendar.DAY_OF_MONTH)
@@ -482,13 +537,18 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         ModelMgr.getApPlayerInstance().searchRemoteFile(beg,now,0,200)
     }
 
+    /**
+     * 收到状态更新
+     */
     fun onUpDateRemoteListState(f:ArrayList<RemoteBean>){
 //        Log.i("123","onUpdateRemoteList state  set true")
         mRemoteList = f
         mUpdateRemoteList.set(true)
     }
 
-
+    /**
+     * 按得太快
+     */
     fun isFastClick():Boolean{
         val curClickTime = System.currentTimeMillis()
         var flag = true
@@ -499,6 +559,9 @@ class PlayListModel(private var mContext: Context):BaseViewModel {
         return flag
     }
 
+    /**
+     * ptz模式下禁用按钮
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun setBtnEnable(b:Boolean){
         mEnable = b

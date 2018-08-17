@@ -45,6 +45,9 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
         mContext = c
     }
 
+    /**
+     * 分享按钮
+     */
     val onClickShare = Action{
         Log.i("123","onClick share   path=${mBean?.path}")
         mPop?.dismiss()
@@ -85,7 +88,9 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
 
     }
 
-    /*fixme  */
+    /**
+     * 删除按钮
+     */
     val onClickDelect = Action {
         Log.i("123","onclick del    path=${mBean?.path}")
         mPop?.dismiss()
@@ -115,6 +120,10 @@ class ListItemModel(private var mContext: Context) :BaseViewModel  {
         }
     }
 
+    /**
+     * 转换按钮
+     * @deprecated
+     */
     val onClickConvert = Action {
         mPop?.dismiss()
         ThreadUtil.cachedThreadStart {
