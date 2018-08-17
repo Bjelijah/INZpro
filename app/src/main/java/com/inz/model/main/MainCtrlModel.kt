@@ -74,6 +74,7 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
 
 
     val onClickCtrlAlarm       = Action {
+
         if (mIsAlarming){
             mIsAlarming = false
             mAlarmTextColor.set(mContext.getColor(R.color.black))
@@ -133,7 +134,12 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
             mRecordText.set(mContext.getString(R.string.ctrl_record_stop))
             mRecordTextColor.set(mContext.getColor(R.color.colorAccent))
             ModelMgr.getPlayViewModelInstance(mContext).showRecord(true)
-            ModelMgr.getDownloadMgrInstance().stepTask()
+            ModelMgr.getDownloadMgrInstance().stepTask{
+                mRecordText.set(mContext.getString(R.string.ctrl_record))
+                mRecordTextColor.set(mContext.getColor(R.color.black))
+                ModelMgr.getPlayViewModelInstance(mContext).showRecord(false)
+                Toast.makeText(mContext,mContext.getString(R.string.recordFileError),Toast.LENGTH_LONG).show()
+            }
         }
 
     }
@@ -167,8 +173,10 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                     mNormalTextColor.set(mContext.getColor(R.color.colorAccent))
                     //功能初始化
                     PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_NORMAL)
-                    ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(false)
-                    ModelMgr.getMainViewModelInstance(mContext).setFullEnable(false)
+                    ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(false)//play list disable
+                    ModelMgr.getMainViewModelInstance(mContext).setFullEnable(false)//full disable
+                    setAlarmStopByPtz()//alarm stop
+                    setRecordStopByPtz()//stop record
                     ModelMgr.getPlayViewModelInstance(mContext).change2AP()
                     CtrlAction.setPlayReview(mContext)
                     PtzMgr.getInstance().ptzStateRegist()
@@ -178,8 +186,8 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                             mShowRemoteCtrl.set(View.GONE)
                             mShowNormalCtrl.set(View.VISIBLE)
                             ModelMgr.getMainViewModelInstance(mContext).showPtzCtrl(false)
-                            ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(true)
-                            ModelMgr.getMainViewModelInstance(mContext).setFullEnable(true)
+                            ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(true)//play list enable
+                            ModelMgr.getMainViewModelInstance(mContext).setFullEnable(true)//full enable
                             Toast.makeText(mContext,mContext.getString(R.string.ptz_state_error),Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -343,5 +351,17 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
         mZoomOutTextColor.set(mContext.getColor(R.color.black))
     }
 
+    fun setAlarmStopByPtz(){
+        mIsAlarming = false
+        mAlarmTextColor.set(mContext.getColor(R.color.black))
+        ModelMgr.getPlayViewModelInstance(mContext).setAlarm(false)
+    }
 
+    fun setRecordStopByPtz(){
+        mIsRecording = false
+        mRecordText.set(mContext.getString(R.string.ctrl_record))
+        mRecordTextColor.set(mContext.getColor(R.color.black))
+        ModelMgr.getPlayViewModelInstance(mContext).showRecord(false)
+        ModelMgr.getDownloadMgrInstance().stepStop()
+    }
 }

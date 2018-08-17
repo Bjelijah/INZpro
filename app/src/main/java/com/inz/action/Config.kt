@@ -17,6 +17,9 @@ object Config {
 
     val SHOW_REMOTE_CONTROL   = true //是否显示ptz按钮
     val SHOW_PASSWORD_CONTROL = true  //是否显示设置密码按钮
+
+
+
 //
 
     val playType        = AP

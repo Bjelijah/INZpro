@@ -82,11 +82,11 @@ public class FileUtil {
         return new RandomAccessFile(new File(pathDirFileName),"rw");
     }
 
-    public static void write2VideoFile(RandomAccessFile file,byte [] data) throws IOException {
+    public static void write2VideoFile(RandomAccessFile file,byte [] data) throws IOException ,NullPointerException,Exception{
         file.write(data);
     }
 
-    public static void closeVideoFile(RandomAccessFile file) throws IOException {
+    public static void closeVideoFile(RandomAccessFile file) throws IOException ,NullPointerException,Exception{
         file.close();
     }
 

@@ -6,6 +6,7 @@ import com.howellsdk.utils.ThreadUtil
 import com.inz.action.Config
 import com.inz.model.ModelMgr
 import com.inz.utils.FileUtil
+import java.io.FileNotFoundException
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
@@ -24,8 +25,14 @@ class DownloadMgr {
     fun start(){
         var path = FileUtil.createNewVideoDirPathName(0)
         mFilePath = path
-        ApiManager.getInstance().getApDownLoadServer(0)
-                .open(path).start()
+        try {
+            ApiManager.getInstance().getApDownLoadServer(0)
+                    .open(path).start()
+        }catch (e:FileNotFoundException){
+            e.printStackTrace()
+        } catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun stop(){
@@ -42,15 +49,32 @@ class DownloadMgr {
 
     }
 
-    fun stepTask(){
+    fun stepTask(onError:()->Unit) {
+
         startFlag = true
         timeTaskStart()
+
         task = ThreadUtil.newCachedThreadStart {
             while (startFlag){
-                FileUtil.deleteLastFileIfSpaceLimit(FileUtil.FILE_VIDEO_PATH,Config.FILE_DIR_VIDEO_SIZE,Config.FILE_DIR_LIMITE)
-                var path = FileUtil.createNewVideoDirPathName(if(Config.DOWN_WH_STREAM)0 else 1)
-                ApiManager.getInstance().getApDownLoadServer(if(Config.DOWN_WH_STREAM)0 else 1)
-                        .open(path).start()
+
+                try {
+                    FileUtil.deleteLastFileIfSpaceLimit(FileUtil.FILE_VIDEO_PATH,Config.FILE_DIR_VIDEO_SIZE,Config.FILE_DIR_LIMITE)
+                    var path = FileUtil.createNewVideoDirPathName(if(Config.DOWN_WH_STREAM)0 else 1)
+                    ApiManager.getInstance().getApDownLoadServer(if (Config.DOWN_WH_STREAM) 0 else 1)
+                            .open(path).start()
+                }catch (e:FileNotFoundException){
+                    e.printStackTrace()
+                    startFlag = false
+                    timeTaskStop()
+                    onError()
+                    return@newCachedThreadStart
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    startFlag = false
+                    timeTaskStop()
+                    onError()
+                    return@newCachedThreadStart
+                }
                 secNum = 0
                 synchronized(obj){
                     obj.wait()

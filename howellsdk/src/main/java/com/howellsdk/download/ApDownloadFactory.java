@@ -39,12 +39,9 @@ public class ApDownloadFactory {
 
 
         @Override
-        public HWDownloadApi open(String path) {
-            try {
-                mFile = FileUtil.createVideoFile(path);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        public HWDownloadApi open(String path) throws FileNotFoundException{
+            mFile = FileUtil.createVideoFile(path);
+
             //jni init
             JniUtil.downloadInit();
             JniUtil.downloadType(mType);
@@ -73,6 +70,10 @@ public class ApDownloadFactory {
                 FileUtil.write2VideoFile(mFile,data);
             } catch (IOException e) {
                 e.printStackTrace();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -81,6 +82,10 @@ public class ApDownloadFactory {
             try {
                 FileUtil.closeVideoFile(mFile);
             } catch (IOException e) {
+                e.printStackTrace();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             //jni deinit we not deinit
