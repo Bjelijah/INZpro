@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.BinderHelper
 
+/**
+ * 基于的fragment基类MVVM，实现dataBind
+ */
 abstract class BaseFragment:Fragment() {
     private lateinit var mBinder: ViewDataBinding
     private lateinit var mViewModel: BaseViewModel

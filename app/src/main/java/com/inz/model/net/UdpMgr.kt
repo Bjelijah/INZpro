@@ -8,6 +8,9 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
 
+/**
+ * udp功能
+ */
 class UdpMgr {
 
     companion object {

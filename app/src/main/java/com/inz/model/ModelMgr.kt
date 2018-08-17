@@ -7,6 +7,9 @@ import com.inz.model.net.PtzMgr
 import com.inz.model.player.ApPlayer
 import com.inz.model.player.LocalPlayer
 
+/**
+ * viewModel管理类
+ */
 object ModelMgr {
     var mContext:Context                    ?=null
     var mMainViewModel:MainViewModel        ?=null

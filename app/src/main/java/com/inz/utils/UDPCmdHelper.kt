@@ -7,6 +7,9 @@ import com.inz.action.Config
 import java.io.IOException
 import java.net.*
 
+/**
+ * udp 通信 命令
+ */
 object UDPCmdHelper {
 
 

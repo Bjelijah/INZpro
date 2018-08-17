@@ -6,6 +6,10 @@ import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 
+/**
+ * 回放工具栏fragment
+ * @see com.inz.model.main.ReplayCtrlModel
+ */
 class ReplayCtrlFragment :BaseFragment(){
 
     override fun getLayout(): Int  = R.layout.fragment_replay_ctrl

@@ -3,6 +3,9 @@ package com.inz.model.player
 import com.inz.bean.BaseBean
 import com.inz.bean.RemoteBean
 
+/**
+ * 播放功能基类
+ */
 abstract class BasePlayer {
     interface PlayStateListener{
         fun onInit(b:Boolean)

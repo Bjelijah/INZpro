@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.Display
 import com.inz.model.ModelMgr
 
+/**
+ * 全局控制工具类
+ */
 object CtrlAction {
     val PLAY_MODE_MAIN_VIEW     = 0x00  //no use
     val PLAY_MODE_SUB_VIEW      = 0x01

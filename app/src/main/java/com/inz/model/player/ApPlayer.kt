@@ -28,7 +28,9 @@ import com.inz.model.ModelMgr
 import kotlinx.android.synthetic.main.fragment_play_view.view.*
 import java.util.concurrent.TimeUnit
 
-
+/**
+ * 5198ap 播放功能
+ */
 class ApPlayer :BasePlayer(){
     var mIsAlarmEnable = false
     var mIsSub = false

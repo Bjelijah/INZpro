@@ -27,6 +27,10 @@ import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
+
+/**
+ * 主界面下面功能按钮 viewModel
+ */
 @TargetApi(Build.VERSION_CODES.M)
 class MainCtrlModel(private var mContext: Context):BaseViewModel {
     var mIsRecording = false
@@ -161,10 +165,12 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                     //speed normal
                     resetSpeedCtrlColor()
                     mNormalTextColor.set(mContext.getColor(R.color.colorAccent))
+                    //功能初始化
                     PtzMgr.getInstance().ptzSpeed(PtzMgr.PTZ_SPEED_NORMAL)
                     ModelMgr.getPlayListModelInstance(mContext).setBtnEnable(false)
                     ModelMgr.getMainViewModelInstance(mContext).setFullEnable(false)
-                    //注册并查询状态
+                    ModelMgr.getPlayViewModelInstance(mContext).change2AP()
+                    CtrlAction.setPlayReview(mContext)
                     PtzMgr.getInstance().ptzStateRegist()
                     PtzMgr.getInstance().ptzGetStateTaskStart {
                         if(!it){
@@ -178,6 +184,8 @@ class MainCtrlModel(private var mContext: Context):BaseViewModel {
                         }
                     }
 
+
+                    //注册并查询状态
                 },{it.printStackTrace() })
     }
 

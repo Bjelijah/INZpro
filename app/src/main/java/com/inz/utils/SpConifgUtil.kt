@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.view.ContextThemeWrapper
 
+/**
+ * sharedPreferenc
+ */
 object SpConifgUtil {
     val SP_WIFI = "WIFI_SET"
 

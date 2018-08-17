@@ -22,7 +22,10 @@ import com.inz.model.net.UdpMgr
 import com.inz.utils.*
 import io.reactivex.functions.Action
 
-
+/**
+ * 主界面界面功能 viewModel
+ * 该界面包括主播放界面和播放界面下面的回放控制界面
+ */
 class MainViewModel(private var mContext:Context) : BaseViewModel{
     val UDP_CMD_NONE       = 0x00
     val UDP_CMD_CHANGE_PWD = 0x01
@@ -104,9 +107,6 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
                 Toast.makeText(mContext,mContext.getString(R.string.password_error),Toast.LENGTH_LONG).show()
                 mNewPassword = null
             }
-
-
-
             return false
         }
     }
@@ -148,6 +148,7 @@ class MainViewModel(private var mContext:Context) : BaseViewModel{
     fun setFullEnable(b:Boolean){
         if(!b){
             setFullScreen(false,false)
+            mSavePasswordShow.set(View.GONE)
         }
         mEnable = b
     }

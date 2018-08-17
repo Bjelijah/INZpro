@@ -38,6 +38,7 @@ import photoview.PhotoViewAttacher;
 
 /**
  * Created by Administrator on 2017/2/8.
+ * 照片显示Activity 从ecam移植 普通mvc框架
  */
 
 public class BigImagesActivity extends AppCompatActivity implements View.OnClickListener, PhotoViewAttacher.OnViewTapListener,ViewPager.OnPageChangeListener{

@@ -23,6 +23,13 @@ import com.inz.model.ModelMgr
 import com.inz.receiver.NetworkConnectChangedReceiver
 import com.inz.utils.NetUtil
 
+/**
+ * 主界面框架
+ * 1注册网络状态接收器
+ * 2接收图片页面返回改变图片
+ * 3添加权限
+ * @see com.inz.model.main.MainViewModel
+ */
 class MainActivity:BaseActivity() {
 
     val REQUEST_EXTERNAL_STORAGE = 1

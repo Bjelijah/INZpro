@@ -45,6 +45,9 @@ import java.net.URI
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * 右侧列表项 功能ViewModel
+ */
 class PlayListModel(private var mContext: Context):BaseViewModel {
     companion object {
         val CMD_SHARE = 0x00

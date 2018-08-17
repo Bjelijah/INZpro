@@ -31,6 +31,10 @@ import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 
+
+/**
+ * 图片adapter
+ */
 class MyPictureAdapter : RecyclerView.Adapter<MyPictureAdapter.ViewHolder> {
     internal var mContext: Context
     internal var mList: MutableList<PictureBean>? = null

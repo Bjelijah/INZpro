@@ -5,6 +5,10 @@ import android.support.annotation.LayoutRes
 import android.widget.PopupWindow
 import com.inz.inzpro.BaseViewModel
 
+/**
+ * 视频 图片的删除，分享，弹出狂
+ *
+ */
 class PopWindowView (val mContext: Context):BaseView(){
 
 

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 /**
  * Created by zmy on 2017/7/26.
+ * 基于MVVM 的RecyclerView adatper基类
  */
-
 public abstract class BaseBindingAdapter<M> extends RecyclerView.Adapter
 {
     protected Context context;

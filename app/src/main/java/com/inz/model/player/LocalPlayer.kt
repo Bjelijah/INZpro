@@ -10,6 +10,9 @@ import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+/**
+ * 本地播放功能
+ */
 class LocalPlayer :BasePlayer() {
     override fun pause(): BasePlayer {
         ApiManager.getInstance().localService

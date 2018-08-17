@@ -6,6 +6,11 @@ import android.content.Context
 import android.support.annotation.LayoutRes
 import com.inz.inzpro.BaseViewModel
 
+/**
+ *
+ * 通用dialog的view
+ * @deprecated 原本用来做密码修改对话框的。
+ */
 class DialogView(val mContext: Context):BaseView() {
 
     @LayoutRes

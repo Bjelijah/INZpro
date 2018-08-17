@@ -7,6 +7,9 @@ import android.util.Log
 import com.howellsdk.audio.AudioAction
 import com.inz.inzpro.BaseViewModel
 
+/**
+ * 声音控制viewModel
+ */
 class SoundVolModel (var mContext:Context):BaseViewModel{
 
     fun setContext(c:Context){

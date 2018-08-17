@@ -9,7 +9,10 @@ import android.view.View
 import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.BinderHelper
 
-abstract class BaseView() {
+/**
+ * 基于MVVM的 view 基类，实现dataBind
+ */
+abstract class BaseView {
     private lateinit var mBinder: ViewDataBinding
     private lateinit var mViewModel: BaseViewModel
 

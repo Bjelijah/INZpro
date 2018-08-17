@@ -8,6 +8,9 @@ import android.net.wifi.WifiManager
 import android.util.Log
 import com.inz.action.Config
 
+/**
+ * 网络状态接收器
+ */
 class NetworkConnectChangedReceiver:BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i("123","action=${intent?.action}")

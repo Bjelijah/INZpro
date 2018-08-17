@@ -11,6 +11,9 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
+/**
+ * 下载功能模块
+ */
 class DownloadMgr {
     var obj = Object()
     var startFlag = false

@@ -14,6 +14,10 @@ import com.inz.inzpro.R
 import com.inz.model.ModelMgr
 import com.inz.model.main.PlayListModel
 
+/**
+ * 右侧播放列表fragment
+ * @see com.inz.model.main.PlayListModel
+ */
 class PlayListFragment :BaseFragment() {
     override fun getLayout(): Int = R.layout.fragment_play_list
 

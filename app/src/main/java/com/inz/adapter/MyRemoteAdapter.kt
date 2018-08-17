@@ -12,6 +12,9 @@ import android.widget.TextView
 import com.inz.bean.RemoteBean
 import com.inz.inzpro.R
 
+/**
+ * 远程录像adapter
+ */
 class MyRemoteAdapter :RecyclerView.Adapter<MyRemoteAdapter.ViewHolder>{
     interface OnItemClickListener{
         fun onItemClickListener(b: RemoteBean, pos: Int)

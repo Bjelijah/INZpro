@@ -24,6 +24,9 @@ import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 
+/**
+ * 列表中长按弹出框 分享 删除 viewModel
+ */
 class ListItemModel(private var mContext: Context) :BaseViewModel  {
 
     var mPop: PopupWindow ?=null

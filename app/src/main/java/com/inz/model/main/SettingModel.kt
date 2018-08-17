@@ -8,6 +8,9 @@ import com.inz.model.ModelMgr
 import com.inz.utils.SpConifgUtil
 import io.reactivex.functions.Action
 
+/**
+ * @deprecated
+ */
 class SettingModel(private var mContext:Context):BaseViewModel {
     override fun onCreate() {
         Log.i("123","on setting model create")

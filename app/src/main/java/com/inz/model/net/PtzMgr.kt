@@ -12,6 +12,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
+/**
+ * ptz控制功能
+ */
 class PtzMgr {
     companion object {
         private var mInstance:PtzMgr ?= null

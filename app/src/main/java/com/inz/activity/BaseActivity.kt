@@ -11,6 +11,9 @@ import com.inz.inzpro.BaseViewModel
 import com.inz.inzpro.BinderHelper
 import com.inz.model.ModelMgr
 
+/**
+ * activity 基类实现dataBind
+ */
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var mBinder:ViewDataBinding
     private lateinit var mViewModel:BaseViewModel

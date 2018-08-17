@@ -24,6 +24,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * 文件工具类
+ */
 object FileUtil {
     val A_GB:Double = 1024*1024*1024.0
     val A_MB:Double = 1024*1024.0
@@ -38,6 +41,11 @@ object FileUtil {
     var FILE_VIDEO_PATH = "/sdcard/InzPro/Video/"
 
 
+    /**
+     * 初始化文件目录
+     * 有TF卡获取TF卡 没 获取内置sd卡
+     * @param c 上下文
+     */
     fun initFileDir(c:Context){
         var storageManager = c.getSystemService(Context.STORAGE_SERVICE) as StorageManager
         val getVolumeList:Method = storageManager.javaClass.getMethod("getVolumeList")
@@ -109,8 +117,10 @@ object FileUtil {
     }
 
 
-
-
+    /**
+     * 删除最早的文件 如果空间不够
+     *
+     */
     fun deleteLastFileIfSpaceLimit(dirPath:String,totSize:Long,limitSize:Long):Boolean{
         var d:File = File(dirPath)
         Log.i("123","file total size=${d.totalSpace}   fmt=${fmtSpace(d.totalSpace)}  ")

@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 
 /**
+ * 照片滑动页面
  * Hacky fix for Issue #4 and
  * http://code.google.com/p/android/issues/detail?id=18990
  *

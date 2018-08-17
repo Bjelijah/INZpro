@@ -15,6 +15,9 @@ import android.widget.TextView
 import com.inz.bean.VideoBean
 import com.inz.inzpro.R
 
+/**
+ * 本地录像adapter
+ */
 class MyVideoAdapter : RecyclerView.Adapter<MyVideoAdapter.ViewHolder> {
     interface OnItemClickListener {
         fun onItemClickListener(b: VideoBean, pos: Int)

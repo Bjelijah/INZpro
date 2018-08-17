@@ -18,6 +18,9 @@ import com.inz.model.ModelMgr
 import com.inz.utils.DebugLog
 import io.reactivex.functions.Action
 
+/**
+ * dataBinder helper类
+ */
 object BinderHelper {
     val defaultBinder = object:ViewModelBinder {
 

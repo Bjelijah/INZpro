@@ -15,6 +15,9 @@ import com.inz.utils.DebugLog
 import com.inz.utils.Utils
 import io.reactivex.functions.Action
 
+/**
+ * 回放控制界面viewModel
+ */
 class ReplayCtrlModel(private var mContext: Context):BaseViewModel {
 
     val PLAY_STATE_PLAYING = 0x00

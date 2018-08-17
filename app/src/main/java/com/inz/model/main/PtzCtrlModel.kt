@@ -10,6 +10,9 @@ import com.inz.model.ModelMgr
 import com.inz.model.net.PtzMgr
 import io.reactivex.functions.Action
 
+/**
+ * 右下ptz控制ViewModel
+ */
 class PtzCtrlModel(private var mContext:Context):BaseViewModel {
     override fun onCreate() {
     }

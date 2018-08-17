@@ -31,6 +31,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+/**
+ * 播放界面viewModel
+ */
 class PlayViewModel(private var mContext:Context):BaseViewModel {
     val PLAY_SPEED         = doubleArrayOf(0.25,0.5,1.0,2.0,4.0)
     var mPlaySpeedIndex = 2
@@ -61,7 +64,6 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
         mContext = c
     }
     fun initApPlay(){
-
         mPlayer = ModelMgr.getApPlayerInstance()
                 .registPlayStateListener({ isSuccess->//init
                     Log.i("123","init ap  init = $isSuccess")
@@ -91,6 +93,39 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
                 })
                 .init(Config.CAM_Crypto,Config.CAM_IP)
     }
+
+    fun initApPlay(c:()->Unit){
+        mPlayer = ModelMgr.getApPlayerInstance()
+                .registPlayStateListener({ isSuccess->//init
+                    Log.i("123","init ap  init = $isSuccess")
+                    if (isSuccess) playView()
+                    nowPlayState = CtrlAction.PLAY_MODE_SUB_VIEW
+                    c()
+                },{
+                    //deinit
+                },{ //play
+
+                    nowPlayState = CtrlAction.PLAY_MODE_SUB_VIEW
+                    initInfoAp()
+                    stopTimeTask()
+                    startTimeTask(ApiManager.getInstance().aPcamService)
+                },{//stop
+                    stopTimeTask()
+                },{b->//catchPic
+                    if (b)  {
+                        ModelMgr.getPlayListModelInstance(mContext).updatePictureListState()
+                        Toast.makeText(mContext,MessageHelp.msgCatchPic(mContext),Toast.LENGTH_LONG).show()
+                    }
+                    else  Toast.makeText(mContext,MessageHelp.msgCatchError(mContext),Toast.LENGTH_LONG).show()
+                },{files->//todo 远程回放列表
+//                    Log.i("123","on mVideoSource Arr  upDateRemoteListState")
+                    mVideoSourceArr = files
+                    mVideoIndex = 0
+                    ModelMgr.getPlayListModelInstance(mContext).onUpDateRemoteListState(files as ArrayList<RemoteBean>)
+                })
+                .init(Config.CAM_Crypto,Config.CAM_IP)
+    }
+
 
     fun initRemotePlay(beg:String,end:String){
 
@@ -348,6 +383,19 @@ class PlayViewModel(private var mContext:Context):BaseViewModel {
             stopView()
             Thread.sleep(500)
             initApPlay()
+        }
+    }
+
+    fun change2AP(c:()->Unit){
+        if (nowPlayState==CtrlAction.PLAY_MODE_SUB_VIEW){Log.e("123","change 2 ap now is playview state=0 return");return}
+        mProcessVisibility.set(View.VISIBLE)
+        Log.i("123","chande2AP")
+        stopNewTask()
+        stopTimeTask()
+        ThreadUtil.cachedThreadStart {
+            stopView()
+            Thread.sleep(500)
+            initApPlay(c)
         }
     }
 
