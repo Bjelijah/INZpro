@@ -845,9 +845,9 @@ static void on_yuv_callback(PLAY_HANDLE handle,
 //    LOGI("  -- %ld       frameNum=%d\n",timeuse,frameNum);
 //    last_t = cur_t;
 //    LOGI("do yv12 gl display    width=%d   height=%d    user=%d",width,height,user);
-//    if(frameNum >15){
-//        hwplay_set_speed(handle,4.0);
-//    }else if(frameNum <12){
+   // if(frameNum >15){
+    //    hwplay_set_speed(handle,4.0);
+ //   }else if(frameNum <12){
 //        hwplay_set_speed(handle,1.0);
 //    }
 
@@ -879,6 +879,8 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
         }
         res->timestamp = timestamp;
     }
+
+
 
 //    LOGI("timestamp=%d",timestamp);
 //    LOGI("on souce callback  timestamp=%d",timestamp);
